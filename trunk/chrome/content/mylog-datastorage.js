@@ -187,7 +187,7 @@ function XmlDataHandler() {
 	
 	}
 	function replaceEntry(logEntry) {}
-	function removeEntry(logEntry) {}
+	function removeEntry(id) {}
 	function getEntry(id) { return logEntry }
 
 	function getDomDoc() {
