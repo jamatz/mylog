@@ -27,20 +27,22 @@ function handleSearchLogRequest() {
 function handleLogContentSubmission(url, title, tags, comment) {
 	var le = new LogEntry();
 	le.setUrl(url);
-	alert(url);
+//	alert(url);
 	le.setTitle(title);
-	alert(title);
+//	alert(title);
 	for (var i = 0; i < tags.length; i++) {
 		le.addTag(tags[i]); // TODO: multiple tags (for loop on addTag)
 	}
-	alert(tags);
+//	alert(tags);
 	le.addComment(comment);
-	alert(comment);
+//	alert(comment);
 
 	//TODO: make this a global variable
 
 	var dataStore = new XmlDataStore();
-	dataStore.addEntry(le);
+	var dataHandler = dataStore.open();
+	dataHandler.addEntry(le);
+	dataStore.close(dataHandler);
 
 	alert("Content saved.");
 }
