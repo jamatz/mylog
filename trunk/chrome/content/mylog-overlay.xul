@@ -2,16 +2,24 @@
 <overlay id="mylog-overlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   
-  <script src="mylog.js" />
+  <script type="text/javascript" src="mylog.js" />
+  <script type="text/javascript" src="mylog-datastorage.js" />
+  <!--
   <script src="logentry_test.js" />
+  -->
 
   <popup id="contentAreaContextMenu">
     <menuitem id="mylog-contextmenu-create" label="Log Content"
               oncommand="handleLogContentRequest()" />
-	      
+    <menuitem id="mylog-contextmenu-create" label="Search MyLog"
+              oncommand="handleSearchLogRequest()" />
+
+	
+	<!--
     <menuitem id="mylog-contextmenu-create" label="TEST Log Content"
               oncommand="testSaveAndRead()" />
-
+	-->
+	
     <!-- Extra properties in mylog-contextmenu-create:
 
       oncommand="GNOTES_overlay.ContextCallback(event)" 

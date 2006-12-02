@@ -1,27 +1,42 @@
 <?xml version="1.0"?>
 
 <?xml-stylesheet href="chrome://global/skin/global.css" type="text/css"?>
+<?xml-stylesheet href="chrome://mylog/content/mylog-logcontentdialog.css" type="text/css"?>
 
 
-<dialog id="donothing" title="Do Nothing"
+<dialog id="mylog-logcontentdialog" title="Log Content"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
         buttons="accept,cancel"
+		onload="filltextboxes();"
         ondialogaccept="return doOK();"
         ondialogcancel="return doCancel();">
 
 
-
+	<script src="mylog-datastorage.js" />
 	<script src="mylog.js" />
 
 	<script>
+	
+
+	function filltextboxes() {
+		var url = window.arguments[0];
+		var title = window.arguments[1];
+
+		document.getElementById('mylog-url').setAttribute('value',url);
+		document.getElementById('mylog-title').setAttribute('value',title);
+	}
 
 	function doOK()
 	{
-		var url = window.arguments[0];
-		var comment;
-		// alert(url);
-		comment = document.getElementById("mylog-comments").value;
-		handleLogContentSubmission(url, comment);
+		var url = document.getElementById("mylog-url").value;
+		alert(url);
+		var title = document.getElementById("mylog-title").value;
+		alert(title);
+		var tags = document.getElementById("mylog-tags").value.split(";"); // TODO: Multiple tags. For now, just one tag.
+		alert("tags were written");
+		var comment = document.getElementById("mylog-comments").value;
+		alert(comment);
+		handleLogContentSubmission(url, title, tags, comment);
 		return true;
 	}
 
@@ -31,7 +46,31 @@
 	}
 	</script>
 
-	<label control="mylog-comments" value="Comments:"/>
-	<textbox multiline="true" id="mylog-comments"/>
+<grid flex="1">
+
+  <columns>
+    <column/>
+    <column flex="1"/>
+  </columns>
+
+  <rows>
+	<row>
+		<label control="mylog-url" value="URL:"/>
+		<textbox id="mylog-url" />
+	</row>
+    <row>
+		<label control="mylog-title" value="Title:"/>
+		<textbox id="mylog-title" flex="1"/>
+    </row>
+	<row>
+		<label control="mylog-tags" value="Tags:"/>
+		<textbox id="mylog-tags" flex="1"/>
+    </row>
+ 	<row>
+		<label control="mylog-comments" value="Comments:"/>
+		<textbox multiline="true" id="mylog-comments"/>
+	</row>
+  </rows>
+</grid>
 
 </dialog>
