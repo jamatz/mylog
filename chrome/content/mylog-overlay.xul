@@ -5,7 +5,7 @@
   <script type="text/javascript" src="mylog.js" />
   <script type="text/javascript" src="mylog-datastorage.js" />
   <!--
-  <script src="logentry_test.js" />
+  <script type="text/javascript" src="mylog-login.js" />
   -->
 
   <popup id="contentAreaContextMenu">
@@ -13,19 +13,13 @@
               oncommand="handleLogContentRequest()" />
     <menuitem id="mylog-contextmenu-create" label="Search MyLog"
               oncommand="handleSearchLogRequest()" />
-
 	
+	<!-- Log in removed -->
 	<!--
-    <menuitem id="mylog-contextmenu-create" label="TEST Log Content"
-              oncommand="testSaveAndRead()" />
+    <menuitem id="mylog-contextmenu-create" label="Log In"
+              oncommand="BeginLogIn()" />
 	-->
-	
-    <!-- Extra properties in mylog-contextmenu-create:
 
-      oncommand="GNOTES_overlay.ContextCallback(event)" 
-      accesskey="&gnotes.accessKey;"
-      insertbefore="#context-sep-paste"
-    -->
   </popup>
 
 </overlay>
