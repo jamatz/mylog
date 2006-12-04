@@ -29,13 +29,13 @@
 	function doOK()
 	{
 		var url = document.getElementById("mylog-url").value;
-		alert(url);
+//		alert(url);
 		var title = document.getElementById("mylog-title").value;
-		alert(title);
-		var tags = document.getElementById("mylog-tags").value.split(";"); // TODO: Multiple tags. For now, just one tag.
-		alert("tags were written");
+//		alert(title);
+		var tags = document.getElementById("mylog-tags").value.split(";");
+//		alert("tags were written");
 		var comment = document.getElementById("mylog-comments").value;
-		alert(comment);
+//		alert(comment);
 		handleLogContentSubmission(url, title, tags, comment);
 		return true;
 	}

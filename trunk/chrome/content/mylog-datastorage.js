@@ -50,7 +50,7 @@ function XmlDataStore() {
 							 .getService(Components.interfaces.nsIProperties)
 							 .get("ProfD", Components.interfaces.nsIFile);
 		file.append(_xmlfilepath);
-		alert(file.path);
+		// alert(file.path);
 		if (!file.exists()) {
 			// alert("File doesn't exist");
 			doc = document.implementation.createDocument("", "", null);
@@ -121,6 +121,7 @@ function XmlDataHandler() {
 	this.replaceEntry = replaceEntry;
 	this.removeEntry = removeEntry;
 	this.getEntry = getEntry;
+	this.findEntries = findEntries;
 
 	this.getDomDoc = getDomDoc;
 	this.setDomDoc = setDomDoc;
@@ -129,17 +130,17 @@ function XmlDataHandler() {
 
 		var idstr = _doc.getElementsByTagName("entries")[0].getAttribute("counter");
 		var id = idstr * 1;
-		alert(id);
+		// alert(id);
 		var counter = id + 1;
 		_doc.getElementsByTagName("entries")[0].setAttribute("counter", counter.toString());
-		alert("set entries counter");
+		// alert("set entries counter");
 
 		var url = logEntry.getUrl();
 		var title = logEntry.getTitle();
 		var filepath = "nowhere"; // TODO: actually get a filepath (once we save an actual file)
 		var tags = logEntry.getTags(); // TODO: go through array
 		var comments = logEntry.getComments(); // TODO: go through array
-		alert("Got logEntry info");
+		// alert("Got logEntry info");
 
 		var entryElem = _doc.createElement("entry");
 		var tagsElem = _doc.createElement("tags");
@@ -147,15 +148,15 @@ function XmlDataHandler() {
 		var urlElem = _doc.createElement("url");
 		var filepathElem = _doc.createElement("filepath");
 		var commentsElem = _doc.createElement("comments");
-		alert("Created XML elements");
+		// alert("Created XML elements");
 		entryElem.setAttribute("id", id.toString());
-		alert("Set XML attributes");
+		// alert("Set XML attributes");
 
 		var titleElemText = _doc.createTextNode(title);
 		var urlElemText = _doc.createTextNode(url);
 		var filepathElemText = _doc.createTextNode(filepath);
 
-		alert("Created XML textnodes");
+		// alert("Created XML textnodes");
 
 		titleElem.appendChild(titleElemText);
 		entryElem.appendChild(titleElem);
@@ -183,12 +184,69 @@ function XmlDataHandler() {
 		entryElem.appendChild(commentsElem);
 
 		_doc.getElementsByTagName("entries")[0].appendChild(entryElem); // entriesElem.appendChild(entryElem);
-		alert("Appended everything");
+		// alert("Appended everything");
 	
 	}
 	function replaceEntry(logEntry) {}
 	function removeEntry(id) {}
 	function getEntry(id) { return logEntry }
+
+
+    function findEntries(keyword,searchType) {
+        var doSearch = true;
+//		if(this._debug == "true") {
+//			dump("EXCEPTION: Trying to search without loading bookmarks");
+//		};
+//		this._throwException("EXCEPTION: Trying to search without loading bookmarks" +
+//			"\nDid you forget to load the bookmarks first?");
+        
+        
+		// Perform XPath query and convert DOM nodes to Bookmark objects..
+		var xpathStr = "";
+
+		if(searchType == "tag") {
+			// We can't do tag searches with this function...
+			//xpathStr = "/entries/entry[tag[*]=''" + keyword + "'']";
+			if(this._debug == "true") {
+				dump("Trying to run search with tags using wrong function...");
+			};
+			doSearch = false;
+		}
+		else if(searchType == "all"){
+			// They want all the results...
+			xpathStr = "/entries/entry";
+		}
+		else {
+			xpathStr = "/entries/entry[contains("+searchType+",'"+keyword+"')]";
+		};
+	
+		if(doSearch == true) {
+			// Perform XPath query...
+			var nsResolver = document.createNSResolver( _doc.ownerDocument == null ?  _doc.documentElement : _doc.ownerDocument.documentElement );
+		
+			var resultsIter = document.evaluate(xpathStr, 
+				_doc, 
+				nsResolver,
+				XPathResult.ORDERED_NODE_ITERATOR_TYPE, 
+				null );
+
+			try {
+				var thisNode = resultsIter.iterateNext();
+				var entryResults = new Array();
+				while (thisNode) {
+					// alert( thisNode.textContent );
+					var logEntry = new LogEntry();
+					logEntry.setFromDomNode(thisNode);
+					entryResults.push(logEntry);
+					thisNode = resultsIter.iterateNext();
+				}
+				return entryResults;     
+			}
+			catch (e) {
+				dump( 'Error: Document tree modified during iteraton ' + e );
+			};
+		};
+	}
 
 	function getDomDoc() {
 		return _doc;
