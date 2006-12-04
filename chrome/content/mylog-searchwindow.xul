@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<!--
+/**********************************************************************************
+* File: mylog-searchwindow.xul
+* This is a basic search form for finding bookmarks
+*
+* Revision History:
+* Date              Author                        Comment
+* 12/1/2006      Vinayak Viswanathan   Removed dependencies on sarissa library, and replaced
+*                                                         with our own scripts (ie, XMLUtil.js, Bookmark.js, etc)
+* 11/30/2006    Vinayak Viswanathan   File creation 
+***********************************************************************************/
+-->
+
+<window
+    id="findfile-window"
+    title="Find Files"
+    orient="horizontal"
+    xmlns:html="http://www.w3.org/1999/xhtml"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+ 
+    <script type="text/javascript" src="mylog-searchwindow.js"></script>
+    <script type="text/javascript" src="mylog.js"></script>
+    <script type="text/javascript" src="mylog-datastorage.js"></script>
+    <script type="text/javascript" src="XMLUtil.js"></script>
+  <vbox style="width: 100%;">
+    <toolbox>
+    <menubar id="sample-menubar">
+        <menu id="file-menu" label="MyLog">
+        <menupopup id="mylog-popup">
+            <menuitem label="Home"/>
+            <menuitem label="Log"/>
+            <menuseparator/>
+            <menuitem label="Exit"/>
+        </menupopup>
+        </menu>
+        <menu id="edit-menu" label="Help">
+        <menupopup id="help-popup">
+            <menuitem label="About"/>
+            <menuitem label="Contents"/>
+        </menupopup>
+        </menu>
+    </menubar>
+    </toolbox>
+    <hbox>
+        <label control="some-text" value="Enter Bookmark keyword"/>
+        <textbox id="some-text"/>
+        <menulist label="Search Criteria" id="search-type">
+          <menupopup>
+            <menuitem label="Title" selected="true" value="title"/>
+            <menuitem label="Tag" value="tag"/>
+          </menupopup>
+        </menulist>
+        <button 
+            id="find-button" 
+            label="Find"
+            oncommand="handleSearchRequest();"
+        />
+    </hbox>
+    <listbox id="results-list">
+    </listbox>
+    
+    
+  </vbox>
+</window>

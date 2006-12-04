@@ -17,11 +17,8 @@ function handleLogContentRequest() {
 }
 
 function handleSearchLogRequest() {
-//	window.open("chrome://mylog/content/mylog-searchwindow.xul","mylog-searchwindow",
-//		"chrome");
-
-	window.open("chrome://mylog/content/jsunit/testRunner.html","jsunit-window",
-		"resizable=0");
+	window.open("chrome://mylog/content/mylog-searchwindow.xul","mylog-searchwindow",
+		"chrome");
 }
 
 function handleLogContentSubmission(url, title, tags, comment) {
@@ -44,7 +41,7 @@ function handleLogContentSubmission(url, title, tags, comment) {
 	dataHandler.addEntry(le);
 	dataStore.close(dataHandler);
 
-	alert("Content saved.");
+//	alert("Content saved.");
 }
 
 // Class LogEntry
@@ -69,6 +66,8 @@ function LogEntry() {
 	this.addTag = addTag;
 	this.getComments = getComments;
 	this.addComment = addComment;
+
+	this.setFromDomNode = setFromDomNode;
 
 //	this.save = save;
 //	this.readFromFile = readFromFile;
@@ -119,6 +118,28 @@ function LogEntry() {
 
 		// alert(_comments[_comments.length-1].getContent());
 	}
+
+	function setFromDomNode(domNode) {
+        if(domNode.nodeName != "entry") {
+            if(this._debug == "true") {
+                dump("Node to turn into bookmark is not an <entry> node!");
+            }
+            this._throwException("Invalid DOM node for bookmark creation");
+        } else {
+            // Iterate across the entry's childnodes, setting the values correspondingly
+			// TODO: tags and comments
+            for (var i=0;i<domNode.childNodes.length;i++) {
+                if(domNode.childNodes[i].nodeName == "title") {
+                    // alert(domNode.childNodes[i].childNodes[0].nodeValue);
+                    _title = domNode.childNodes[i].childNodes[0].nodeValue;
+                } else if(domNode.childNodes[i].nodeName == "url") {
+                    _url =domNode.childNodes[i].childNodes[0].nodeValue;
+                } else if(domNode.childNodes[i].nodeName == "filepath") {
+                    _filePath= domNode.childNodes[i].childNodes[0].nodeValue;
+                }
+            }
+        }
+    }
 
 
 /* Functionality moved to DataStorage class */
