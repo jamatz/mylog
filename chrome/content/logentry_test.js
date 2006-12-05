@@ -1,7 +1,7 @@
 function testSaveAndRead() {
 	var alertLog = "";
 
-	alertLog = alertLog + "Testing LogEntry\n";
+	alertLog = "Testing LogEntry\n";
 	
 	var url = "http://www.goodurl.com/";
 
