@@ -251,22 +251,22 @@ function XmlDataHandler() {
 		if(doSearch == true) {
 			// Perform XPath query...
 			var nsResolver = document.createNSResolver( _doc.ownerDocument == null ?  _doc.documentElement : _doc.ownerDocument.documentElement );
-			alert("nsResolver initialized");
+//			alert("nsResolver initialized");
 			var resultsIter = document.evaluate(xpathStr, 
 				_doc, 
 				nsResolver,
 				XPathResult.ORDERED_NODE_ITERATOR_TYPE, 
 				null );
-			alert("resultsIter initialized");
+//			alert("resultsIter initialized");
 			try {
 				var thisNode = resultsIter.iterateNext();
 				var entryResults = new Array();
 				while (thisNode) {
 					// alert( thisNode.textContent );
 					var logEntry = new LogEntry();
-					alert("Created new LogEntry");
+//					alert("Created new LogEntry");
 					logEntry.setFromDomNode(thisNode);
-					alert("setFromDomNode done");
+//					alert("setFromDomNode done");
 					entryResults.push(logEntry);
 					thisNode = resultsIter.iterateNext();
 				}
