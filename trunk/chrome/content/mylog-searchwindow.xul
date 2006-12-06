@@ -58,7 +58,7 @@
             oncommand="handleSearchRequest();"
         />
     </hbox>
-    <listbox id="results-list">
+    <listbox id="results-list" onclick="handleResultClicked();">
     </listbox>
     
     

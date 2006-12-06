@@ -53,6 +53,7 @@ function LogEntry() {
 	var _filePath;
 	var _date;
 	var _time;
+	var _id; /* int (not string) */
 
 	this.getUrl = getUrl;
 	this.setUrl = setUrl;
@@ -61,6 +62,8 @@ function LogEntry() {
 	this.getFilePath = getFilePath;
 	this.getFilePathText = getFilePathText;
 	this.setFilePath = setFilePath;
+	this.getId = getId;
+	this.setId = setId;
 
 	this.getTags = getTags;
 	this.addTag = addTag;
@@ -100,6 +103,14 @@ function LogEntry() {
 		_filePath = filePath;
 	}
 
+	function getId() {
+		return _id;
+	}
+
+	function setId(id) {
+		_id = id;
+	}
+
 	function getTags() {
 		return _tags;
 	}
@@ -127,15 +138,34 @@ function LogEntry() {
             this._throwException("Invalid DOM node for bookmark creation");
         } else {
             // Iterate across the entry's childnodes, setting the values correspondingly
-			// TODO: tags and comments
+			var idstr = domNode.getAttribute("id");
+			alert("Got id attribute from entry");
+			_id = idstr * 1; // convert string to int
             for (var i=0;i<domNode.childNodes.length;i++) {
-                if(domNode.childNodes[i].nodeName == "title") {
+				var currNode = domNode.childNodes[i];
+                if(currNode.nodeName == "title") {
+					alert("Getting title");
                     // alert(domNode.childNodes[i].childNodes[0].nodeValue);
-                    _title = domNode.childNodes[i].childNodes[0].nodeValue;
-                } else if(domNode.childNodes[i].nodeName == "url") {
-                    _url =domNode.childNodes[i].childNodes[0].nodeValue;
-                } else if(domNode.childNodes[i].nodeName == "filepath") {
-                    _filePath= domNode.childNodes[i].childNodes[0].nodeValue;
+                    _title = currNode.childNodes[0].nodeValue;
+                } else if(currNode.nodeName == "url") {
+					alert("Getting url");
+                    _url = currNode.childNodes[0].nodeValue;
+                } else if(currNode.nodeName == "filepath") {
+					alert("Getting filepath");
+                    _filePath = currNode.childNodes[0].nodeValue;
+                } else if(currNode.nodeName == "tags") {
+					alert("Getting tags");
+					for (var j = 0; j < currNode.childNodes.length; j++) {
+						addTag(currNode.childNodes[j].childNodes[0].nodeValue);
+					}
+                } else if(currNode.nodeName == "comments") {
+					alert("Getting comments");
+					for (var j = 0; j < currNode.childNodes.length; j++) {
+						var comment = new Comment(currNode.childNodes[j].childNodes[0].nodeValue,
+							currNode.childNodes[j].getAttribute("date"),
+							currNode.childNodes[j].getAttribute("time"));
+						_comments.push(comment);
+					}
                 }
             }
         }

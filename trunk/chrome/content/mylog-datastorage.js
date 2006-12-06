@@ -191,7 +191,35 @@ function XmlDataHandler() {
 	}
 	function replaceEntry(logEntry) {}
 	function removeEntry(id) {}
-	function getEntry(id) { return logEntry }
+
+	// argument id is an int (not a string!)
+	function getEntry(id) {
+		var idstr = id.toString();
+		var xpathStr = "/entries/entry[@id = "+ idstr +"]";
+
+		// Perform XPath query...
+		var nsResolver = document.createNSResolver( _doc.ownerDocument == null ?  _doc.documentElement : _doc.ownerDocument.documentElement );
+	
+		var resultsIter = document.evaluate(xpathStr, 
+			_doc, 
+			nsResolver,
+			XPathResult.ORDERED_NODE_ITERATOR_TYPE, 
+			null );
+
+		try {
+			var thisNode = resultsIter.iterateNext();
+			if (thisNode) {
+				// alert( thisNode.textContent );
+				var logEntry = new LogEntry();
+				logEntry.setFromDomNode(thisNode);
+				return logEntry;
+			}
+		} catch (e) {
+			dump( 'Error: Document tree modified during iteraton ' + e );
+		};
+
+
+	}
 
 
     function findEntries(keyword,searchType) {
@@ -207,44 +235,48 @@ function XmlDataHandler() {
 		var xpathStr = "";
 
 		if(searchType == "tag") {
+			alert("Searching by tag");
 			// We can't do tag searches with this function...
 			//xpathStr = "/entries/entry[tag[*]=''" + keyword + "'']";
 
 			// Get all entry elements that have a tag matching keyword
-			xpathStr = "/entries/entry[tags/tag = '"+keyword+"']";
+			xpathStr = "/entries/entry[tags/tag = '"+keyword+"']"; //TODO: try pattern matching
 		} else if(searchType == "all"){
 			// They want all the results...
 			xpathStr = "/entries/entry";
 		} else {
 			xpathStr = "/entries/entry[contains("+searchType+",'"+keyword+"')]";
-		};
+		}
 	
 		if(doSearch == true) {
 			// Perform XPath query...
 			var nsResolver = document.createNSResolver( _doc.ownerDocument == null ?  _doc.documentElement : _doc.ownerDocument.documentElement );
-		
+			alert("nsResolver initialized");
 			var resultsIter = document.evaluate(xpathStr, 
 				_doc, 
 				nsResolver,
 				XPathResult.ORDERED_NODE_ITERATOR_TYPE, 
 				null );
-
+			alert("resultsIter initialized");
 			try {
 				var thisNode = resultsIter.iterateNext();
 				var entryResults = new Array();
 				while (thisNode) {
 					// alert( thisNode.textContent );
 					var logEntry = new LogEntry();
+					alert("Created new LogEntry");
 					logEntry.setFromDomNode(thisNode);
+					alert("setFromDomNode done");
 					entryResults.push(logEntry);
 					thisNode = resultsIter.iterateNext();
 				}
+				alert("Returning entryResults");
 				return entryResults;     
 			}
 			catch (e) {
-				dump( 'Error: Document tree modified during iteraton ' + e );
-			};
-		};
+				alert( 'Error: Document tree modified during iteraton ' + e );
+			}
+		}
 	}
 
 	function getDomDoc() {
