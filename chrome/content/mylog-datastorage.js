@@ -90,6 +90,8 @@ function XmlDataStore() {
 
 	function _saveXmlFile(doc) {
 
+		// Also save the tags.xml
+
 		var file = Components.classes["@mozilla.org/file/directory_service;1"]
 							 .getService(Components.interfaces.nsIProperties)
 							 .get("ProfD", Components.interfaces.nsIFile);
@@ -207,16 +209,13 @@ function XmlDataHandler() {
 		if(searchType == "tag") {
 			// We can't do tag searches with this function...
 			//xpathStr = "/entries/entry[tag[*]=''" + keyword + "'']";
-			if(this._debug == "true") {
-				dump("Trying to run search with tags using wrong function...");
-			};
-			doSearch = false;
-		}
-		else if(searchType == "all"){
+
+			// Get all entry elements that have a tag matching keyword
+			xpathStr = "/entries/entry[tags/tag = '"+keyword+"']";
+		} else if(searchType == "all"){
 			// They want all the results...
 			xpathStr = "/entries/entry";
-		}
-		else {
+		} else {
 			xpathStr = "/entries/entry[contains("+searchType+",'"+keyword+"')]";
 		};
 	
