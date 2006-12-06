@@ -139,29 +139,29 @@ function LogEntry() {
         } else {
             // Iterate across the entry's childnodes, setting the values correspondingly
 			var idstr = domNode.getAttribute("id");
-			alert("Got id attribute from entry");
+//			alert("Got id attribute from entry");
 			_id = idstr * 1; // convert string to int
             for (var i=0;i<domNode.childNodes.length;i++) {
 				var currNode = domNode.childNodes[i];
                 if(currNode.nodeName == "title") {
-					alert("Getting title");
+//					alert("Getting title");
                     // alert(domNode.childNodes[i].childNodes[0].nodeValue);
                     _title = currNode.childNodes[0].nodeValue;
                 } else if(currNode.nodeName == "url") {
-					alert("Getting url");
+//					alert("Getting url");
                     _url = currNode.childNodes[0].nodeValue;
                 } else if(currNode.nodeName == "filepath") {
-					alert("Getting filepath");
+//					alert("Getting filepath");
                     _filePath = currNode.childNodes[0].nodeValue;
                 } else if(currNode.nodeName == "tags") {
-					alert("Getting tags");
+//					alert("Getting tags");
 					for (var j = 0; j < currNode.childNodes.length; j++) {
-						addTag(currNode.childNodes[j].childNodes[0].nodeValue);
+						addTag(currNode.childNodes[j].nodeValue);
 					}
                 } else if(currNode.nodeName == "comments") {
-					alert("Getting comments");
+//					alert("Getting comments");
 					for (var j = 0; j < currNode.childNodes.length; j++) {
-						var comment = new Comment(currNode.childNodes[j].childNodes[0].nodeValue,
+						var comment = new Comment(currNode.childNodes[j].nodeValue,
 							currNode.childNodes[j].getAttribute("date"),
 							currNode.childNodes[j].getAttribute("time"));
 						_comments.push(comment);

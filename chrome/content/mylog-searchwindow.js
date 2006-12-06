@@ -16,16 +16,16 @@ var dataHandler;
 function handleSearchRequest() {
     var keyword = document.getElementById("some-text").value;
     var searchType = document.getElementById("search-type").selectedItem.value;
-    alert("Received user input");
+    //alert("Received user input");
 
 	dataStore = new XmlDataStore();
 	dataHandler = dataStore.open();
-	alert("DataHandler open()ed");
+	//alert("DataHandler open()ed");
 	var entryList = dataHandler.findEntries(keyword,searchType);
-	alert("DataHandler findEntries() run");
+	//alert("DataHandler findEntries() run");
     if(entryList.length > 0) {
-        alert("At least one entry was found");
-        displayResults(entryList);
+        // alert(entryList.length);
+		displayResults(entryList);
     }
     
     /*var resultList = QueryBookmarksInFile(keyword,searchType,"mylogformat.myLog");
@@ -36,9 +36,12 @@ function handleSearchRequest() {
 
 function handleResultClicked() {
 	var id = document.getElementById('results-list').selectedItem.value;
-	alert(id);
+	//alert(id);
 	var logEntry = dataHandler.getEntry(id);
-	alert(logEntry.getTitle());
+	//alert(logEntry.getTitle());
+	window.openDialog("chrome://mylog/content/mylog-logEditor.xul","Log Entry Editor",
+		"chrome",logEntry);
+
 }
 
 function displayResults(resultList) {
