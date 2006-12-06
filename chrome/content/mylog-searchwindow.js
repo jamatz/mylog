@@ -9,16 +9,22 @@
 * 11/29/2006 - Vinayak Viswanathan - Initial file creation; adding QueryBookmarksInFile()
 ***********************************************************************************/
 
+
+var dataStore;
+var dataHandler;
+
 function handleSearchRequest() {
     var keyword = document.getElementById("some-text").value;
     var searchType = document.getElementById("search-type").selectedItem.value;
-    // alert("Received user input");
+    alert("Received user input");
 
-	var dataStore = new XmlDataStore();
-	var dataHandler = dataStore.open();
+	dataStore = new XmlDataStore();
+	dataHandler = dataStore.open();
+	alert("DataHandler open()ed");
 	var entryList = dataHandler.findEntries(keyword,searchType);
+	alert("DataHandler findEntries() run");
     if(entryList.length > 0) {
-        // alert("At least one entry was found");
+        alert("At least one entry was found");
         displayResults(entryList);
     }
     
@@ -26,6 +32,13 @@ function handleSearchRequest() {
     if(resultList.length > 0) {
         ShowResults(resultList);
     }*/
+}
+
+function handleResultClicked() {
+	var id = document.getElementById('results-list').selectedItem.value;
+	alert(id);
+	var logEntry = dataHandler.getEntry(id);
+	alert(logEntry.getTitle());
 }
 
 function displayResults(resultList) {
@@ -43,6 +56,7 @@ function displayResults(resultList) {
 		var bookmarkTitle = resultList[i].getTitle();
 		var bookmarkUrl = resultList[i].getUrl();
         // alert(bookmarkTitle + ", " + bookmarkUrl + ", " + resultList[i].getFilePathText());
-		document.getElementById('results-list').appendItem(heading + "(" + bookmarkTitle + ", " + bookmarkUrl + ")", bookmarkTitle);
+		alert(resultList[i].getId());
+		document.getElementById('results-list').appendItem(heading + "(" + bookmarkTitle + ", " + bookmarkUrl + ")", resultList[i].getId());
     }
 }
