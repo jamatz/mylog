@@ -165,8 +165,11 @@ function LogEntry() {
 					//alert("Got filePath:" + _filePath);
                 } else if(entryNode.nodeName == "entrytags") {
 					for (var j = 0; j < entryNode.childNodes.length; j++) {
-						addTag(entryNode.childNodes[j].getAttribute("name"));
-						//alert("Got tag:" + entryNode.childNodes[j].childNodes[0].nodeValue);
+						var entryTagNode = entryNode.childNodes[j];
+						if (entryTagNode.nodeName == "entrytag") {
+							addTag(entryTagNode.getAttribute("name"));
+							//alert("Got tag:" + entryNode.childNodes[j].childNodes[0].nodeValue);
+						}
 					}
                 } else if(entryNode.nodeName == "comments") {
 					for (var j = 0; j < entryNode.childNodes.length; j++) {
