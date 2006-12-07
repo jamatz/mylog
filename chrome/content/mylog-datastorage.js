@@ -160,7 +160,7 @@ function XmlDataHandler() {
 				}
 		}
 				
-		var tagElem = _doc.createElement("tags");
+		var tagElem = _doc.createElement("tag");
 		tagElem.setAttribute("name", tag);
 		_doc.getElementsByTagName("tags")[0].appendChild(tagElem);
 		return true;
@@ -170,65 +170,52 @@ function XmlDataHandler() {
 
 		var idstr = _doc.getElementsByTagName("entries")[0].getAttribute("counter");
 		var id = idstr * 1;
+		logEntry.setId(id);
 		// alert(id);
 		var counter = id + 1;
 		_doc.getElementsByTagName("entries")[0].setAttribute("counter", counter.toString());
 		// alert("set entries counter");
 
-		var url = logEntry.getUrl();
-		var title = logEntry.getTitle();
-		var filepath = "nowhere"; // TODO: actually get a filepath (once we save an actual file)
-		var tags = logEntry.getTags(); // TODO: go through array
-		var comments = logEntry.getComments(); // TODO: go through array
-		// alert("Got logEntry info");
-
-		var entryElem = _doc.createElement("entry");
-		var entryTagsElem = _doc.createElement("entrytags");
-		var titleElem = _doc.createElement("title");
-		var urlElem = _doc.createElement("url");
-		var filepathElem = _doc.createElement("filepath");
-		var commentsElem = _doc.createElement("comments");
-		// alert("Created XML elements");
-		entryElem.setAttribute("id", id.toString());
-		// alert("Set XML attributes");
-
-		var titleElemText = _doc.createTextNode(title);
-		var urlElemText = _doc.createTextNode(url);
-		var filepathElemText = _doc.createTextNode(filepath);
-
-		// alert("Created XML textnodes");
-
-		titleElem.appendChild(titleElemText);
-		entryElem.appendChild(titleElem);
-		urlElem.appendChild(urlElemText);
-		entryElem.appendChild(urlElem);
-		filepathElem.appendChild(filepathElemText);
-		entryElem.appendChild(filepathElem);
-
-		// Add all tags
-		for (var i = 0; i < tags.length; i++) {
-			var thisEntryTagElem = _doc.createElement("entrytag");
-			thisEntryTagElem.setAttribute("name", tags[i]);
-			entryTagsElem.appendChild(thisEntryTagElem);
-		}
-		entryElem.appendChild(entryTagsElem);
-
-		// Add all comments
-		for (var i = 0; i < comments.length; i++) {
-			var thisCommentElem = _doc.createElement("comment");
-			thisCommentElem.setAttribute("time", "12"); //TODO: actual time
-			thisCommentElem.setAttribute("date", "12"); //TODO: actual date
-			thisCommentElem.appendChild(_doc.createTextNode(comments[i].getContent()));
-			commentsElem.appendChild(thisCommentElem);
-		}
-		entryElem.appendChild(commentsElem);
+		var entryElem = _createDomNode(logEntry);
 
 		_doc.getElementsByTagName("entries")[0].appendChild(entryElem); // entriesElem.appendChild(entryElem);
 		// alert("Appended everything");
 	
 	}
-	function replaceEntry(logEntry) {}
-	function removeEntry(id) {}
+
+	function replaceEntry(logEntry) {
+		var oldNode;
+		var newNode = _createDomNode(logEntry);
+
+		var entriesNode = _doc.getElementsByTagName("entries")[0];
+
+		var idstr = logEntry.getId();
+		var xpathStr = "/mylog/entries/entry[@id = "+ idstr +"]";
+
+		// Perform XPath query...
+		var nsResolver = document.createNSResolver( _doc.ownerDocument == null ?  _doc.documentElement : _doc.ownerDocument.documentElement );
+	
+		var resultsIter = document.evaluate(xpathStr, 
+			_doc, 
+			nsResolver,
+			XPathResult.ORDERED_NODE_ITERATOR_TYPE, 
+			null );
+
+		try {
+			oldNode = resultsIter.iterateNext();
+			if (oldNode) {
+				entriesNode.replaceChild(newNode, oldNode);
+			} else {
+				alert("No previous node");
+			}
+		} catch (e) {
+			dump( 'Error: Document tree modified during iteraton ' + e );
+		};
+	
+	}
+
+	function removeEntry(id) {
+	}
 
 	// argument id is an int (not a string!)
 	function getEntry(id) {
@@ -315,6 +302,59 @@ function XmlDataHandler() {
 				alert( 'Error: Document tree modified during iteraton ' + e );
 			}
 		}
+	}
+
+	function _createDomNode(logEntry) {
+		var id = logEntry.getId();
+		var url = logEntry.getUrl();
+		var title = logEntry.getTitle();
+		var filepath = "nowhere"; // TODO: actually get a filepath (once we save an actual file)
+		var tags = logEntry.getTags(); // TODO: go through array
+		var comments = logEntry.getComments(); // TODO: go through array
+		// alert("Got logEntry info");
+
+		var entryElem = _doc.createElement("entry");
+		var entryTagsElem = _doc.createElement("entrytags");
+		var titleElem = _doc.createElement("title");
+		var urlElem = _doc.createElement("url");
+		var filepathElem = _doc.createElement("filepath");
+		var commentsElem = _doc.createElement("comments");
+		// alert("Created XML elements");
+		entryElem.setAttribute("id", id.toString());
+		// alert("Set XML attributes");
+
+		var titleElemText = _doc.createTextNode(title);
+		var urlElemText = _doc.createTextNode(url);
+		var filepathElemText = _doc.createTextNode(filepath);
+
+		// alert("Created XML textnodes");
+
+		titleElem.appendChild(titleElemText);
+		entryElem.appendChild(titleElem);
+		urlElem.appendChild(urlElemText);
+		entryElem.appendChild(urlElem);
+		filepathElem.appendChild(filepathElemText);
+		entryElem.appendChild(filepathElem);
+
+		// Add all tags
+		for (var i = 0; i < tags.length; i++) {
+			var thisEntryTagElem = _doc.createElement("entrytag");
+			thisEntryTagElem.setAttribute("name", tags[i]);
+			entryTagsElem.appendChild(thisEntryTagElem);
+		}
+		entryElem.appendChild(entryTagsElem);
+
+		// Add all comments
+		for (var i = 0; i < comments.length; i++) {
+			var thisCommentElem = _doc.createElement("comment");
+			thisCommentElem.setAttribute("time", "12"); //TODO: actual time
+			thisCommentElem.setAttribute("date", "12"); //TODO: actual date
+			thisCommentElem.appendChild(_doc.createTextNode(comments[i].getContent()));
+			commentsElem.appendChild(thisCommentElem);
+		}
+		entryElem.appendChild(commentsElem);
+
+		return entryElem;
 	}
 
 	function getDomDoc() {
