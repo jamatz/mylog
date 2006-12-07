@@ -14,16 +14,69 @@
 
 	<script src="mylog-datastorage.js" />
 	<script src="mylog.js" />
+	<script src="mylog-tag.js" />
 
-	<script>
-	
-
+	<script type="text/javascript">
 	function filltextboxes() {
 		var url = window.arguments[0];
 		var title = window.arguments[1];
 
 		document.getElementById('mylog-url').setAttribute('value',url);
 		document.getElementById('mylog-title').setAttribute('value',title);
+
+		fillTagMenu();
+	}
+
+//	Added by Bryan Early and Soumi Sinha on December 5.
+	function fillTagMenu() {
+//		var tagHandlerObj = new TagHandler();
+//		tagHandlerObj.createTagHandlerFromFile();
+//		var tagNameArr = tagHandlerObj.getAllTagNames();
+//
+//		var i = 0;
+//		while (i != tagNameArr.length)
+//		{
+//			var menuItem = document.createElement("menuitem");
+//			menuItem.setAttribute( "label" , tagNameArr[i]);
+//			menuItem.setAttribute( "value" , tagNameArr[i]);
+//			menuItem.setAttribute( "id" , "mylog-tag-" + tagNameArr[i]);
+//			document.getElementById("mylog-tagsMenuPopup").appendChild(menuItem);
+//			i=i+1;
+//		}
+
+		var menuPopup = createTagMenupopup();
+		var menuItem = document.createElement("menuitem");
+		menuItem.setAttribute( "label" , "Create New Tag");
+		menuItem.setAttribute( "value" , "new tag");
+		menuItem.setAttribute( "id" , "mylog-createTag");
+		menuPopup.appendChild(menuItem);
+		document.getElementById("mylog-tags").appendChild(menuPopup);
+	}
+
+	function createTagMenupopup() {
+//		var tagHandlerObj = new TagHandler();
+//		tagHandlerObj.createTagHandlerFromFile();
+//		var tagNameArr = tagHandlerObj.getAllTagNames();
+
+		var dataStore = new XmlDataStore();
+		var dataHandler = dataStore.open();
+		var tagNameArr = dataHandler.getAllTags();
+
+		var menuPopup = document.createElement("menupopup");
+		menuPopup.setAttribute("id", "mylog-tagsMenuPopup");
+
+		var i = 0;
+		while (i != tagNameArr.length)
+		{
+			var menuItem = document.createElement("menuitem");
+			menuItem.setAttribute( "label" , tagNameArr[i]);
+			menuItem.setAttribute( "value" , tagNameArr[i]);
+			menuItem.setAttribute( "id" , "mylog-tag-" + tagNameArr[i]);
+			menuPopup.appendChild(menuItem);
+			i=i+1;
+		}
+
+		return menuPopup;
 	}
 
 	function doOK()
@@ -32,8 +85,16 @@
 //		alert(url);
 		var title = document.getElementById("mylog-title").value;
 //		alert(title);
-		var tags = document.getElementById("mylog-tags").value.split(";");
-//		alert("tags were written");
+//		Fix this line.
+//		var tags = document.getElementById("mylog-tags").value;
+		var tags = new Array();
+		var tagElems = document.getElementById("mylog-currentTagsPopup").childNodes;
+		var i = 0;
+		while (i != tagElems.length) {
+			tags.push(tagElems[i].value);
+			i++;
+		}
+//		alert(tags);
 		var comment = document.getElementById("mylog-comments").value;
 //		alert(comment);
 		handleLogContentSubmission(url, title, tags, comment);
@@ -43,6 +104,43 @@
 	function doCancel()
 	{
 	  return true;
+	}
+
+
+//	Added by Bryan Early on December 6.
+	function addTag() {
+		var tag = document.getElementById("mylog-tags").value
+		if (tag == "new tag")
+		{
+			tag = createTag();
+		}
+		var menuItem = document.createElement("menuitem");
+		menuItem.setAttribute( "label" , tag);
+		menuItem.setAttribute( "value" , tag);
+		menuItem.setAttribute( "id" , "mylog-remove-" + tag);
+		document.getElementById("mylog-currentTagsPopup").appendChild(menuItem);
+		menuItem.selectedIndex = -1;
+	}
+	
+//	Added by Bryan Early on December 6.
+	function removeTag() {
+		var tag = document.getElementById("mylog-currenttags").value;
+		var menuElem = document.getElementById("mylog-currentTagsPopup");
+		var tagElem = document.getElementById("mylog-remove-" + tag);
+		menuElem.removeChild(tagElem);
+		menuElem.selectedItem = -1;
+	}
+
+	function createTag() {
+		var tag = prompt("Enter new tag name:", "");
+		var ret = handleAddTag(tag);
+		var menuItem = document.createElement("menuitem");
+		menuItem.setAttribute( "label" , tag);
+		menuItem.setAttribute( "value" , tag);
+		menuItem.setAttribute( "id" , "mylog-remove-" + tag);
+		var refItem = document.getElementById("mylog-createTag")
+		document.getElementById("mylog-tagsMenuPopup").insertBefore(menuItem, refItem);
+		return tag;
 	}
 	</script>
 
@@ -64,8 +162,15 @@
     </row>
 	<row>
 		<label control="mylog-tags" value="Tags:"/>
-		<textbox id="mylog-tags" flex="1"/>
+		<menulist label="Select to Add a Tag" id="mylog-tags" flex="1" oncommand="addTag();">
+		</menulist>
     </row>
+	<row>
+		<label control="mylog-currenttags" value="Current Tags:"/>
+		<menulist label="Select to Remove a Tag" id="mylog-currenttags" flex="1" oncommand="removeTag();">
+		<menupopup id="mylog-currentTagsPopup"/>
+		</menulist>
+	</row>
  	<row>
 		<label control="mylog-comments" value="Comments:"/>
 		<textbox multiline="true" id="mylog-comments"/>
