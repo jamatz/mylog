@@ -16,51 +16,66 @@
 	<script src="mylog.js" />
 
 	<script>
-	
+	var dataStore;
+	var dataHandler;
 
-	function filltextboxes() {
+	function filltextboxes(){
 		var logEntry = window.arguments[0];
-
+		dataStore = window.arguments[1];
+		dataHandler = window.arguments[2];
 		document.getElementById('mylog-url').setAttribute('value',logEntry.getUrl());
 		document.getElementById('mylog-title').setAttribute('value',logEntry.getTitle());
+
+		var Tags = "";
 		var tagArray = logEntry.getTags();
-		var tags = "";
-		var i = 0;
-		if (tagArray) {
-			while (i != tagArray.length) {
-				tags = tags + ", " + tagArray[i];
+		if(tagArray){
+			Tags = tagArray[0];
+			var i = 0;
+			i++;
+			if(i != tagArray.length){
+				Tags = Tags + ", " + tagArray[i];
 				i++;
 			}
 		}
-		document.getElementById('mylog-tags').setAttribute('value',tags);
 
-		var commentsArray = logEntry.getComments();
-		var comment = "";
-		if (commentsArray[0]) {
-			comment = commentsArray[0].getContent();
+		document.getElementById('mylog-tags').setAttribute('value',Tags);
+		
+		var Comments = "";
+		var commentArray = logEntry.getComments();
+		if(commentArray){
+			Comments = commentArray[0].getContent();
+//			var i = 0;
+//			i++;
+//			if(i != commentArray.length){
+//				Comments = Comments + ", " + commentArray[i].getContent();
+//				i++;
+//			}
 		}
-		document.getElementById('mylog-comments').setAttribute('value',comment);
+		
+		alert(Comments);
+
+		document.getElementById('mylog-comments').setAttribute('value',Comments);
 
 	}
 
-	function doOK()
-	{
-		var url = document.getElementById("mylog-url").value;
-//		alert(url);
-		var title = document.getElementById("mylog-title").value;
-//		alert(title);
-		var tags = document.getElementById("mylog-tags").value.split(";");
-//		alert("tags were written");
-		var comment = document.getElementById("mylog-comments").value;
-//		alert(comment);
-		handleLogContentSubmission(url, title, tags, comment);
+	function doOK(){
 		return true;
 	}
 
-	function doCancel()
-	{
-	  return true;
+	function doCancel(){
+		return true;
 	}
+
+	function doAddComment(){
+		var logEntry = window.arguments[0];
+		var newComment = document.getElementById("mylog-add-comments").value;
+		logEntry.addComment(newComment);
+		alert(newComment);
+		dataHandler.replaceEntry(logEntry);
+		dataStore.close(dataHandler);
+		return true;
+	}
+
 	</script>
 
 <grid flex="1">
@@ -90,7 +105,7 @@
 	<row>
 		<label control="mylog-comments" value="Add a new comment:"/>
 		<textbox multiline="true" rows="3" id="mylog-add-comments"/>
-		<button label="Add Comment" oncommand="alert('Adding a comment'); return false;"/>
+		<button label="Add Comment" oncommand="doAddComment();"/>
 	</row>
   </rows>
 </grid>
