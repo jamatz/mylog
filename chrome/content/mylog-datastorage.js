@@ -123,6 +123,8 @@ function XmlDataStore() {
 function XmlDataHandler() {
 	var _doc;
 
+	this.getAllTags = getAllTags;
+	this.addTag = addTag;
 	this.addEntry = addEntry;
 	this.replaceEntry = replaceEntry;
 	this.removeEntry = removeEntry;
@@ -132,6 +134,38 @@ function XmlDataHandler() {
 	this.getDomDoc = getDomDoc;
 	this.setDomDoc = setDomDoc;
 
+    //Created December 6th by Josh Matz and Eric Bluhm
+	//getAllTags returns an array holding all the tags currently in _xmlfilepath
+	function getAllTags() {
+
+		var existingTags = new Array();
+		for (var i = 0; i<_doc.getElementsByTagName("tag").length; i++) {			
+			existingTags.push(_doc.getElementsByTagName("tag")[i].getAttribute("name"));
+		}
+
+		return existingTags;
+	}
+
+	//Created December 6th by Josh Matz and Eric Bluhm
+	//addTag recieves a tag and writes it into _xmlfilepath
+	//returns true if the tag has been added, otherwise false
+	function addTag(tag) {
+	
+		var existingTags = new Array();
+		existingTags = getAllTags();
+
+		for (var i = 0; i<existingTags.length; i++) {
+				if(tag == existingTags[i]) {
+					return false;
+				}
+		}
+				
+		var tagElem = _doc.createElement("tags");
+		tagElem.setAttribute("name", tag);
+		_doc.getElementsByTagName("tags")[0].appendChild(tagElem);
+		return true;
+	}
+	
 	function addEntry(logEntry) {
 
 		var idstr = _doc.getElementsByTagName("entries")[0].getAttribute("counter");
