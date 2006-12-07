@@ -28,7 +28,7 @@ function XmlDataStore() {
 	this.close = close;
 	
 	// Private members
-	var _xmlfilepath = "mylog_entries.xml";
+	var _xmlfilepath = "mylog_data.xml";
 
 	// Public methods
 	function open() {
@@ -54,9 +54,13 @@ function XmlDataStore() {
 		if (!file.exists()) {
 			// alert("File doesn't exist");
 			doc = document.implementation.createDocument("", "", null);
+			var rootElem = doc.createElement("mylog");
 			var entriesElem = doc.createElement("entries");
+			var tagsElem = doc.createElement("tags");
 			entriesElem.setAttribute("counter", "0");
-			doc.appendChild(entriesElem);
+			doc.appendChild(rootElem);
+			rootElem.appendChild(entriesElem);
+			rootElem.appendChild(tagsElem);
 		} else {
 			// alert("File exists");
 
@@ -145,7 +149,7 @@ function XmlDataHandler() {
 		// alert("Got logEntry info");
 
 		var entryElem = _doc.createElement("entry");
-		var tagsElem = _doc.createElement("tags");
+		var entryTagsElem = _doc.createElement("entrytags");
 		var titleElem = _doc.createElement("title");
 		var urlElem = _doc.createElement("url");
 		var filepathElem = _doc.createElement("filepath");
@@ -169,11 +173,11 @@ function XmlDataHandler() {
 
 		// Add all tags
 		for (var i = 0; i < tags.length; i++) {
-			var thisTagElem = _doc.createElement("tag");
-			thisTagElem.appendChild(_doc.createTextNode(tags[i]));
-			tagsElem.appendChild(thisTagElem);
+			var thisEntryTagElem = _doc.createElement("entrytag");
+			thisEntryTagElem.setAttribute("name", tags[i]);
+			entryTagsElem.appendChild(thisEntryTagElem);
 		}
-		entryElem.appendChild(tagsElem);
+		entryElem.appendChild(entryTagsElem);
 
 		// Add all comments
 		for (var i = 0; i < comments.length; i++) {
@@ -195,7 +199,7 @@ function XmlDataHandler() {
 	// argument id is an int (not a string!)
 	function getEntry(id) {
 		var idstr = id.toString();
-		var xpathStr = "/entries/entry[@id = "+ idstr +"]";
+		var xpathStr = "/mylog/entries/entry[@id = "+ idstr +"]";
 
 		// Perform XPath query...
 		var nsResolver = document.createNSResolver( _doc.ownerDocument == null ?  _doc.documentElement : _doc.ownerDocument.documentElement );
@@ -240,12 +244,12 @@ function XmlDataHandler() {
 			//xpathStr = "/entries/entry[tag[*]=''" + keyword + "'']";
 
 			// Get all entry elements that have a tag matching keyword
-			xpathStr = "/entries/entry[tags/tag = '"+keyword+"']"; //TODO: try pattern matching
+			xpathStr = "/mylog/entries/entry[entrytags/entrytag/@name = '"+keyword+"']"; //TODO: try pattern matching
 		} else if(searchType == "all"){
 			// They want all the results...
-			xpathStr = "/entries/entry";
+			xpathStr = "/mylog/entries/entry";
 		} else {
-			xpathStr = "/entries/entry[contains("+searchType+",'"+keyword+"')]";
+			xpathStr = "/mylog/entries/entry[contains("+searchType+",'"+keyword+"')]";
 		}
 	
 		if(doSearch == true) {

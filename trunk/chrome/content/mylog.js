@@ -153,11 +153,9 @@ function LogEntry() {
                 } else if(entryNode.nodeName == "filepath") {
                     _filePath = entryNode.childNodes[0].nodeValue;
 					//alert("Got filePath:" + _filePath);
-                } else if(entryNode.nodeName == "tags") {
+                } else if(entryNode.nodeName == "entrytags") {
 					for (var j = 0; j < entryNode.childNodes.length; j++) {
-						if (entryNode.childNodes[j].childNodes[0]) {
-							addTag(entryNode.childNodes[j].childNodes[0].nodeValue);
-						}
+						addTag(entryNode.childNodes[j].getAttribute("name"));
 						//alert("Got tag:" + entryNode.childNodes[j].childNodes[0].nodeValue);
 					}
                 } else if(entryNode.nodeName == "comments") {

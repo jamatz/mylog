@@ -23,8 +23,23 @@
 
 		document.getElementById('mylog-url').setAttribute('value',logEntry.getUrl());
 		document.getElementById('mylog-title').setAttribute('value',logEntry.getTitle());
-		document.getElementById('mylog-tags').setAttribute('value',"Tags");
-		document.getElementById('mylog-comments').setAttribute('value',"Comments");
+		var tagArray = logEntry.getTags();
+		var tags = "";
+		var i = 0;
+		if (tagArray) {
+			while (i != tagArray.length) {
+				tags = tags + ", " + tagArray[i];
+				i++;
+			}
+		}
+		document.getElementById('mylog-tags').setAttribute('value',tags);
+
+		var commentsArray = logEntry.getComments();
+		var comment = "";
+		if (commentsArray[0]) {
+			comment = commentsArray[0].getContent();
+		}
+		document.getElementById('mylog-comments').setAttribute('value',comment);
 
 	}
 
