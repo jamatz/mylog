@@ -40,7 +40,7 @@ function handleResultClicked() {
 	var logEntry = dataHandler.getEntry(id);
 	//alert(logEntry.getTitle());
 	window.openDialog("chrome://mylog/content/mylog-logEditor.xul","Log Entry Editor",
-		"chrome",logEntry);
+		"chrome",logEntry, dataStore, dataHandler);
 
 }
 
