@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<overlay id="mylog-test-overlay"
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  
+	<!-- Include files to be tested -->
+	<script type="text/javascript" src="mylog.js" />
+	<script type="text/javascript" src="mylog-datastorage.js" />
+
+	<!-- Include tests -->
+	<script type="text/javascript" src="test/mylog-datastorage-test.js" />
+
+	<!-- Include mylogUnit -->
+	<script type="text/javascript" src="test/mylogUnit.js" />
+
+	<!-- Test runner -->
+	<script type="text/javascript">
+	
+	// Add tests to be run
+	function runTests() {
+		datastorage_runTests();
+	}
+
+	</script>
+
+	<commandset id="mainCommandSet">
+		<command id="Tools:TestMyLog" oncommand="runTests();"/>
+	</commandset>
+
+	
+    <menupopup id="menu_ToolsPopup">
+		<menuitem id="menu_test-mylog" label="Test MyLog"
+                          command="Tools:TestMyLog" insertbefore="javascriptConsole"/>
+    </menupopup>
+
+</overlay>
