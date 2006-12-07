@@ -19,9 +19,9 @@
     </em:targetApplication>
    
     <!-- Front End MetaData -->
-    <em:name>Sample!</em:name>
-    <em:description>A test extension</em:description>
-    <em:creator>Your Name Here</em:creator>
-    <em:homepageURL>http://www.foo.com/</em:homepageURL>
+    <em:name>MyLog</em:name>
+    <em:description>Log content on the web for future reference.</em:description>
+    <em:creator>MyLog team, UIUC</em:creator>
+    <em:homepageURL>http://pixie.cs.uiuc.edu:8080/SEcourse/MyLog</em:homepageURL>
   </Description>      
 </RDF>
