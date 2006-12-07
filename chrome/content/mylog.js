@@ -44,6 +44,16 @@ function handleLogContentSubmission(url, title, tags, comment) {
 //	alert("Content saved.");
 }
 
+function handleAddTag(tag) {
+
+	var dataStore = new XmlDataStore();
+	var dataHandler = dataStore.open();
+	var wasAdded = dataHandler.addTag(tag);
+	dataStore.close(dataHandler);
+
+	return wasAdded;
+}
+
 // Class LogEntry
 function LogEntry() {
 	var _url;
