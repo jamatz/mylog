@@ -142,29 +142,34 @@ function LogEntry() {
 //			alert("Got id attribute from entry");
 			_id = idstr * 1; // convert string to int
             for (var i=0;i<domNode.childNodes.length;i++) {
-				var currNode = domNode.childNodes[i];
-                if(currNode.nodeName == "title") {
+				var entryNode = domNode.childNodes[i];
+                if(entryNode.nodeName == "title") {
 //					alert("Getting title");
                     // alert(domNode.childNodes[i].childNodes[0].nodeValue);
-                    _title = currNode.childNodes[0].nodeValue;
-                } else if(currNode.nodeName == "url") {
+                    _title = entryNode.childNodes[0].nodeValue;
+					alert("Got title:" + _title);
+                } else if(entryNode.nodeName == "url") {
 //					alert("Getting url");
-                    _url = currNode.childNodes[0].nodeValue;
-                } else if(currNode.nodeName == "filepath") {
+                    _url = entryNode.childNodes[0].nodeValue;
+					alert("Got url:" + _url);
+                } else if(entryNode.nodeName == "filepath") {
 //					alert("Getting filepath");
-                    _filePath = currNode.childNodes[0].nodeValue;
-                } else if(currNode.nodeName == "tags") {
+                    _filePath = entryNode.childNodes[0].nodeValue;
+					alert("Got filePath:" + _filePath);
+                } else if(entryNode.nodeName == "tags") {
 //					alert("Getting tags");
-					for (var j = 0; j < currNode.childNodes.length; j++) {
-						addTag(currNode.childNodes[j].nodeValue);
+					for (var j = 0; j < entryNode.childNodes.length; j++) {
+						addTag(entryNode.childNodes[j].nodeValue);
+						alert("Got tag:" + entryNode.childNodes[j].childNodes[0].nodeValue);
 					}
-                } else if(currNode.nodeName == "comments") {
+                } else if(entryNode.nodeName == "comments") {
 //					alert("Getting comments");
-					for (var j = 0; j < currNode.childNodes.length; j++) {
-						var comment = new Comment(currNode.childNodes[j].nodeValue,
-							currNode.childNodes[j].getAttribute("date"),
-							currNode.childNodes[j].getAttribute("time"));
+					for (var j = 0; j < entryNode.childNodes.length; j++) {
+						var comment = new Comment(entryNode.childNodes[j].childNodes[0].nodeValue,
+							entryNode.childNodes[j].getAttribute("date"),
+							entryNode.childNodes[j].getAttribute("time"));
 						_comments.push(comment);
+						alert("Got comment:" + entryNode.childNodes[j].childNodes[0].nodeValue);
 					}
                 }
             }
