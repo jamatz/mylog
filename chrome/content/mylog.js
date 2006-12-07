@@ -144,32 +144,31 @@ function LogEntry() {
             for (var i=0;i<domNode.childNodes.length;i++) {
 				var entryNode = domNode.childNodes[i];
                 if(entryNode.nodeName == "title") {
-//					alert("Getting title");
                     // alert(domNode.childNodes[i].childNodes[0].nodeValue);
                     _title = entryNode.childNodes[0].nodeValue;
-					alert("Got title:" + _title);
+					//alert("Got title:" + _title);
                 } else if(entryNode.nodeName == "url") {
-//					alert("Getting url");
                     _url = entryNode.childNodes[0].nodeValue;
-					alert("Got url:" + _url);
+					//alert("Got url:" + _url);
                 } else if(entryNode.nodeName == "filepath") {
-//					alert("Getting filepath");
                     _filePath = entryNode.childNodes[0].nodeValue;
-					alert("Got filePath:" + _filePath);
+					//alert("Got filePath:" + _filePath);
                 } else if(entryNode.nodeName == "tags") {
-//					alert("Getting tags");
 					for (var j = 0; j < entryNode.childNodes.length; j++) {
-						addTag(entryNode.childNodes[j].nodeValue);
-						alert("Got tag:" + entryNode.childNodes[j].childNodes[0].nodeValue);
+						if (entryNode.childNodes[j].childNodes[0]) {
+							addTag(entryNode.childNodes[j].childNodes[0].nodeValue);
+						}
+						//alert("Got tag:" + entryNode.childNodes[j].childNodes[0].nodeValue);
 					}
                 } else if(entryNode.nodeName == "comments") {
-//					alert("Getting comments");
 					for (var j = 0; j < entryNode.childNodes.length; j++) {
-						var comment = new Comment(entryNode.childNodes[j].childNodes[0].nodeValue,
-							entryNode.childNodes[j].getAttribute("date"),
-							entryNode.childNodes[j].getAttribute("time"));
-						_comments.push(comment);
-						alert("Got comment:" + entryNode.childNodes[j].childNodes[0].nodeValue);
+						if (entryNode.childNodes[j].childNodes[0]) {
+							var comment = new Comment(entryNode.childNodes[j].childNodes[0].nodeValue,
+								entryNode.childNodes[j].getAttribute("date"),
+								entryNode.childNodes[j].getAttribute("time"));
+							_comments.push(comment);
+						}
+						//alert("Got comment:" + entryNode.childNodes[j].childNodes[0].nodeValue);
 					}
                 }
             }
