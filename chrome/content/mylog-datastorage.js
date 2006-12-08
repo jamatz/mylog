@@ -21,6 +21,13 @@
 //	function getEntry(id) { return logEntry }
 //}
 
+// Revision History
+// Authors                                              Date            Comment
+// Vinayak Viswanathan - observer, Thomas Park - coder  12/7/2006       Adding functionality to search through comments
+// Vinayak Viswanathan - coder, Thomas Park - observer  12/7/2006       Added _readXmlFileNew()
+//                                                                      Uses XmlHttpRequest() (in our opinion it is simpler)
+// Brian Cho                                                            Initial creation
+
 
 /* IMPLEMENTATIONS */
 function XmlDataStore() {
@@ -32,7 +39,8 @@ function XmlDataStore() {
 
 	// Public methods
 	function open() {
-		var doc = _readXmlFile();
+		//var doc = _readXmlFile();
+        var doc = _readXmlFileNew();      
 		var handler = new XmlDataHandler();
 		handler.setDomDoc(doc);
 		return handler;
@@ -43,6 +51,16 @@ function XmlDataStore() {
 		_saveXmlFile(doc);
 	}
 
+    function _readXmlFileNew() {
+        _xmlfilepath = "chrome://mylog/content/mylog_data.xml";
+        var req = new XMLHttpRequest();
+        req.open("GET", _xmlfilepath, false); 
+        req.send(null);
+        // print the name of the root element or error message
+        var doc = req.responseXML;
+        return doc;
+    }
+
 	// Private methods
 	function _readXmlFile() {
 		var doc;
@@ -50,7 +68,7 @@ function XmlDataStore() {
 							 .getService(Components.interfaces.nsIProperties)
 							 .get("ProfD", Components.interfaces.nsIFile);
 		file.append(_xmlfilepath);
-		// alert(file.path);
+		 alert(file.path);
 		if (!file.exists()) {
 			// alert("File doesn't exist");
 			doc = document.implementation.createDocument("", "", null);
@@ -244,35 +262,29 @@ function XmlDataHandler() {
 				return logEntry;
 			}
 		} catch (e) {
-			dump( 'Error: Document tree modified during iteraton ' + e );
+			dump( "Exception:" + e );
 		};
-
-
 	}
-
 
     function findEntries(keyword,searchType) {
         var doSearch = true;
-//		if(this._debug == "true") {
-//			dump("EXCEPTION: Trying to search without loading bookmarks");
-//		};
-//		this._throwException("EXCEPTION: Trying to search without loading bookmarks" +
-//			"\nDid you forget to load the bookmarks first?");
-        
         
 		// Perform XPath query and convert DOM nodes to Bookmark objects..
 		var xpathStr = "";
 
 		if(searchType == "tag") {
-			alert("Searching by tag");
+			//alert("Searching by tag");
 			// We can't do tag searches with this function...
 			//xpathStr = "/entries/entry[tag[*]=''" + keyword + "'']";
 
 			// Get all entry elements that have a tag matching keyword
 			xpathStr = "/mylog/entries/entry[entrytags/entrytag/@name = '"+keyword+"']"; //TODO: try pattern matching
 		} else if(searchType == "all"){
-			// They want all the results...
+			// They want all the results..
+            // TODO: add GUI interface for this searching functionality.       
 			xpathStr = "/mylog/entries/entry";
+        } else if(searchType == "comment"){
+            xpathStr = "/mylog/entries/entry[contains(comments/comment,'"+keyword+"')]";
 		} else {
 			xpathStr = "/mylog/entries/entry[contains("+searchType+",'"+keyword+"')]";
 		}
@@ -299,7 +311,7 @@ function XmlDataHandler() {
 					entryResults.push(logEntry);
 					thisNode = resultsIter.iterateNext();
 				}
-				alert("Returning entryResults");
+				//alert("Returning entryResults");
 				return entryResults;     
 			}
 			catch (e) {

@@ -15,8 +15,7 @@ var dataHandler;
 
 function handleSearchRequest() {
     var keyword = document.getElementById("some-text").value;
-    var searchType = document.getElementById("search-type").selectedItem.value;
-    //alert("Received user input");
+    var searchType = document.getElementById("search-type").value;
 
 	dataStore = new XmlDataStore();
 	dataHandler = dataStore.open();
@@ -59,7 +58,7 @@ function displayResults(resultList) {
 		var bookmarkTitle = resultList[i].getTitle();
 		var bookmarkUrl = resultList[i].getUrl();
         // alert(bookmarkTitle + ", " + bookmarkUrl + ", " + resultList[i].getFilePathText());
-		alert(resultList[i].getId());
+		
 		document.getElementById('results-list').appendItem(heading + "(" + bookmarkTitle + ", " + bookmarkUrl + ")", resultList[i].getId());
     }
 }
