@@ -150,6 +150,10 @@ function XmlDataHandler() {
 	//addTag recieves a tag and writes it into _xmlfilepath
 	//returns true if the tag has been added, otherwise false
 	function addTag(tag) {
+
+		if (tag == "") {
+			return false;
+		}
 	
 		var existingTags = new Array();
 		existingTags = getAllTags();

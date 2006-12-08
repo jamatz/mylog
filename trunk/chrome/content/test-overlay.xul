@@ -5,9 +5,12 @@
 	<!-- Include files to be tested -->
 	<script type="text/javascript" src="mylog.js" />
 	<script type="text/javascript" src="mylog-datastorage.js" />
+	<script type="text/javascript" src="mylog-tag.js" />
+	<script type="text/javascript" src="mylog-searchwindow.js"></script>
 
 	<!-- Include tests -->
 	<script type="text/javascript" src="test/mylog-datastorage-test.js" />
+	<script type="text/javascript" src="test/mylog-tag-test.js" />
 
 	<!-- Include mylogUnit -->
 	<script type="text/javascript" src="test/mylogUnit.js" />
@@ -18,8 +21,8 @@
 	// Add tests to be run
 	function runTests() {
 		datastorage_runTests();
+		tag_runTests();
 	}
-
 	</script>
 
 	<commandset id="mainCommandSet">
