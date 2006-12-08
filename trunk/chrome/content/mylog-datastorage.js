@@ -25,8 +25,8 @@
 // Authors                                              Date            Comment
 // Vinayak Viswanathan - observer, Thomas Park - coder  12/7/2006       Adding functionality to search through comments
 // Vinayak Viswanathan - coder, Thomas Park - observer  12/7/2006       Added _readXmlFileNew()
-//                                                                      Uses XmlHttpRequest() (in our opinion it is simpler)
-// Brian Cho                                                            Initial creation
+//                                                                                                         Uses XmlHttpRequest() (in our opinion it is simpler)
+// Brian Cho                                                                                        Initial creation
 
 
 /* IMPLEMENTATIONS */
@@ -52,9 +52,12 @@ function XmlDataStore() {
 	}
 
     function _readXmlFileNew() {
-        _xmlfilepath = "chrome://mylog/content/mylog_data.xml";
+        //_xmlfilepath = "chrome://mylog/content/mylog_data.xml";
         var req = new XMLHttpRequest();
-        req.open("GET", _xmlfilepath, false); 
+        
+        // We're appending the chrome uri to avoid breaking anything that needs
+        // the filepath to be hardcoded...this is a bad thing
+        req.open("GET", "chrome://mylog/content/" + _xmlfilepath, false); 
         req.send(null);
         // print the name of the root element or error message
         var doc = req.responseXML;
@@ -132,10 +135,7 @@ function XmlDataStore() {
 		foStream.write(data, data.length);
 		//serializer.serializeToStream(doc, foStream, "");
 		foStream.close();
-
 	}
-
-
 }
 
 function XmlDataHandler() {
@@ -281,13 +281,14 @@ function XmlDataHandler() {
 			xpathStr = "/mylog/entries/entry[entrytags/entrytag/@name = '"+keyword+"']"; //TODO: try pattern matching
 		} else if(searchType == "all"){
 			// They want all the results..
-            // TODO: add GUI interface for this searching functionality.       
+                        // TODO: add GUI interface for this searching functionality.       
 			xpathStr = "/mylog/entries/entry";
-        } else if(searchType == "comment"){
-            xpathStr = "/mylog/entries/entry[contains(comments/comment,'"+keyword+"')]";
-		} else {
-			xpathStr = "/mylog/entries/entry[contains("+searchType+",'"+keyword+"')]";
-		}
+                } else if(searchType == "comment"){
+                    xpathStr = "/mylog/entries/entry[count(comments/comment[contains(.,'" + keyword + "')]) > 0]";
+                    //alert(xpathStr);
+                } else {
+                        xpathStr = "/mylog/entries/entry[contains("+searchType+",'"+keyword+"')]";
+                }
 	
 		if(doSearch == true) {
 			// Perform XPath query...
@@ -315,7 +316,7 @@ function XmlDataHandler() {
 				return entryResults;     
 			}
 			catch (e) {
-				alert( 'Error: Document tree modified during iteraton ' + e );
+				alert( 'Exception: ' + e );
 			}
 		}
 	}
