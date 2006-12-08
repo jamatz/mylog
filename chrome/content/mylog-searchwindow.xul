@@ -28,6 +28,8 @@
 
 	<script type="text/javascript">
 
+//	Added by Bryan Early and Soumi Sinha on December 6.
+//	This function will show the tag menupopup.
 	function showTagList() {
 		var child = document.getElementById("some-text");
 		if (child.tagName == "menulist")
@@ -47,6 +49,8 @@
 		parent.insertBefore(menuList, refItem);
 	}
 
+//	Added by Bryan Early and Soumi Sinha on December 6.
+//	This function will hide the tag menupopup.
 	function hideTagList() {
 		var child = document.getElementById("some-text");
 		if (child.tagName == "textbox")
@@ -62,33 +66,6 @@
 		parent.removeChild(child);
 		parent.insertBefore(textItem, refItem);
 	}
-	
-	function createTagMenupopup() {
-//		var tagHandlerObj = new TagHandler();
-//		tagHandlerObj.createTagHandlerFromFile();
-//		var tagNameArr = tagHandlerObj.getAllTagNames();
-
-		var dataStore = new XmlDataStore();
-		var dataHandler = dataStore.open();
-		var tagNameArr = dataHandler.getAllTags();
-
-		var menuPopup = document.createElement("menupopup");
-		menuPopup.setAttribute("id", "mylog-tagsMenuPopup");
-
-		var i = 0;
-		while (i != tagNameArr.length)
-		{
-			var menuItem = document.createElement("menuitem");
-			menuItem.setAttribute( "label" , tagNameArr[i]);
-			menuItem.setAttribute( "value" , tagNameArr[i]);
-			menuItem.setAttribute( "id" , "mylog-tag-" + tagNameArr[i]);
-			menuPopup.appendChild(menuItem);
-			i=i+1;
-		}
-
-		return menuPopup;
-	}
-
 	</script>
   <vbox style="width: 100%;">
     <toolbox>
