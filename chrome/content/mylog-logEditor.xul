@@ -47,6 +47,7 @@
 	}
 
 	function doOK(){
+		dataStore.close(dataHandler);
 		return true;
 	}
 

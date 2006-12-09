@@ -21,7 +21,9 @@ function handleSearchRequest() {
     if(entryList.length > 0) {
         // alert(entryList.length);
 		displayResults(entryList);
-    }
+    } else {
+		clearResults();
+	}
     
     /*var resultList = QueryBookmarksInFile(keyword,searchType,"mylogformat.myLog");
     if(resultList.length > 0) {
