@@ -10,15 +10,11 @@
 ***********************************************************************************/
 
 
-var dataStore;
-var dataHandler;
 
 function handleSearchRequest() {
     var keyword = document.getElementById("some-text").value;
     var searchType = document.getElementById("search-type").value;
 
-	dataStore = new XmlDataStore();
-	dataHandler = dataStore.open();
 	//alert("DataHandler open()ed");
 	var entryList = dataHandler.findEntries(keyword,searchType);
 	//alert("DataHandler findEntries() run");
@@ -44,6 +40,8 @@ function handleResultClicked() {
 }
 
 function displayResults(resultList) {
+	clearResults();
+
     /*var heading = "(Title, URL): ";
     for(i=0;i<resultList.length;i++)
     {
@@ -61,4 +59,10 @@ function displayResults(resultList) {
 		
 		document.getElementById('results-list').appendItem(heading + "(" + bookmarkTitle + ", " + bookmarkUrl + ")", resultList[i].getId());
     }
+}
+
+function clearResults() { 
+	while (document.getElementById('results-list').getRowCount() > 0) {
+		document.getElementById('results-list').removeItemAt(0);
+	}
 }

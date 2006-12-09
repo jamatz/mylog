@@ -40,7 +40,7 @@ function XmlDataStore() {
 	// Public methods
 	function open() {
 		//var doc = _readXmlFile();
-        var doc = _readXmlFileNew();      
+        var doc = _readXmlFile();      
 		var handler = new XmlDataHandler();
 		handler.setDomDoc(doc);
 		return handler;
@@ -148,6 +148,7 @@ function XmlDataHandler() {
 	this.removeEntry = removeEntry;
 	this.getEntry = getEntry;
 	this.findEntries = findEntries;
+	this.getAllEntries = getAllEntries;
 
 	this.getDomDoc = getDomDoc;
 	this.setDomDoc = setDomDoc;
@@ -318,6 +319,40 @@ function XmlDataHandler() {
 			catch (e) {
 				alert( 'Exception: ' + e );
 			}
+		}
+	}
+
+	function getAllEntries() {
+        var doSearch = true;
+        
+		// Perform XPath query and convert DOM nodes to Bookmark objects..
+		var xpathStr = "/mylog/entries/entry";
+
+		// Perform XPath query...
+		var nsResolver = document.createNSResolver( _doc.ownerDocument == null ?  _doc.documentElement : _doc.ownerDocument.documentElement );
+		// alert("nsResolver initialized");
+		var resultsIter = document.evaluate(xpathStr, 
+			_doc, 
+			nsResolver,
+			XPathResult.ORDERED_NODE_ITERATOR_TYPE, 
+			null );
+		// alert("resultsIter initialized");
+		try {
+			var thisNode = resultsIter.iterateNext();
+			var entryResults = new Array();
+			while (thisNode) {
+				// alert( thisNode.textContent );
+				var logEntry = new LogEntry();
+				// alert("Created new LogEntry");
+				logEntry.setFromDomNode(thisNode);
+				// alert("setFromDomNode done");
+				entryResults.push(logEntry);
+				thisNode = resultsIter.iterateNext();
+			}
+			//alert("Returning entryResults");
+			return entryResults;     
+		} catch (e) {
+			alert( 'Exception: ' + e );
 		}
 	}
 
