@@ -1,20 +1,20 @@
 // Created by Brian Cho and Soumi Sinha on December 1, 2006.
 function handleLogContentRequest() {
 
-//	var user = logIn();
+	//	var user = logIn();
 
 	var url;
 	url = window.content.location.href;
-//	alert(url);
+	//	alert(url);
 
 	var title;
 	title = document.title;
-//	alert(title);
+	//	alert(title);
 
 	window.openDialog("chrome://mylog/content/mylog-logcontentdialog.xul","mylog-logcontentdialog",
 		"chrome",url,title);
 
-//	handleLogContentSubmission(url);
+	//	handleLogContentSubmission(url);
 }
 
 function handleSearchLogRequest() {
@@ -28,15 +28,15 @@ function handleSearchLogRequest() {
 function handleLogContentSubmission(url, title, tags, comment) {
 	var le = new LogEntry();
 	le.setUrl(url);
-//	alert(url);
+	//	alert(url);
 	le.setTitle(title);
-//	alert(title);
+	//	alert(title);
 	for (var i = 0; i < tags.length; i++) {
 		le.addTag(tags[i]); // TODO: multiple tags (for loop on addTag)
 	}
-//	alert(tags);
+	//	alert(tags);
 	le.addComment(comment);
-//	alert(comment);
+	//	alert(comment);
 
 	//TODO: make this a global variable
 
@@ -45,7 +45,7 @@ function handleLogContentSubmission(url, title, tags, comment) {
 	dataHandler.addEntry(le);
 	dataStore.close(dataHandler);
 
-//	alert("Content saved.");
+	//	alert("Content saved.");
 }
 
 //	Created by Josh Matz and Eric Bluhm on December 6, 2006.
@@ -88,8 +88,8 @@ function LogEntry() {
 
 	this.setFromDomNode = setFromDomNode;
 
-//	this.save = save;
-//	this.readFromFile = readFromFile;
+	//	this.save = save;
+	//	this.readFromFile = readFromFile;
 
 	function getUrl() {
 		return _url;
@@ -155,7 +155,7 @@ function LogEntry() {
         } else {
             // Iterate across the entry's childnodes, setting the values correspondingly
 			var idstr = domNode.getAttribute("id");
-//			alert("Got id attribute from entry");
+			//	alert("Got id attribute from entry");
 			_id = idstr * 1; // convert string to int
             for (var i=0;i<domNode.childNodes.length;i++) {
 				var entryNode = domNode.childNodes[i];
