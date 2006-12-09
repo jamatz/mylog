@@ -17,6 +17,7 @@
     id="findfile-window"
     title="Find Files"
     orient="horizontal"
+	onload="showAllContent();"
     xmlns:html="http://www.w3.org/1999/xhtml"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
  
@@ -27,6 +28,17 @@
     <script type="text/javascript" src="XMLUtil.js"></script>
 
 	<script type="text/javascript">
+	var dataStore;
+	var dataHandler;
+
+	function showAllContent() {
+		dataStore = window.arguments[0];
+		dataHandler = window.arguments[1];
+		var entryList = dataHandler.getAllEntries();
+		if(entryList.length > 0) {
+			displayResults(entryList);
+		}
+	}
 
 //	Added by Bryan Early and Soumi Sinha on December 6.
 //	This function will show the tag menupopup.

@@ -17,8 +17,10 @@ function handleLogContentRequest() {
 }
 
 function handleSearchLogRequest() {
-	window.open("chrome://mylog/content/mylog-searchwindow.xul","mylog-searchwindow",
-		"chrome");
+	var dataStore = new XmlDataStore();
+	var dataHandler = dataStore.open();
+	window.openDialog("chrome://mylog/content/mylog-searchwindow.xul","mylog-searchwindow",
+		"chrome", dataStore, dataHandler);
 }
 
 function handleLogContentSubmission(url, title, tags, comment) {
