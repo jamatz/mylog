@@ -2,6 +2,10 @@
 //
 // Eric Bluhm
 // Bryan Early
+// Created November 27, 2006.
+// Modified November 28, 2006.
+// Modified November 30, 2006.
+// Modified December 1, 2006.
 
 function BeginLogIn(){
 

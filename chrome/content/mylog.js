@@ -1,3 +1,4 @@
+// Created by Brian Cho and Soumi Sinha on December 1, 2006.
 function handleLogContentRequest() {
 
 //	var user = logIn();
@@ -23,6 +24,7 @@ function handleSearchLogRequest() {
 		"chrome", dataStore, dataHandler);
 }
 
+// Created by Brian Cho and Soumi Sinha on December 1, 2006.
 function handleLogContentSubmission(url, title, tags, comment) {
 	var le = new LogEntry();
 	le.setUrl(url);
@@ -46,6 +48,7 @@ function handleLogContentSubmission(url, title, tags, comment) {
 //	alert("Content saved.");
 }
 
+//	Created by Josh Matz and Eric Bluhm on December 6, 2006.
 function handleAddTag(tag) {
 
 	var dataStore = new XmlDataStore();
@@ -56,6 +59,7 @@ function handleAddTag(tag) {
 	return wasAdded;
 }
 
+// Created by Brian Cho and Soumi Sinha on December 1, 2006.
 // Class LogEntry
 function LogEntry() {
 	var _url;
@@ -269,6 +273,7 @@ function LogEntry() {
 
 }
 
+// Created by Brian Cho and Soumi Sinha on December 1, 2006.
 function Comment(content, date, time) {
 	var _content = content;
 	var _date = date;

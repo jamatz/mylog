@@ -25,11 +25,12 @@
 // Authors                                              Date            Comment
 // Vinayak Viswanathan - observer, Thomas Park - coder  12/7/2006       Adding functionality to search through comments
 // Vinayak Viswanathan - coder, Thomas Park - observer  12/7/2006       Added _readXmlFileNew()
-//                                                                                                         Uses XmlHttpRequest() (in our opinion it is simpler)
-// Brian Cho                                                                                        Initial creation
+//                                                                      Uses XmlHttpRequest() (in our opinion it is simpler)
+// Brian Cho and Soumi Sinha							12/1/2006		Initial creation
 
 
 /* IMPLEMENTATIONS */
+// Created by Brian Cho and Soumi Sinha on December 1, 2006.
 function XmlDataStore() {
 	this.open = open;
 	this.close = close;
@@ -51,6 +52,7 @@ function XmlDataStore() {
 		_saveXmlFile(doc);
 	}
 
+	// Created by Vinayak Viswanathan and Thomas Park on December 7.
     function _readXmlFileNew() {
         //_xmlfilepath = "chrome://mylog/content/mylog_data.xml";
         var req = new XMLHttpRequest();
@@ -138,6 +140,7 @@ function XmlDataStore() {
 	}
 }
 
+// Created by Brian Cho and Soumi Sinha on December 1, 2006.
 function XmlDataHandler() {
 	var _doc;
 
@@ -206,6 +209,7 @@ function XmlDataHandler() {
 	
 	}
 
+	// Created by Brian Cho and Jesus DeLaTorre on December 4.
 	function replaceEntry(logEntry) {
 		var oldNode;
 		var newNode = _createDomNode(logEntry);
@@ -267,6 +271,7 @@ function XmlDataHandler() {
 		};
 	}
 
+	// Modified by Vinayak Viswanathan and Thomas Park on December 7.
     function findEntries(keyword,searchType) {
         var doSearch = true;
         
@@ -322,6 +327,7 @@ function XmlDataHandler() {
 		}
 	}
 
+	// Created by Brian Cho and Soumi Sinha on December 9, 2006.
 	function getAllEntries() {
         var doSearch = true;
         
@@ -356,6 +362,7 @@ function XmlDataHandler() {
 		}
 	}
 
+	// Modified by Brian Cho and Jesus DeLaTorre on December 4.
 	function _createDomNode(logEntry) {
 		var id = logEntry.getId();
 		var url = logEntry.getUrl();

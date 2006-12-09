@@ -3,6 +3,10 @@
 <?xml-stylesheet href="chrome://global/skin/global.css" type="text/css"?>
 <?xml-stylesheet href="chrome://mylog/content/mylog-logcontentdialog.css" type="text/css"?>
 
+<!--REVISION HISTORY:
+Created by Brian Cho and Soumi Sinha on December 1, 2006.
+Modified by Bryan Early and Soumi Sinha on December 6, 2006.
+-->
 
 <dialog id="mylog-logcontentdialog" title="Log Content"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -17,6 +21,7 @@
 	<script src="mylog-tag.js" />
 
 	<script type="text/javascript">
+//  Modified by Bryan Early and Soumi Sinha on December 5, 2006. - fills tag menu.
 	function filltextboxes() {
 		var url = window.arguments[0];
 		var title = window.arguments[1];
@@ -27,7 +32,7 @@
 		fillTagMenu();
 	}
 
-//	Added by Bryan Early and Soumi Sinha on December 5.
+//	Added by Bryan Early and Soumi Sinha on December 5, 2006.
 //	This function will add the tag menupopup item to the document.
 	function fillTagMenu() {
 		var menuPopup = createTagMenupopup();
@@ -45,8 +50,6 @@
 //		alert(url);
 		var title = document.getElementById("mylog-title").value;
 //		alert(title);
-//		Fix this line.
-//		var tags = document.getElementById("mylog-tags").value;
 		var tags = new Array();
 		var tagElems = document.getElementById("mylog-currentTagsPopup").childNodes;
 		var i = 0;
@@ -67,7 +70,7 @@
 	}
 
 
-//	Added by Bryan Early on December 6.
+//	Added by Bryan Early on December 6, 2006.
 //	This function will add a tag to the current tags.
 	function addTag() {
 		var tag = document.getElementById("mylog-tags").value
@@ -86,7 +89,7 @@
 		menuItem.selectedIndex = -1;
 	}
 	
-//	Added by Bryan Early on December 6.
+//	Added by Bryan Early on December 6, 2006.
 //	This function will remove a tag from the current tags.
 	function removeTag() {
 		var tag = document.getElementById("mylog-currenttags").value;
@@ -96,7 +99,7 @@
 		menuElem.selectedItem = -1;
 	}
 
-//	Added by Bryan Early and Soumi Sinha on December 6.
+//	Added by Bryan Early and Soumi Sinha on December 6, 2006.
 //	This function will create a new tag and return it.
 	function createTag() {
 		var tag = prompt("Enter new tag name:", "");
