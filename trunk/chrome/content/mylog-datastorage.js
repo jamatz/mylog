@@ -285,16 +285,16 @@ function XmlDataHandler() {
 
 			// Get all entry elements that have a tag matching keyword
 			xpathStr = "/mylog/entries/entry[entrytags/entrytag/@name = '"+keyword+"']"; //TODO: try pattern matching
-		} else if(searchType == "all"){
-			// They want all the results..
-                        // TODO: add GUI interface for this searching functionality.       
-			xpathStr = "/mylog/entries/entry";
-                } else if(searchType == "comment"){
-                    xpathStr = "/mylog/entries/entry[count(comments/comment[contains(.,'" + keyword + "')]) > 0]";
-                    //alert(xpathStr);
-                } else {
-                        xpathStr = "/mylog/entries/entry[contains("+searchType+",'"+keyword+"')]";
-                }
+//		} else if(searchType == "all"){
+//			// They want all the results..
+//                        // TODO: add GUI interface for this searching functionality.       
+//			xpathStr = "/mylog/entries/entry";
+        } else if(searchType == "comment"){
+			xpathStr = "/mylog/entries/entry[count(comments/comment[contains(.,'" + keyword + "')]) > 0]";
+            alert(xpathStr);
+        } else {
+			xpathStr = "/mylog/entries/entry[contains("+searchType+",'"+keyword+"')]";
+        }
 	
 		if(doSearch == true) {
 			// Perform XPath query...
