@@ -73,7 +73,7 @@ function XmlDataStore() {
 							 .getService(Components.interfaces.nsIProperties)
 							 .get("ProfD", Components.interfaces.nsIFile);
 		file.append(_xmlfilepath);
-		 alert(file.path);
+		// alert(file.path);
 		if (!file.exists()) {
 			// alert("File doesn't exist");
 			doc = document.implementation.createDocument("", "", null);
@@ -233,7 +233,7 @@ function XmlDataHandler() {
 			if (oldNode) {
 				entriesNode.replaceChild(newNode, oldNode);
 			} else {
-				alert("No previous node");
+				// alert("No previous node");
 			}
 		} catch (e) {
 			dump( 'Error: Document tree modified during iteraton ' + e );
@@ -291,7 +291,7 @@ function XmlDataHandler() {
 //			xpathStr = "/mylog/entries/entry";
         } else if(searchType == "comment"){
 			xpathStr = "/mylog/entries/entry[count(comments/comment[contains(.,'" + keyword + "')]) > 0]";
-            alert(xpathStr);
+            // alert(xpathStr);
         } else {
 			xpathStr = "/mylog/entries/entry[contains("+searchType+",'"+keyword+"')]";
         }
@@ -322,7 +322,7 @@ function XmlDataHandler() {
 				return entryResults;     
 			}
 			catch (e) {
-				alert( 'Exception: ' + e );
+				// alert( 'Exception: ' + e );
 			}
 		}
 	}
@@ -358,7 +358,7 @@ function XmlDataHandler() {
 			//alert("Returning entryResults");
 			return entryResults;     
 		} catch (e) {
-			alert( 'Exception: ' + e );
+			// alert( 'Exception: ' + e );
 		}
 	}
 
