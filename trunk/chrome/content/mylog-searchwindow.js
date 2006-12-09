@@ -61,6 +61,7 @@ function displayResults(resultList) {
     }
 }
 
+// Created by Brian Cho and Soumi Sinha on December 9, 2006.
 function clearResults() { 
 	while (document.getElementById('results-list').getRowCount() > 0) {
 		document.getElementById('results-list').removeItemAt(0);

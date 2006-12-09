@@ -3,6 +3,7 @@
 
 //Eric Bluhm 
 //Bryan Early
+//Created November 22, 2006.
 
 function test()
 {

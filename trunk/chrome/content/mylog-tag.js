@@ -1,5 +1,5 @@
 /* Class implementation for tag-related functions
-// Written by Bryan Early and Soumi Sinha, Dec 5, 2006, 9 pm
+// Written by Bryan Early and Soumi Sinha, Dec 5, 2006, 9 pm.
 */
 //function TagHandler() {
 //	
