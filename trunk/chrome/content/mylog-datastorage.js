@@ -42,7 +42,6 @@ function XmlDataStore() {
 
 	// Public methods
 	function open() {
-		//var doc = _readXmlFile();
         var doc = _readXmlFile();      
 		var handler = new XmlDataHandler();
 		handler.setDomDoc(doc);
@@ -170,7 +169,7 @@ function XmlDataHandler() {
 	//getAllTags returns an array holding all the tags currently in _doc
 	function getAllTags() {
 
-		var existingTags = new Array();
+		var existingTags = new Array();  //Array of strings
 		for (var i = 0; i<_doc.getElementsByTagName("tag").length; i++) {			
 			existingTags.push(_doc.getElementsByTagName("tag")[i].getAttribute("name"));
 		}
@@ -187,7 +186,7 @@ function XmlDataHandler() {
 			return false;
 		}
 	
-		var existingTags = new Array();
+		var existingTags = new Array();  //Array of strings
 		existingTags = getAllTags();
 
 		for (var i = 0; i<existingTags.length; i++) {
@@ -295,10 +294,10 @@ function XmlDataHandler() {
 
 			// Get all entry elements that have a tag matching keyword
 			xpathStr = "/mylog/entries/entry[entrytags/entrytag/@name = '"+keyword+"']"; //TODO: try pattern matching
-//		} else if(searchType == "all"){
-//			// They want all the results..
-//                        // TODO: add GUI interface for this searching functionality.       
-//			xpathStr = "/mylog/entries/entry";
+		// } else if(searchType == "all"){
+			// They want all the results..
+			// TODO: add GUI interface for this searching functionality.       
+			//xpathStr = "/mylog/entries/entry";
         } else if(searchType == "comment"){
 			xpathStr = "/mylog/entries/entry[count(comments/comment[contains(.,'" + keyword + "')]) > 0]";
             // alert(xpathStr);
@@ -309,22 +308,22 @@ function XmlDataHandler() {
 		if(doSearch == true) {
 			// Perform XPath query...
 			var nsResolver = document.createNSResolver( _doc.ownerDocument == null ?  _doc.documentElement : _doc.ownerDocument.documentElement );
-//			alert("nsResolver initialized");
+			//	alert("nsResolver initialized");
 			var resultsIter = document.evaluate(xpathStr, 
 				_doc, 
 				nsResolver,
 				XPathResult.ORDERED_NODE_ITERATOR_TYPE, 
 				null );
-//			alert("resultsIter initialized");
+			//	alert("resultsIter initialized");
 			try {
 				var thisNode = resultsIter.iterateNext();
-				var entryResults = new Array();
+				var entryResults = new Array();  //Array of LogEntry's
 				while (thisNode) {
 					// alert( thisNode.textContent );
 					var logEntry = new LogEntry();
-//					alert("Created new LogEntry");
+					//	alert("Created new LogEntry");
 					logEntry.setFromDomNode(thisNode);
-//					alert("setFromDomNode done");
+					//  alert("setFromDomNode done");
 					entryResults.push(logEntry);
 					thisNode = resultsIter.iterateNext();
 				}
@@ -355,7 +354,7 @@ function XmlDataHandler() {
 		// alert("resultsIter initialized");
 		try {
 			var thisNode = resultsIter.iterateNext();
-			var entryResults = new Array();
+			var entryResults = new Array();  //Array of LogEntry's
 			while (thisNode) {
 				// alert( thisNode.textContent );
 				var logEntry = new LogEntry();
