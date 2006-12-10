@@ -1,0 +1,186 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>ECMAUnit MyLog Tests</title>
+    <script language="JavaScript" type="text/javascript" src="chrome://mylog/content/mylog_login.js"></script>
+    <script language="JavaScript" type="text/javascript" src="chrome://mylog/content/test/sarissa/sarissa.js"></script>
+    <script type="text/javascript" src="chrome://mylog/content/test/ecmaunit.js"> </script>
+    <script type="text/javascript">
+//<![CDATA[
+        function TestTestCase() {
+            this.name = 'TestTestCase';
+            this.setUp = function() {
+                /* not in use here, didn't have to define it but this might be
+                used as a reference
+                */
+            };
+            this.testLogin1= function() {
+                // Testing the null case
+                this.assertEquals(LogIn("",""), false);
+            };
+            this.tearDown = function() {
+                /* not in use here, didn't have to define it but this might be
+                used as a reference
+                */
+            };
+        };
+        TestTestCase.prototype = new TestCase;
+
+        function TestTestCase2() {
+            this.name = 'TestTestCase2';
+            this.setUp = function() {
+                /* not in use here, didn't have to define it but this might be
+                used as a reference
+                */
+            };
+            
+            this.testLogin2 = function() {
+                // Testing valid username with invalid password
+                this.assertEquals(LogIn("Eric","wrongpassword"),false);             
+            }
+    
+            this.tearDown = function() {
+                /* not in use here, didn't have to define it but this might be
+                used as a reference
+                */
+            };
+        };
+
+        TestTestCase2.prototype = new TestCase;
+
+        function TestTestCase3() {
+            this.name = 'TestTestCase3';
+            this.setUp = function() {
+                /* not in use here, didn't have to define it but this might be
+                used as a reference
+                */
+            };
+            this.testLogin3 = function() {
+                // Testing valid username with valid password
+                this.assertEquals(Login("Eric","correctpassword"),true);
+            };
+            this.tearDown = function() {
+                /* not in use here, didn't have to define it but this might be
+                used as a reference
+                */
+            };
+        };
+        TestTestCase3.prototype = new TestCase;
+        
+        function TestTestCase4() {
+            this.name = 'TestTestCase4';
+            this.setUp = function() {
+                /* not in use here, didn't have to define it but this might be
+                used as a reference
+                */
+            };
+            this.testLogin4 = function() {
+                // Testing invalid username with invalid password that are not null
+                this.assertEquals(LogIn("Bob","invalidpassword"),false);
+            };
+            this.tearDown = function() {
+                /* not in use here, didn't have to define it but this might be
+                used as a reference
+                */
+            };
+        };
+        TestTestCase4.prototype = new TestCase;
+        
+        function TestTestCase5() {
+            this.name = 'TestTestCase5';
+            this.setUp = function() {
+                /* not in use here, didn't have to define it but this might be
+                used as a reference
+                */
+            };
+            this.testLogin5 = function() {
+              // Testing invalid username with valid password
+              this.assertEquals(LogIn("Ericc","correctpassword"),false);
+            };
+            this.tearDown = function() {
+                /* not in use here, didn't have to define it but this might be
+                used as a reference
+                */
+            };
+        };
+        TestTestCase5.prototype = new TestCase;
+        
+        function TestTestCase6() {
+            this.name = 'TestTestCase6';
+            this.setUp = function() {
+                /* not in use here, didn't have to define it but this might be
+                used as a reference
+                */
+            };
+            this.testLogin6 = function() {
+                // Testing username with preceding number with valid password
+                this.assertEquals(LogIn("7Eric","correctpassword"),false);
+            };
+            this.tearDown = function() {
+                /* not in use here, didn't have to define it but this might be
+                used as a reference
+                */
+            };
+        };
+        TestTestCase6.prototype = new TestCase;
+        
+         function TestTestCase7() {
+            this.name = 'TestTestCase7';
+            this.setUp = function() {
+                /* not in use here, didn't have to define it but this might be
+                used as a reference
+                */
+            };
+            this.testLogin7 = function() {
+                // Testing username with unhandled characters with valid password
+                this.assertEquals(LogIn("$Eric@#","correctpassword"),false);
+            };
+            this.tearDown = function() {
+                /* not in use here, didn't have to define it but this might be
+                used as a reference
+                */
+            };
+        };
+        TestTestCase7.prototype = new TestCase;
+        
+        function TestTestCase8() {
+            this.name = 'TestTestCase8';
+            this.setUp = function() {
+                /* not in use here, didn't have to define it but this might be
+                used as a reference
+                */
+            };
+            this.testLogin8 = function() {
+                // Testing username and password input swapped
+                this.assertEquals(LogIn("correctpassword","Eric"),false);
+            };
+            this.tearDown = function() {
+                /* not in use here, didn't have to define it but this might be
+                used as a reference
+                */
+            };
+        };
+        TestTestCase8.prototype = new TestCase;
+        
+        function runTests() {
+            placeholder = document.getElementById('placeholder');
+            var testsuite = new TestSuite(new HTMLReporter(placeholder));
+            testsuite.registerTest(TestTestCase);
+            testsuite.registerTest(TestTestCase2);
+            testsuite.registerTest(TestTestCase3);
+            testsuite.registerTest(TestTestCase4);
+            testsuite.registerTest(TestTestCase5);
+            testsuite.registerTest(TestTestCase6);
+            testsuite.registerTest(TestTestCase7);
+            testsuite.registerTest(TestTestCase8);
+            testsuite.runSuite();
+        }
+//]]>
+</script>
+</head>
+
+<body onload="runTests()">
+<h3>EcmaUnit tests for LogIn()</h3>
+<div id="placeholder"> </div>
+</body>
+</html>

@@ -1,0 +1,12 @@
+<entries user="me">
+  <entry id="1">
+    <tags/>
+      <title>The title
+    </title>
+    <url>http://www.google.com/firefox?client=firefox-a&amp;rls=org.mozilla:en-US:official</url>
+    <filepath>The filepath</filepath>
+    <comments>
+      <comment time="12" date="12">MyLog test page</comment>
+    </comments>
+  </entry>
+</entries>
