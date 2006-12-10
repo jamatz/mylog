@@ -21,7 +21,7 @@ Modified by Bryan Early and Soumi Sinha on December 6, 2006.
 	<script src="mylog-tag.js" />
 
 	<script type="text/javascript">
-//  Modified by Bryan Early and Soumi Sinha on December 5, 2006. - fills tag menu.
+	//  Modified by Bryan Early and Soumi Sinha on December 5, 2006. - fills tag menu.
 	function filltextboxes() {
 		var url = window.arguments[0];
 		var title = window.arguments[1];
@@ -32,8 +32,8 @@ Modified by Bryan Early and Soumi Sinha on December 6, 2006.
 		fillTagMenu();
 	}
 
-//	Added by Bryan Early and Soumi Sinha on December 5, 2006.
-//	This function will add the tag menupopup item to the document.
+	//	Added by Bryan Early and Soumi Sinha on December 5, 2006.
+	//	This function will add the tag menupopup item to the document.
 	function fillTagMenu() {
 		var menuPopup = createTagMenupopup();
 		var menuItem = document.createElement("menuitem");
@@ -47,9 +47,9 @@ Modified by Bryan Early and Soumi Sinha on December 6, 2006.
 	function doOK()
 	{
 		var url = document.getElementById("mylog-url").value;
-//		alert(url);
+		// alert(url);
 		var title = document.getElementById("mylog-title").value;
-//		alert(title);
+		// alert(title);
 		var tags = new Array();
 		var tagElems = document.getElementById("mylog-currentTagsPopup").childNodes;
 		var i = 0;
@@ -57,9 +57,9 @@ Modified by Bryan Early and Soumi Sinha on December 6, 2006.
 			tags.push(tagElems[i].value);
 			i++;
 		}
-//		alert(tags);
+		// alert(tags);
 		var comment = document.getElementById("mylog-comments").value;
-//		alert(comment);
+		// alert(comment);
 		handleLogContentSubmission(url, title, tags, comment);
 		return true;
 	}
@@ -70,8 +70,8 @@ Modified by Bryan Early and Soumi Sinha on December 6, 2006.
 	}
 
 
-//	Added by Bryan Early on December 6, 2006.
-//	This function will add a tag to the current tags.
+	//	Added by Bryan Early on December 6, 2006.
+	//	This function will add a tag to the current tags.
 	function addTag() {
 		var tag = document.getElementById("mylog-tags").value
 		if (tag == "new tag")
@@ -89,8 +89,8 @@ Modified by Bryan Early and Soumi Sinha on December 6, 2006.
 		menuItem.selectedIndex = -1;
 	}
 	
-//	Added by Bryan Early on December 6, 2006.
-//	This function will remove a tag from the current tags.
+	//	Added by Bryan Early on December 6, 2006.
+	//	This function will remove a tag from the current tags.
 	function removeTag() {
 		var tag = document.getElementById("mylog-currenttags").value;
 		var menuElem = document.getElementById("mylog-currentTagsPopup");
@@ -99,8 +99,8 @@ Modified by Bryan Early and Soumi Sinha on December 6, 2006.
 		menuElem.selectedItem = -1;
 	}
 
-//	Added by Bryan Early and Soumi Sinha on December 6, 2006.
-//	This function will create a new tag and return it.
+	//	Added by Bryan Early and Soumi Sinha on December 6, 2006.
+	//	This function will create a new tag and return it.
 	function createTag() {
 		var tag = prompt("Enter new tag name:", "");
 		if (tag == null) {
