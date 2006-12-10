@@ -11,7 +11,7 @@
         function TestTestCase() {
             this.name = 'TestTestCase';
             var dataStore;
-			var dataHandler;
+            var dataHandler;
          
             this.setUp = function() {
                 /* not in use here, didn't have to define it but this might be
@@ -33,18 +33,17 @@
 
         function TestTestCase2() {
             this.name = 'TestTestCase2';
-                    var dataStore;
-         var dataHandler;
+            var dataStore;
+            var dataHandler;
             this.setUp = function() {
                 /* not in use here, didn't have to define it but this might be
                 used as a reference
                 */
             };
-			this.testAssertEquals = function() {
-
-				var tag = "whatever";
-				this.assertEquals(handleAddTag(tag), true);
-				this.assertEquals(handleAddTag(tag), false);
+            this.testAssertEquals = function() {
+                var tag = "whatever";
+                this.assertEquals(handleAddTag(tag), true);
+                this.assertEquals(handleAddTag(tag), false);
 
             };
 
