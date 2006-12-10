@@ -39,12 +39,10 @@ function handleLogContentSubmission(url, title, tags, comment) {
 	//	alert(comment);
 
 	//TODO: make this a global variable
-
 	var dataStore = new XmlDataStore();
 	var dataHandler = dataStore.open();
 	dataHandler.addEntry(le);
 	dataStore.close(dataHandler);
-
 	//	alert("Content saved.");
 }
 
@@ -64,8 +62,8 @@ function handleAddTag(tag) {
 function LogEntry() {
 	var _url;
 	var _title;
-	var _tags = new Array();
-	var _comments = new Array();
+	var _tags = new Array();      //Array of strings
+	var _comments = new Array();  //Array of Comments
 	var _filePath;
 	var _date;
 	var _time;
@@ -157,7 +155,7 @@ function LogEntry() {
 			var idstr = domNode.getAttribute("id");
 			//	alert("Got id attribute from entry");
 			_id = idstr * 1; // convert string to int
-            for (var i=0;i<domNode.childNodes.length;i++) {
+            for (var i=0; i<domNode.childNodes.length; i++) {
 				var entryNode = domNode.childNodes[i];
                 if(entryNode.nodeName == "title") {
                     // alert(domNode.childNodes[i].childNodes[0].nodeValue);
@@ -191,85 +189,6 @@ function LogEntry() {
             }
         }
     }
-
-
-/* Functionality moved to DataStorage class */
-
-//	function save() {
-//		var file = Components.classes["@mozilla.org/file/directory_service;1"]
-//							 .getService(Components.interfaces.nsIProperties)
-//							 .get("ProfD", Components.interfaces.nsIFile);
-//		file.append("testmylog.xml");
-//		if (!file.exists()) {
-//			// Create file
-//		} else {
-//			// Append to file
-//		}
-//		
-//		setFilePath(file); //TODO: actually, this should point to the filepath of the saved content, not this XML file
-//		
-//		var url = getUrl();
-//		var title = getTitle();
-//		var filepath = getFilePathText();
-//		//TODO: SAVETHETAGS!
-//		var tags = _tags[_tags.length-1]; // TODO: get all tags
-//		var comment = _comments[_comments.length-1].getContent(); // TODO: get all comments
-//
-//
-//		var doc = document.implementation.createDocument("", "", null);
-//
-//		var entriesElem = doc.createElement("entries");
-//		var entryElem = doc.createElement("entry");
-//		var tagsElem = doc.createElement("tags");
-//		var titleElem = doc.createElement("title");
-//		var urlElem = doc.createElement("url");
-//		var filepathElem = doc.createElement("filepath");
-//		var commentsElem = doc.createElement("comments");
-//		var thisCommentElem = doc.createElement("comment");
-//
-//		entriesElem.setAttribute("user", "me"); //TODO: remove!
-//		entryElem.setAttribute("id", "1");
-//		thisCommentElem.setAttribute("time", "12"); //TODO: actual time
-//		thisCommentElem.setAttribute("date", "12"); //TODO: actual date
-//
-//		var titleElemText = doc.createTextNode(title);
-//		var urlElemText = doc.createTextNode(url);
-//		var filepathElemText = doc.createTextNode(filepath);
-//		var thisCommentElemText = doc.createTextNode(comment); // TODO: get all comments
-//
-//		entryElem.appendChild(tagsElem);
-//		titleElem.appendChild(titleElemText);
-//		entryElem.appendChild(titleElem);
-//		urlElem.appendChild(urlElemText);
-//		entryElem.appendChild(urlElem);
-//		filepathElem.appendChild(filepathElemText);
-//		entryElem.appendChild(filepathElem);
-//		thisCommentElem.appendChild(thisCommentElemText);
-//		commentsElem.appendChild(thisCommentElem);
-//		entryElem.appendChild(commentsElem);
-//		entriesElem.appendChild(entryElem);
-//		doc.appendChild(entriesElem);
-//		
-//
-//		var serializer = new XMLSerializer();
-//		// The actual string that is written to file
-//		// var data = url + newLine + comment;
-//		var data = serializer.serializeToString(doc);
-//		
-//		// file is nsIFile, data is a string
-//		var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"]
-//								 .createInstance(Components.interfaces.nsIFileOutputStream);
-//
-//		// use 0x02 | 0x10 to open file for appending.
-//		foStream.init(file, 0x02 | 0x08 | 0x20, 0664, 0); // write, create, truncate
-//		foStream.write(data, data.length);
-//		//serializer.serializeToStream(doc, foStream, "");
-//		foStream.close();
-//	}
-//
-//	function readFromFile() {
-//
-//	}
 
 }
 
