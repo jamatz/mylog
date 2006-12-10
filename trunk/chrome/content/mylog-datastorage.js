@@ -34,9 +34,11 @@
 function XmlDataStore() {
 	this.open = open;
 	this.close = close;
+
+	this.setXmlFilepath = setXmlFilepath;
 	
 	// Private members
-	var _xmlfilepath = "mylog_data.xml";
+	var _xmlFilepath = "mylog_data.xml";
 
 	// Public methods
 	function open() {
@@ -54,17 +56,25 @@ function XmlDataStore() {
 
 	// Created by Vinayak Viswanathan and Thomas Park on December 7.
     function _readXmlFileNew() {
-        //_xmlfilepath = "chrome://mylog/content/mylog_data.xml";
+        //_xmlFilepath = "chrome://mylog/content/mylog_data.xml";
         var req = new XMLHttpRequest();
         
         // We're appending the chrome uri to avoid breaking anything that needs
         // the filepath to be hardcoded...this is a bad thing
-        req.open("GET", "chrome://mylog/content/" + _xmlfilepath, false); 
+        req.open("GET", "chrome://mylog/content/" + _xmlFilepath, false); 
         req.send(null);
         // print the name of the root element or error message
         var doc = req.responseXML;
         return doc;
     }
+
+	// Created by Brian Cho and Jesus DeLaTorre on December 8.
+	//   Should be used for testing purposes only.
+	//
+	// filename is a file in the user's firefox profile directory
+	function setXmlFilepath(filename) {
+		_xmlFilepath = filename;
+	}
 
 	// Private methods
 	function _readXmlFile() {
@@ -72,7 +82,7 @@ function XmlDataStore() {
 		var file = Components.classes["@mozilla.org/file/directory_service;1"]
 							 .getService(Components.interfaces.nsIProperties)
 							 .get("ProfD", Components.interfaces.nsIFile);
-		file.append(_xmlfilepath);
+		file.append(_xmlFilepath);
 		// alert(file.path);
 		if (!file.exists()) {
 			// alert("File doesn't exist");
@@ -122,7 +132,7 @@ function XmlDataStore() {
 		var file = Components.classes["@mozilla.org/file/directory_service;1"]
 							 .getService(Components.interfaces.nsIProperties)
 							 .get("ProfD", Components.interfaces.nsIFile);
-		file.append(_xmlfilepath);
+		file.append(_xmlFilepath);
 
 		var serializer = new XMLSerializer();
 		// The actual string that is written to file
@@ -157,7 +167,7 @@ function XmlDataHandler() {
 	this.setDomDoc = setDomDoc;
 
     //Created December 6th by Josh Matz and Eric Bluhm
-	//getAllTags returns an array holding all the tags currently in _xmlfilepath
+	//getAllTags returns an array holding all the tags currently in _doc
 	function getAllTags() {
 
 		var existingTags = new Array();
@@ -169,7 +179,7 @@ function XmlDataHandler() {
 	}
 
 	//Created December 6th by Josh Matz and Eric Bluhm
-	//addTag recieves a tag and writes it into _xmlfilepath
+	//addTag recieves a tag and writes it into _doc
 	//returns true if the tag has been added, otherwise false
 	function addTag(tag) {
 
@@ -423,4 +433,5 @@ function XmlDataHandler() {
 	function setDomDoc(doc) {
 		_doc = doc;
 	}
+
 }
