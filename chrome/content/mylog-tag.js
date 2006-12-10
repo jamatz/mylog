@@ -85,24 +85,24 @@
 
 //	Added by Bryan Early and Soumi Sinha on December 5.
 //	This function will return a menupopup item containing all the tags.
-	function createTagMenupopup() {
-		var dataStore = new XmlDataStore();
-		var dataHandler = dataStore.open();
-		var tagNameArr = dataHandler.getAllTags();
+function createTagMenupopup() {
+	var dataStore = new XmlDataStore();
+	var dataHandler = dataStore.open();
+	var tagNameArr = dataHandler.getAllTags();
 
-		var menuPopup = document.createElement("menupopup");
-		menuPopup.setAttribute("id", "mylog-tagsMenuPopup");
+	var menuPopup = document.createElement("menupopup");
+	menuPopup.setAttribute("id", "mylog-tagsMenuPopup");
 
-		var i = 0;
-		while (i != tagNameArr.length)
-		{
-			var menuItem = document.createElement("menuitem");
-			menuItem.setAttribute( "label" , tagNameArr[i]);
-			menuItem.setAttribute( "value" , tagNameArr[i]);
-			menuItem.setAttribute( "id" , "mylog-tag-" + tagNameArr[i]);
-			menuPopup.appendChild(menuItem);
-			i=i+1;
-		}
-
-		return menuPopup;
+	var i = 0;
+	while (i != tagNameArr.length)
+	{
+		var menuItem = document.createElement("menuitem");
+		menuItem.setAttribute( "label" , tagNameArr[i]);
+		menuItem.setAttribute( "value" , tagNameArr[i]);
+		menuItem.setAttribute( "id" , "mylog-tag-" + tagNameArr[i]);
+		menuPopup.appendChild(menuItem);
+		i=i+1;
 	}
+
+	return menuPopup;
+}
