@@ -46,7 +46,7 @@
                 dataHandler = dataStore.open();
             };
 			this.testAssertEquals = function() {
-				var tag = "whatever";
+				var tag = "addtagtag2";
 				this.assertEquals(dataHandler.addTag(tag), true);
 				var flag = false;
 				var tagArray = dataHandler.getAllTags();
@@ -82,7 +82,7 @@
                 dataHandler = dataStore.open();
             };
 			this.testAssertEquals = function() {
-				var tag = "whatever2";
+				var tag = "addtagtag3";
 				this.assertEquals(dataHandler.addTag(tag), true);
 				this.assertEquals(dataHandler.addTag(tag), false);
 
