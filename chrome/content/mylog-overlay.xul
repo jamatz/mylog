@@ -7,13 +7,18 @@
   <!--
   <script type="text/javascript" src="mylog-login.js" />
   -->
-
+    <script type="text/javascript">
+        function showUnitTests() {
+            window.open("chrome://mylog/content/test/mylog-UnitTest-index.html");
+        }
+    </script>
   <popup id="contentAreaContextMenu">
     <menuitem id="mylog-contextmenu-create" label="Log Content"
               oncommand="handleLogContentRequest()" />
     <menuitem id="mylog-contextmenu-create" label="Search MyLog"
               oncommand="handleSearchLogRequest()" />
-	
+    <menuitem id="mylog-unittest-index" label="MyLog Unit Tests"
+              oncommand="showUnitTests()" />
 	<!-- Log in removed -->
 	<!--
     <menuitem id="mylog-contextmenu-create" label="Log In"
