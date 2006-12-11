@@ -1,8 +1,8 @@
 <mylog>
         <entries counter="1">
                 <entry id="0">
-                        <title>CNN</title>
-                        <url>http://www.cnn.com</url>
+                        <title>Mozilla Firefox Start Page - Mozilla Firefox</title>
+                        <url>http://www.google.com/firefox?client=firefox-a&amp;rls=org.mozilla:en-US:official</url>
                         <filepath>nowhere</filepath>
                         <entrytags>
                                 <entrytag name="blah"/>
@@ -14,7 +14,7 @@
                         </comments>
                 </entry>
                 <entry id="1">
-                    <title>NPR - Better than CNN</title>
+                    <title>Google</title>
                     <url>http://www.google.com</url>
                     <filepath>nowhere</filepath>
                     <entrytags>
