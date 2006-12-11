@@ -19,6 +19,7 @@
                 used as a reference
                 */
                 dataStore = new XmlDataStore();
+                dataStore.setXmlFilepath("mylog-comment-search-test.xml");
                 dataHandler = dataStore.open();
             };
             this.testAssertEquals = function() {
@@ -44,6 +45,7 @@
                 used as a reference
                 */
                 dataStore = new XmlDataStore();
+                dataStore.setXmlFilepath("mylog-comment-search-test.xml");
                 dataHandler = dataStore.open();
             };
             this.testAssertEquals = function() {
@@ -70,6 +72,7 @@
                 used as a reference
                 */
                  dataStore = new XmlDataStore();
+                 dataStore.setXmlFilepath("mylog-comment-search-test.xml");
                 dataHandler = dataStore.open();
             };
             this.testAssertEquals = function() {
@@ -98,7 +101,7 @@
 </head>
 
 <body onload="runTests()">
-<h3>EcmaUnit tests for EcmaUnit</h3>
+<h3>EcmaUnit tests for Comment</h3>
 <div id="placeholder"> </div>
 </body>
 </html>

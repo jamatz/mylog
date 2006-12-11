@@ -21,6 +21,7 @@ body {font-family: Arial}
         used as a reference
         */
             storage = new XmlDataStore();
+            storage.setXmlFilepath("mylog-tag-search-test.xml");
             handler = storage.open();
         };
     
@@ -67,7 +68,7 @@ body {font-family: Arial}
 </script>
 </head>
 <body onload="runTests()">
-<h3>EcmaUnit tests for MyLog Search by title</h3>
+<h3>EcmaUnit tests for MyLog Search by tag</h3>
 <div id="placeholder"> </div>
 
 </body>

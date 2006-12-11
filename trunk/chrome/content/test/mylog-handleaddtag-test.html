@@ -17,18 +17,17 @@
                 /* not in use here, didn't have to define it but this might be
                 used as a reference
                 */
-            };
+            }
             this.testAssertEquals = function() {
-              
-				var emptyTag = "";
-				this.assertEquals(handleAddTag(emptyTag), false);
-            };
+                var emptyTag = "";
+                this.assertEquals(handleAddTag(emptyTag), false);
+            }
             this.tearDown = function() {
                 /* not in use here, didn't have to define it but this might be
                 used as a reference
                 */
-            };
-        };
+            }
+        }
         TestTestCase.prototype = new TestCase;
 
         function TestTestCase2() {
@@ -39,20 +38,19 @@
                 /* not in use here, didn't have to define it but this might be
                 used as a reference
                 */
-            };
+            }
             this.testAssertEquals = function() {
                 var tag = "whatever";
                 this.assertEquals(handleAddTag(tag), true);
                 this.assertEquals(handleAddTag(tag), false);
-
-            };
+            }
 
             this.tearDown = function() {
                 /* not in use here, didn't have to define it but this might be
                 used as a reference
                 */
-            };
-        };
+            }
+        }
 
         TestTestCase2.prototype = new TestCase;
         
@@ -68,7 +66,7 @@
 </head>
 
 <body onload="runTests()">
-<h3>EcmaUnit tests for EcmaUnit</h3>
+<h3>EcmaUnit tests for MyLog HandleAddTag</h3>
 <div id="placeholder"> </div>
 </body>
 </html>

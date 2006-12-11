@@ -1,5 +1,5 @@
 <mylog>
-        <entries counter="1">
+        <entries counter="3">
                 <entry id="0">
                         <title>CNN</title>
                         <url>http://www.cnn.com</url>
@@ -18,7 +18,7 @@
                     <url>http://www.google.com</url>
                     <filepath>nowhere</filepath>
                     <entrytags>
-                        <entrytag name="Google"/>
+                        <entrytag name="this"/>
                     </entrytags>
                     <comments>
                         <comment>You</comment>
@@ -31,21 +31,8 @@
                     <url>http://www.ign.com</url>
                     <filepath>nowhere</filepath>
                     <entrytags>
-                        <entrytag name="blah"/>
-                    </entrytags>
-                    <comments>
-                        <comment>You</comment>
-                        <comment time="12" date="12">Testing a</comment>
-                        <comment>Suck</comment>
-                    </comments>
-                </entry>
-                <entry id="3">
-                    <title>Amazon.com</title>
-                    <url>http://www.amazon.com</url>
-                    <filepath>nowhere</filepath>
-                    <entrytags>
-                        <entrytag name="blank"/>
-                        <entrytag name="blah"/>
+                        <entrytag name="this"/>
+                        <entrytag name="that"/>
                     </entrytags>
                     <comments>
                         <comment>You</comment>
@@ -55,8 +42,8 @@
                 </entry>
         </entries>
         <tags>
+                <tag name="this"/>
+                <tag name="that"/>
                 <tag name="blah"/>
-                <tag name="Google"/>
-                <tag name="blank"/>
         </tags>
 </mylog>

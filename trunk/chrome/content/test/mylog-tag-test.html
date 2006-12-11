@@ -21,6 +21,7 @@ body {font-family: Arial}
         used as a reference
         */
             storage = new XmlDataStore();
+            storage.setXmlFilepath("mylog-tag-test.xml");
             handler = storage.open();
         }
     
@@ -53,7 +54,7 @@ body {font-family: Arial}
         }
     
         this.testTagSearch3 = function() {
-            keyword = "blank";
+            keyword = "nothing";
             correctEntryList = [];
             var entryList = handler.findEntries(keyword,"tag");
             this.assertEquals(entryList.length,0);
