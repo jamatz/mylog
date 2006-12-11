@@ -1,6 +1,6 @@
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>ECMAUnit Tests</title>
     <script language="JavaScript" type="text/javascript" src="chrome://mylog/content/mylog.js"></script>
     <script language="JavaScript" type="text/javascript" src="chrome://mylog/content/mylog-datastorage.js"></script>
@@ -9,13 +9,17 @@
 //<![CDATA[
         function TestTestCase() {
             this.name = 'TestTestCase';
-            var le, dataHandler;
+            var le, dataStore, blankDataHandler;
             var url, title, tags, comment1, comment2, commment3, commments;
          
             this.setUp = function() {
-                /* not in use here, didn't have to define it but this might be
-                used as a reference
-                */
+
+				dataStore = new XmlDataStore();
+				dataStore.setXmlFilepath("mylog-datastorage-test.xml"); // Shouldn't exist first time. We're starting from scratch.
+				blankDataHandler = dataStore.open();
+				dataStore.close(blankDataHandler);
+
+				// Create default LogEntry
                 url = "http://www.google.com";
                 title = "Google search engine";
                 tags = new Array("tag1","tag2","tag3");
@@ -35,53 +39,71 @@
                 var entriesElem = doc.createElement("entries");
                 entriesElem.setAttribute("counter", "0");
                 doc.appendChild(entriesElem);
-
-                dataHandler = new XmlDataHandler();
-                dataHandler.setDomDoc(doc);
             }
+
             this.testAddEntry = function() {
-                dataHandler.addEntry(le);
-                var doc = dataHandler.getDomDoc();
+				var dataHandler = dataStore.open();
+				dataHandler.addEntry(le);
+				dataStore.close(dataHandler);
 
-                var entries = doc.getElementsByTagName("entries")[0];
-                this.assertEquals("1", entries.getAttribute("counter"));
+				var secondDataHandler = dataStore.open();
+				var entries = secondDataHandler.getAllEntries();
 
-                var entry = entries.getElementsByTagName("entry")[0];
-                this.assertEquals(url, entry.getElementsByTagName("url")[0].childNodes[0].nodeValue);
-                this.assertEquals(title, entry.getElementsByTagName("title")[0].childNodes[0].nodeValue);
-
-                var domTags = entry.getElementsByTagName("tags")[0];
-                for (var i = 0; i < domTags.childNodes.length; i++) {
-                        this.assertEquals(tags[i], domTags.childNodes[i].childNodes[0].nodeValue);
-                }
-
-                var domComments = entry.getElementsByTagName("comments")[0];
-                for (var i = 0; i < domComments.childNodes.length; i++) {
-                    this.assertEquals(comments[i], domComments.childNodes[i].childNodes[0].nodeValue);
-                }
+				this.assertEquals(entries.length, 1);
+				this.assertEquals(le.getUrl(), entries[0].getUrl());
+				this.assertEquals(le.getTitle(), entries[0].getTitle());
+				this.assertEquals(le.getTags(), entries[0].getTags());
+				this.assertEquals(le.getComments(), entries[0].getComments());
+				dataStore.close(secondDataHandler);
             }
+
+			this.testReplaceEntry = function() {
+				var dataHandler = dataStore.open();
+				dataHandler.addEntry(le);
+				dataStore.close(dataHandler);
+				
+				var secondDataHandler = dataStore.open();
+				var entries = secondDataHandler.getAllEntries();
+				var newUrl = "http://newurl.com/";
+				entries[0].setUrl(newUrl);
+				secondDataHandler.replaceEntry(entries[0]);
+				dataStore.close(secondDataHandler);
+
+				var thirdDataHandler = dataStore.open();
+				entries = thirdDataHandler.getAllEntries();
+				this.assertEquals(entries.length, 1);
+				this.assertEquals(entries[0].getUrl(), newUrl);
+				this.assertEquals(le.getTitle(), entries[0].getTitle());
+				this.assertEquals(le.getTags(), entries[0].getTags());
+				this.assertEquals(le.getComments(), entries[0].getComments());
+				this.assertEquals(entries[0].getId(), 0);
+				dataStore.close(thirdDataHandler);
+
+			}
             
             this.testRemoveEntry = function() {
-                dataHandler.addEntry(le);
-                dataHandler.removeEntry(0);
-    
-                var doc = dataHandler.getDomDoc();
-                var entries = doc.getElementsByTagName("entries")[0];
-                var entryList = entries.getElementsByTagName("entry");
-    
-                var exists = 0;
-                for (var i = 0; i < entryList.length; i++){
-                        if (entryList[i].getAttribute("id") == "0") {
-                                exists = 1;
-                        }
-                }
-                this.assertEquals(0, exists);
+				var dataHandler = dataStore.open();
+				dataHandler.addEntry(le);
+				dataStore.close(dataHandler);
+
+				var secondDataHandler = dataStore.open();
+				var entries = secondDataHandler.getAllEntries();
+				var id = entries[0].getId();
+				secondDataHandler.removeEntry(id);
+
+				entries = secondDataHandler.getAllEntries();
+				this.assertEquals(entries.length, 0);
+				
+				secondDataHandler.removeEntry(id); // Try removing again: should not crash
+				entries = secondDataHandler.getAllEntries();
+				this.assertEquals(entries.length, 0);
+
+				dataStore.close(secondDataHandler);
             }
             
             this.tearDown = function() {
-                /* not in use here, didn't have to define it but this might be
-                used as a reference
-                */
+				dataStore.open();
+				dataStore.close(blankDataHandler); // So we can start from scratch again.
             }
         }
         TestTestCase.prototype = new TestCase;
