@@ -251,6 +251,31 @@ function XmlDataHandler() {
 	}
 
 	function removeEntry(id) {
+		var oldNode;
+
+		var entriesNode = _doc.getElementsByTagName("entries")[0];
+
+		var xpathStr = "/mylog/entries/entry[@id = "+ id +"]";
+
+		// Perform XPath query...
+		var nsResolver = document.createNSResolver( _doc.ownerDocument == null ?  _doc.documentElement : _doc.ownerDocument.documentElement );
+	
+		var resultsIter = document.evaluate(xpathStr, 
+			_doc, 
+			nsResolver,
+			XPathResult.ORDERED_NODE_ITERATOR_TYPE, 
+			null );
+
+		try {
+			oldNode = resultsIter.iterateNext();
+			if (oldNode) {
+				entriesNode.removeChild(oldNode);
+			} else {
+				// alert("No previous node");
+			}
+		} catch (e) {
+			dump( 'Error: Document tree modified during iteraton ' + e );
+		};
 	}
 
 	// argument id is an int (not a string!)
