@@ -107,13 +107,12 @@ Modified by Bryan Early and Soumi Sinha on December 6, 2006.
 			return null;
 		}
 		var ret = handleAddTag(tag);
-		if (ret)
-		{
+		if (ret) {
 			var menuItem = document.createElement("menuitem");
 			menuItem.setAttribute( "label" , tag);
 			menuItem.setAttribute( "value" , tag);
 			menuItem.setAttribute( "id" , "mylog-remove-" + tag);
-			var refItem = document.getElementById("mylog-createTag")
+			var refItem = document.getElementById("mylog-createTag");
 			document.getElementById("mylog-tagsMenuPopup").insertBefore(menuItem, refItem);
 			return tag;
 		}
