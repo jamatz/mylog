@@ -33,6 +33,7 @@ function handleLogContentSubmission(url, title, tags, comment) {
 	//	alert(title);
 	for (var i = 0; i < tags.length; i++) {
 		le.addTag(tags[i]); // TODO: multiple tags (for loop on addTag)
+		// alert(tags[i]);
 	}
 	//	alert(tags);
 	le.addComment(comment);
