@@ -28,23 +28,16 @@ function handleSearchLogRequest() {
 function handleLogContentSubmission(url, title, tags, comment) {
 	var le = new LogEntry();
 	le.setUrl(url);
-	//	alert(url);
 	le.setTitle(title);
-	//	alert(title);
 	for (var i = 0; i < tags.length; i++) {
-		le.addTag(tags[i]); // TODO: multiple tags (for loop on addTag)
-		// alert(tags[i]);
+		le.addTag(tags[i]);
 	}
-	//	alert(tags);
 	le.addComment(comment);
-	//	alert(comment);
 
-	//TODO: make this a global variable
 	var dataStore = new XmlDataStore();
 	var dataHandler = dataStore.open();
 	dataHandler.addEntry(le);
 	dataStore.close(dataHandler);
-	//	alert("Content saved.");
 }
 
 //	Created by Josh Matz and Eric Bluhm on December 6, 2006.
@@ -139,10 +132,18 @@ function LogEntry() {
 	}
 
 	function addComment(comment) {
-		var c = new Comment(comment, "12", "12"); //TODO: get date and time
+		var dateVar = new Date();
+		var year = dateVar.getYear() + 1900;
+		var month = dateVar.getMonth() + 1;
+		var dateStr = year + "/" + month + "/" + dateVar.getDate();
+		var timeStr = dateVar.getHours() + ":";
+		if(dateVar.getMinutes() < 10){
+			timeStr = timeStr+"0";
+		}
+	    timeStr = timeStr + dateVar.getMinutes();
+		var c = new Comment(comment, dateStr, timeStr);
 		_comments.push(c);
 
-		// alert(_comments[_comments.length-1].getContent());
 	}
 
 	function setFromDomNode(domNode) {
@@ -154,41 +155,43 @@ function LogEntry() {
         } else {
             // Iterate across the entry's childnodes, setting the values correspondingly
 			var idstr = domNode.getAttribute("id");
-			//	alert("Got id attribute from entry");
 			_id = idstr * 1; // convert string to int
             for (var i=0; i<domNode.childNodes.length; i++) {
 				var entryNode = domNode.childNodes[i];
                 if(entryNode.nodeName == "title") {
-                    // alert(domNode.childNodes[i].childNodes[0].nodeValue);
                     _title = entryNode.childNodes[0].nodeValue;
-					//alert("Got title:" + _title);
                 } else if(entryNode.nodeName == "url") {
                     _url = entryNode.childNodes[0].nodeValue;
-					//alert("Got url:" + _url);
                 } else if(entryNode.nodeName == "filepath") {
                     _filePath = entryNode.childNodes[0].nodeValue;
-					//alert("Got filePath:" + _filePath);
                 } else if(entryNode.nodeName == "entrytags") {
-					for (var j = 0; j < entryNode.childNodes.length; j++) {
-						var entryTagNode = entryNode.childNodes[j];
-						if (entryTagNode.nodeName == "entrytag") {
-							addTag(entryTagNode.getAttribute("name"));
-							//alert("Got tag:" + entryNode.childNodes[j].childNodes[0].nodeValue);
-						}
-					}
+                	_addTagsFromDomNode(entryNode);
+
                 } else if(entryNode.nodeName == "comments") {
-					for (var j = 0; j < entryNode.childNodes.length; j++) {
-						if (entryNode.childNodes[j].childNodes[0]) {
-							var comment = new Comment(entryNode.childNodes[j].childNodes[0].nodeValue,
-								entryNode.childNodes[j].getAttribute("date"),
-								entryNode.childNodes[j].getAttribute("time"));
-							_comments.push(comment);
-						}
-						//alert("Got comment:" + entryNode.childNodes[j].childNodes[0].nodeValue);
-					}
+                	_addCommentsFromDomNode(entryNode);
                 }
             }
         }
+    }
+    
+    function _addTagsFromDomNode(entryNode) {
+		for (var j = 0; j < entryNode.childNodes.length; j++) {
+			var entryTagNode = entryNode.childNodes[j];
+			if (entryTagNode.nodeName == "entrytag") {
+				addTag(entryTagNode.getAttribute("name"));
+			}
+		}
+    }
+    
+    function _addCommentsFromDomNode(entryNode) {
+		for (var j = 0; j < entryNode.childNodes.length; j++) {
+			if (entryNode.childNodes[j].childNodes[0]) {
+				var comment = new Comment(entryNode.childNodes[j].childNodes[0].nodeValue,
+					entryNode.childNodes[j].getAttribute("date"),
+					entryNode.childNodes[j].getAttribute("time"));
+				_comments.push(comment);
+			}
+		}
     }
 
 }
@@ -200,8 +203,18 @@ function Comment(content, date, time) {
 	var _time = time;
 
 	this.getContent = getContent;
+	this.getDate = getDate;
+	this.getTime = getTime;
 
 	function getContent() {
 		return _content;
+	}
+	
+	function getDate() {
+		return _date;
+	}
+	
+	function getTime() {
+		return _time;
 	}
 }
