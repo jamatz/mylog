@@ -190,9 +190,9 @@ function XmlDataHandler() {
 		existingTags = getAllTags();
 
 		for (var i = 0; i<existingTags.length; i++) {
-				if(tag == existingTags[i]) {
-					return false;
-				}
+			if(tag == existingTags[i]) {
+				return false;
+			}
 		}
 				
 		var tagElem = _doc.createElement("tag");
@@ -206,15 +206,12 @@ function XmlDataHandler() {
 		var idstr = _doc.getElementsByTagName("entries")[0].getAttribute("counter");
 		var id = idstr * 1;
 		logEntry.setId(id);
-		// alert(id);
 		var counter = id + 1;
 		_doc.getElementsByTagName("entries")[0].setAttribute("counter", counter.toString());
-		// alert("set entries counter");
 
 		var entryElem = _createDomNode(logEntry);
 
 		_doc.getElementsByTagName("entries")[0].appendChild(entryElem); // entriesElem.appendChild(entryElem);
-		// alert("Appended everything");
 	
 	}
 
@@ -227,173 +224,87 @@ function XmlDataHandler() {
 
 		var idstr = logEntry.getId();
 		var xpathStr = "/mylog/entries/entry[@id = "+ idstr +"]";
-
-		// Perform XPath query...
-		var nsResolver = document.createNSResolver( _doc.ownerDocument == null ?  _doc.documentElement : _doc.ownerDocument.documentElement );
-	
-		var resultsIter = document.evaluate(xpathStr, 
-			_doc, 
-			nsResolver,
-			XPathResult.ORDERED_NODE_ITERATOR_TYPE, 
-			null );
-
-		try {
-			oldNode = resultsIter.iterateNext();
-			if (oldNode) {
-				entriesNode.replaceChild(newNode, oldNode);
-			} else {
-				// alert("No previous node");
-			}
-		} catch (e) {
-			dump( 'Error: Document tree modified during iteraton ' + e );
-		};
-	
+		var xpathRetriever = new XpathRetriever(_doc, xpathStr);
+		var oldNode = xpathRetriever.getNext();
+		
+		if (oldNode) {
+			entriesNode.replaceChild(newNode, oldNode);
+		} else {
+			dump("replaceEntry: No previous node");
+		}
 	}
 
 	function removeEntry(id) {
-		var oldNode;
-
 		var entriesNode = _doc.getElementsByTagName("entries")[0];
 
 		var xpathStr = "/mylog/entries/entry[@id = "+ id +"]";
+		var xpathRetriever = new XpathRetriever(_doc, xpathStr);
 
-		// Perform XPath query...
-		var nsResolver = document.createNSResolver( _doc.ownerDocument == null ?  _doc.documentElement : _doc.ownerDocument.documentElement );
-	
-		var resultsIter = document.evaluate(xpathStr, 
-			_doc, 
-			nsResolver,
-			XPathResult.ORDERED_NODE_ITERATOR_TYPE, 
-			null );
-
-		try {
-			oldNode = resultsIter.iterateNext();
-			if (oldNode) {
-				entriesNode.removeChild(oldNode);
-			} else {
-				// alert("No previous node");
-			}
-		} catch (e) {
-			dump( 'Error: Document tree modified during iteraton ' + e );
-		};
+		var oldNode = xpathRetriever.getNext();
+		if (oldNode) {
+			entriesNode.removeChild(oldNode);
+		} else {
+			dump("removeEntry: No previous node");
+		}
 	}
 
 	// argument id is an int (not a string!)
 	function getEntry(id) {
 		var idstr = id.toString();
 		var xpathStr = "/mylog/entries/entry[@id = "+ idstr +"]";
-
-		// Perform XPath query...
-		var nsResolver = document.createNSResolver( _doc.ownerDocument == null ?  _doc.documentElement : _doc.ownerDocument.documentElement );
-	
-		var resultsIter = document.evaluate(xpathStr, 
-			_doc, 
-			nsResolver,
-			XPathResult.ORDERED_NODE_ITERATOR_TYPE, 
-			null );
-
-		try {
-			var thisNode = resultsIter.iterateNext();
-			if (thisNode) {
-				// alert( thisNode.textContent );
-				var logEntry = new LogEntry();
-				logEntry.setFromDomNode(thisNode);
-				return logEntry;
-			}
-		} catch (e) {
-			dump( "Exception:" + e );
-		};
+		var xpathRetriever = new XpathRetriever(_doc, xpathStr);
+		var thisNode = xpathRetriever.getNext();
+		if (thisNode) {
+			var logEntry = new LogEntry();
+			logEntry.setFromDomNode(thisNode);
+			return logEntry;
+		}
 	}
 
 	// Modified by Vinayak Viswanathan and Thomas Park on December 7.
     function findEntries(keyword,searchType) {
         var doSearch = true;
-        
-		// Perform XPath query and convert DOM nodes to Bookmark objects..
 		var xpathStr = "";
 
 		if(searchType == "tag") {
-			//alert("Searching by tag");
-			// We can't do tag searches with this function...
-			//xpathStr = "/entries/entry[tag[*]=''" + keyword + "'']";
-
-			// Get all entry elements that have a tag matching keyword
-			xpathStr = "/mylog/entries/entry[entrytags/entrytag/@name = '"+keyword+"']"; //TODO: try pattern matching
-		// } else if(searchType == "all"){
-			// They want all the results..
-			// TODO: add GUI interface for this searching functionality.       
-			//xpathStr = "/mylog/entries/entry";
+			xpathStr = "/mylog/entries/entry[entrytags/entrytag/@name = '"+keyword+"']";
         } else if(searchType == "comment"){
 			xpathStr = "/mylog/entries/entry[count(comments/comment[contains(.,'" + keyword + "')]) > 0]";
-            // alert(xpathStr);
         } else {
 			xpathStr = "/mylog/entries/entry[contains("+searchType+",'"+keyword+"')]";
         }
-	
+        
+		var entryResults = new Array();
 		if(doSearch == true) {
-			// Perform XPath query...
-			var nsResolver = document.createNSResolver( _doc.ownerDocument == null ?  _doc.documentElement : _doc.ownerDocument.documentElement );
-			//	alert("nsResolver initialized");
-			var resultsIter = document.evaluate(xpathStr, 
-				_doc, 
-				nsResolver,
-				XPathResult.ORDERED_NODE_ITERATOR_TYPE, 
-				null );
-			//	alert("resultsIter initialized");
-			try {
-				var thisNode = resultsIter.iterateNext();
-				var entryResults = new Array();  //Array of LogEntry's
-				while (thisNode) {
-					// alert( thisNode.textContent );
-					var logEntry = new LogEntry();
-					//	alert("Created new LogEntry");
-					logEntry.setFromDomNode(thisNode);
-					//  alert("setFromDomNode done");
-					entryResults.push(logEntry);
-					thisNode = resultsIter.iterateNext();
-				}
-				//alert("Returning entryResults");
-				return entryResults;     
-			}
-			catch (e) {
-				// alert( 'Exception: ' + e );
+			var xpathRetriever = new XpathRetriever(_doc, xpathStr);
+			var thisNode = xpathRetriever.getNext();
+			while (thisNode) {
+				var logEntry = new LogEntry();
+				logEntry.setFromDomNode(thisNode);
+				entryResults.push(logEntry);
+				thisNode = xpathRetriever.getNext();
 			}
 		}
+		return entryResults;
 	}
 
 	// Created by Brian Cho and Soumi Sinha on December 9, 2006.
 	function getAllEntries() {
         var doSearch = true;
         
-		// Perform XPath query and convert DOM nodes to Bookmark objects..
 		var xpathStr = "/mylog/entries/entry";
+		var xpathRetriever = new XpathRetriever(_doc, xpathStr);
 
-		// Perform XPath query...
-		var nsResolver = document.createNSResolver( _doc.ownerDocument == null ?  _doc.documentElement : _doc.ownerDocument.documentElement );
-		// alert("nsResolver initialized");
-		var resultsIter = document.evaluate(xpathStr, 
-			_doc, 
-			nsResolver,
-			XPathResult.ORDERED_NODE_ITERATOR_TYPE, 
-			null );
-		// alert("resultsIter initialized");
-		try {
-			var thisNode = resultsIter.iterateNext();
-			var entryResults = new Array();  //Array of LogEntry's
-			while (thisNode) {
-				// alert( thisNode.textContent );
-				var logEntry = new LogEntry();
-				// alert("Created new LogEntry");
-				logEntry.setFromDomNode(thisNode);
-				// alert("setFromDomNode done");
-				entryResults.push(logEntry);
-				thisNode = resultsIter.iterateNext();
-			}
-			//alert("Returning entryResults");
-			return entryResults;     
-		} catch (e) {
-			// alert( 'Exception: ' + e );
+		var thisNode = xpathRetriever.getNext();
+		var entryResults = new Array();
+		while (thisNode) {
+			var logEntry = new LogEntry();
+			logEntry.setFromDomNode(thisNode);
+			entryResults.push(logEntry);
+			thisNode = xpathRetriever.getNext();
 		}
+		return entryResults;
+
 	}
 
 	// Modified by Brian Cho and Jesus DeLaTorre on December 4.
@@ -402,9 +313,8 @@ function XmlDataHandler() {
 		var url = logEntry.getUrl();
 		var title = logEntry.getTitle();
 		var filepath = "nowhere"; // TODO: actually get a filepath (once we save an actual file)
-		var tags = logEntry.getTags(); // TODO: go through array
-		var comments = logEntry.getComments(); // TODO: go through array
-		// alert("Got logEntry info");
+		var tags = logEntry.getTags();
+		var comments = logEntry.getComments();
 
 		var entryElem = _doc.createElement("entry");
 		var entryTagsElem = _doc.createElement("entrytags");
@@ -412,15 +322,12 @@ function XmlDataHandler() {
 		var urlElem = _doc.createElement("url");
 		var filepathElem = _doc.createElement("filepath");
 		var commentsElem = _doc.createElement("comments");
-		// alert("Created XML elements");
 		entryElem.setAttribute("id", id.toString());
-		// alert("Set XML attributes");
 
 		var titleElemText = _doc.createTextNode(title);
 		var urlElemText = _doc.createTextNode(url);
 		var filepathElemText = _doc.createTextNode(filepath);
 
-		// alert("Created XML textnodes");
 
 		titleElem.appendChild(titleElemText);
 		entryElem.appendChild(titleElem);
@@ -440,8 +347,8 @@ function XmlDataHandler() {
 		// Add all comments
 		for (var i = 0; i < comments.length; i++) {
 			var thisCommentElem = _doc.createElement("comment");
-			thisCommentElem.setAttribute("time", "12"); //TODO: actual time
-			thisCommentElem.setAttribute("date", "12"); //TODO: actual date
+			thisCommentElem.setAttribute("time", comments[i].getTime());
+			thisCommentElem.setAttribute("date", comments[i].getDate());
 			thisCommentElem.appendChild(_doc.createTextNode(comments[i].getContent()));
 			commentsElem.appendChild(thisCommentElem);
 		}
@@ -458,4 +365,25 @@ function XmlDataHandler() {
 		_doc = doc;
 	}
 
+}
+
+function XpathRetriever(dom, xpathString) {
+	var _nsResolver = document.createNSResolver( dom.ownerDocument == null ?  dom.documentElement : dom.ownerDocument.documentElement );
+	var _resultsIter = document.evaluate(xpathString, 
+		dom, 
+		_nsResolver,
+		XPathResult.ORDERED_NODE_ITERATOR_TYPE, 
+	null );
+
+	this.getNext = getNext;
+	
+	function getNext() {
+		try {
+			var thisNode = _resultsIter.iterateNext();
+			return thisNode;
+		} catch (e) {
+			dump( 'XpathRetriever Exception: ' + e );
+		}
+	}
+	
 }

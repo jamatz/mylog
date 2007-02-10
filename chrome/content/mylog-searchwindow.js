@@ -15,11 +15,8 @@ function handleSearchRequest() {
     var keyword = document.getElementById("some-text").value;
     var searchType = document.getElementById("search-type").value;
 
-	//alert("DataHandler open()ed");
 	var entryList = dataHandler.findEntries(keyword,searchType);
-	//alert("DataHandler findEntries() run");
     if(entryList.length > 0) {
-        // alert(entryList.length);
 		displayResults(entryList);
     } else {
 		clearResults();
@@ -33,9 +30,7 @@ function handleSearchRequest() {
 
 function handleResultClicked() {
 	var id = document.getElementById('results-list').selectedItem.value;
-	//alert(id);
 	var logEntry = dataHandler.getEntry(id);
-	//alert(logEntry.getTitle());
 	window.openDialog("chrome://mylog/content/mylog-logEditor.xul","Log Entry Editor",
 		"chrome",logEntry, dataStore, dataHandler);
 
@@ -57,7 +52,6 @@ function displayResults(resultList) {
     for(var i=0;i<resultList.length;i++) {
 		var bookmarkTitle = resultList[i].getTitle();
 		var bookmarkUrl = resultList[i].getUrl();
-        // alert(bookmarkTitle + ", " + bookmarkUrl + ", " + resultList[i].getFilePathText());
 		
 		document.getElementById('results-list').appendItem(heading + "(" + bookmarkTitle + ", " + bookmarkUrl + ")", resultList[i].getId());
     }
