@@ -1,0 +1,78 @@
+<html>
+ <head>
+  <title>Test Page for mylog-datastorage.js</title>
+  <script language="javascript" src="jsUnitCore.js"></script>
+  <script language="javascript" src="../chrome/content/mylog.js"></script>
+  <script language="javascript" src="../chrome/content/mylog-datastorage.js"></script>
+ </head>
+ <body>
+  <script language="javascript">
+		var le, dataHandler;
+		var url, title, tags, comment1, comment2, commment3, commments;
+		function setUp() {
+			url = "http://www.google.com";
+			title = "Google search engine";
+			tags = new Array("tag1","tag2","tag3");
+			comments = new Array("comment1", "comment2", "comment3");
+
+			le = new LogEntry();
+			le.setUrl(url);
+			le.setTitle(title);
+			for (var i = 0; i < tags.length; i++) {
+				le.addTag(tags[i]);
+			}
+			for (var i = 0; i < comments.length; i++) {
+				le.addComment(comments[i]);
+			}
+
+			var doc = document.implementation.createDocument("", "", null);
+			var entriesElem = doc.createElement("entries");
+			entriesElem.setAttribute("counter", "0");
+			doc.appendChild(entriesElem);
+
+			dataHandler = new XmlDataHandler();
+			dataHandler.setDomDoc(doc);
+		}
+
+		function testAddEntry() {
+			dataHandler.addEntry(le);
+			var doc = dataHandler.getDomDoc();
+
+			var entries = doc.getElementsByTagName("entries")[0];
+			assertEquals("1", entries.getAttribute("counter"));
+
+			var entry = entries.getElementsByTagName("entry")[0];
+			assertEquals(url, entry.getElementsByTagName("url")[0].childNodes[0].nodeValue);
+			assertEquals(title, entry.getElementsByTagName("title")[0].childNodes[0].nodeValue);
+
+			var domTags = entry.getElementsByTagName("tags")[0];
+			for (var i = 0; i < domTags.childNodes.length; i++) {
+				assertEquals(tags[i], domTags.childNodes[i].childNodes[0].nodeValue);
+			}
+
+			var domComments = entry.getElementsByTagName("comments")[0];
+			for (var i = 0; i < domComments.childNodes.length; i++) {
+				assertEquals(comments[i], domComments.childNodes[i].childNodes[0].nodeValue);
+			}
+		}
+
+		function testRemoveEntry() {
+			dataHandler.addEntry(le);
+			dataHandler.removeEntry(0);
+
+			var doc = dataHandler.getDomDoc();
+
+			var entries = doc.getElementsByTagName("entries")[0];
+			var entryList = entries.getElementsByTagName("entry");
+
+			var exists = 0;
+			for (var i = 0; i < entryList.length; i++){
+				if (entryList[i].getAttribute("id") == "0") {
+					exists = 1;
+				}
+			}
+			assertEquals(0, exists);
+		}
+  </script>
+ </body>
+</html>

@@ -1,0 +1,62 @@
+<mylog>
+        <entries counter="1">
+                <entry id="0">
+                        <title>Mozilla Firefox Start Page - Mozilla Firefox</title>
+                        <url>http://www.google.com/firefox?client=firefox-a&amp;rls=org.mozilla:en-US:official</url>
+                        <filepath>nowhere</filepath>
+                        <entrytags>
+                                <entrytag name="blah"/>
+                        </entrytags>
+                        <comments>
+                                <comment>You</comment>
+                                <comment time="12" date="12">Testing a</comment>
+                                <comment>Suck</comment>
+                        </comments>
+                </entry>
+                <entry id="1">
+                    <title>Google</title>
+                    <url>http://www.google.com</url>
+                    <filepath>nowhere</filepath>
+                    <entrytags>
+                        <entrytag name="Google"/>
+                    </entrytags>
+                    <comments>
+                        <comment>You</comment>
+                        <comment time="12" date="12">Testing a</comment>
+                        <comment>Suck</comment>
+                    </comments>
+                </entry>
+                <entry id="2">
+                    <title>IGN</title>
+                    <url>http://www.ign.com</url>
+                    <filepath>nowhere</filepath>
+                    <entrytags>
+                        <entrytag name="blah"/>
+                    </entrytags>
+                    <comments>
+                        <comment>You</comment>
+                        <comment time="12" date="12">Testing a</comment>
+                        <comment>Suck</comment>
+                    </comments>
+                </entry>
+                <entry id="3">
+                    <title>Amazon.com</title>
+                    <url>http://www.amazon.com</url>
+                    <filepath>nowhere</filepath>
+                    <entrytags>
+                        <entrytag name="blank"/>
+                        <entrytag name="blah"/>
+                    </entrytags>
+                    <comments>
+                        <comment>You</comment>
+                        <comment time="12" date="12">Testing a</comment>
+                        <comment>Suck</comment>
+                    </comments>
+                </entry>
+        </entries>
+        <tags>
+                <tag name="blah"/>
+                <tag name="Google"/>
+                <tag name="blank"/>
+        </tags>
+</mylog>

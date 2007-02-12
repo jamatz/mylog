@@ -1,0 +1,3 @@
+content mylog chrome/content/
+overlay chrome://browser/content/browser.xul chrome://mylog/content/test-overlay.xul
+overlay chrome://browser/content/browser.xul chrome://mylog/content/mylog-overlay.xul
