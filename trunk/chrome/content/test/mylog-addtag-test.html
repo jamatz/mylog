@@ -1,0 +1,70 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>ECMAUnit Tests</title>
+    <script language="JavaScript" type="text/javascript" src="chrome://mylog/content/mylog.js"></script>
+    <script language="JavaScript" type="text/javascript" src="chrome://mylog/content/mylog-datastorage.js"></script>
+    <script type="text/javascript" src="chrome://mylog/content/test/ecmaunit.js"> </script>
+    <script type="text/javascript">
+//<![CDATA[
+       
+        function TestAddTag() {
+            this.name = 'TestAddTag';
+            var dataStore;
+			var dataHandler;
+         
+            this.setUp = function() {
+				dataStore = new XmlDataStore();
+				dataStore.setXmlFilepath("mylog-addtag-test.xml"); // Should not exist, or be empty.
+				blankDataHandler = dataStore.open();
+				dataStore.close(blankDataHandler);
+
+                dataHandler = dataStore.open("mylog-addtag-test.xml");
+            };
+            this.testAddTag1 = function() { // Add empty tag
+				var emptyTag = "";
+				this.assertEquals(dataHandler.addTag(emptyTag), false);
+            };
+
+			this.testAddTag2 = function() { // Add correct tag
+				var tag = "whatever";
+				this.assertEquals(dataHandler.addTag(tag), true);
+				var flag = false;
+				var tagArray = dataHandler.getAllTags();
+				for (var i=0; i<tagArray.length ; i++ ) {
+					if (tagArray[i] == tag) {
+						flag = true;
+						break;
+					}
+				}
+				this.assertEquals(flag, true);
+            };
+
+			this.testAddTag2 = function() { // Add duplicate tag
+				var tag = "whatever2";
+				this.assertEquals(dataHandler.addTag(tag), true);
+				this.assertEquals(dataHandler.addTag(tag), false);
+
+            };
+
+            this.tearDown = function() {
+                dataStore.close(blankDataHandler); // Restore to empty.
+            };
+        };
+        TestAddTag.prototype = new TestCase;
+
+        function runTests() {
+            placeholder = document.getElementById('placeholder');
+            var testsuite = new TestSuite(new HTMLReporter(placeholder));
+            testsuite.registerTest(TestAddTag);
+            testsuite.runSuite();
+        }
+//]]>
+</script>
+</head>
+
+<body onload="runTests()">
+<h3>EcmaUnit tests for MyLog Add Tag</h3>
+<div id="placeholder"> </div>
+</body>
+</html>
