@@ -1,0 +1,17 @@
+/* CSS Document */
+
+#sbMyLogSidebar {
+	background-color:#6699CC;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	margin: 0px;
+}
+
+#SearchBox {
+color:#CC66CC;
+}
+
+#SearchBoxLabel {
+
+float:left;
+}
+
