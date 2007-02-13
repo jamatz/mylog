@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type"text/css" ?>
+<?xml-stylesheet href="chrome://mylog/skin/mylogsidebar.css" type"text/css" ?>
+<!DOCTYPE page SYSTEM "chrome://mylog/locale/mylogsidebar.dtd">
+
+<page id="sbMyLogSidebar" title="&mylogsidebar.title;"
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" >
+  <vbox flex="1">
+
+  <textbox id="SearchBox" label="Search:" type="timed" onCommand=""></textbox>
+<img name="" src="" width="180" height="120" alt="" style="background-color: #000099" />
+
+  <listbox id="results-list">
+
+ </listbox>
+
+  </vbox>
+</page>

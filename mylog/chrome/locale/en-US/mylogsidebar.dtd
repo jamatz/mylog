@@ -1,0 +1,4 @@
+<!ENTITY mylogsidebar.title "MyLog Sidebar">
+<!ENTITY mylogsidebar.SearchBoxLabel "Search:">
+<!ENTITY openMyLogSidebar.commandkey "M">
+<!ENTITY openMyLogSidebar.modifierskey "accel">

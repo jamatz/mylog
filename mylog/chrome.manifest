@@ -1,3 +1,6 @@
 content mylog chrome/content/
+locale	mylog	en-US	chrome/locale/en-US/
+skin	mylog	classic/1.0	chrome/skin/
 overlay chrome://browser/content/browser.xul chrome://mylog/content/test-overlay.xul
 overlay chrome://browser/content/browser.xul chrome://mylog/content/mylog-overlay.xul
+overlay chrome://browser/content/browser.xul chrome://mylog/content/firefoxOverlay.xul
