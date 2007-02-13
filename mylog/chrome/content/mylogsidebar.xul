@@ -4,7 +4,11 @@
 <!DOCTYPE page SYSTEM "chrome://mylog/locale/mylogsidebar.dtd">
 
 <page id="sbMyLogSidebar" title="&mylogsidebar.title;"
-         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" >
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" onload="populateListbox();">
+  <script type="text/javascript" src="mylog.js"></script>
+  <script type="text/javascript" src="mylog-datastorage.js"></script>
+  <script type="text/javascript" src="mylogsidebar.js"></script>
+  
   <vbox flex="1">
 
   <textbox id="SearchBox" label="Search:" type="timed" onCommand=""></textbox>
