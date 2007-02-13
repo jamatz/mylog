@@ -1,3 +1,5 @@
+//*** groupmeeting: 02-12-2007: refactored to use refactored Comment object
+
 /* INTERFACES */
 
 //function DataStore() {
@@ -347,8 +349,8 @@ function XmlDataHandler() {
 		// Add all comments
 		for (var i = 0; i < comments.length; i++) {
 			var thisCommentElem = _doc.createElement("comment");
-			thisCommentElem.setAttribute("time", comments[i].getTime());
-			thisCommentElem.setAttribute("date", comments[i].getDate());
+			thisCommentElem.setAttribute("time", comments[i].getTimeString()); // TODO: shouldn't save this
+			thisCommentElem.setAttribute("date", comments[i].getDateParsableString());
 			thisCommentElem.appendChild(_doc.createTextNode(comments[i].getContent()));
 			commentsElem.appendChild(thisCommentElem);
 		}

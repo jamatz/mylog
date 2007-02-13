@@ -1,3 +1,5 @@
+//*** groupmeeting: 02-12-2007: refactored Comment object to use the javascript Date object
+
 // Created by Brian Cho and Soumi Sinha on December 1, 2006.
 function handleLogContentRequest() {
 
@@ -133,15 +135,7 @@ function LogEntry() {
 
 	function addComment(comment) {
 		var dateVar = new Date();
-		var year = dateVar.getYear() + 1900;
-		var month = dateVar.getMonth() + 1;
-		var dateStr = year + "/" + month + "/" + dateVar.getDate();
-		var timeStr = dateVar.getHours() + ":";
-		if(dateVar.getMinutes() < 10){
-			timeStr = timeStr+"0";
-		}
-	    timeStr = timeStr + dateVar.getMinutes();
-		var c = new Comment(comment, dateStr, timeStr);
+		var c = new Comment(comment, dateVar);
 		_comments.push(c);
 
 	}
@@ -186,9 +180,10 @@ function LogEntry() {
     function _addCommentsFromDomNode(entryNode) {
 		for (var j = 0; j < entryNode.childNodes.length; j++) {
 			if (entryNode.childNodes[j].childNodes[0]) {
+				var dateObj = new Date();
+				dateObj.setTime(entryNode.childNodes[j].getAttribute("date"));
 				var comment = new Comment(entryNode.childNodes[j].childNodes[0].nodeValue,
-					entryNode.childNodes[j].getAttribute("date"),
-					entryNode.childNodes[j].getAttribute("time"));
+					dateObj);
 				_comments.push(comment);
 			}
 		}
@@ -197,24 +192,38 @@ function LogEntry() {
 }
 
 // Created by Brian Cho and Soumi Sinha on December 1, 2006.
-function Comment(content, date, time) {
+function Comment(content, dateObj) {
 	var _content = content;
-	var _date = date;
-	var _time = time;
+	var _dateObj = dateObj;
 
 	this.getContent = getContent;
-	this.getDate = getDate;
-	this.getTime = getTime;
+	this.getDateString = getDateString;
+	this.getTimeString = getTimeString;
+	this.getDateParsableString = getDateParsableString;
 
 	function getContent() {
 		return _content;
 	}
 	
-	function getDate() {
-		return _date;
+	function getDateString() {
+		var year = _dateObj.getYear() + 1900;
+		var month = _dateObj.getMonth() + 1;
+		var dateString = year + "/" + month + "/" + _dateObj.getDate();
+		return dateString;
 	}
 	
-	function getTime() {
-		return _time;
+	function getTimeString() {
+		var timeString = _dateObj.getHours() + ":";
+		if(_dateObj.getMinutes() < 10){
+			timeString = timeString+"0";
+		}
+	    timeString = timeString + _dateObj.getMinutes();
+	    
+	    return timeString;
+	}
+	
+	function getDateParsableString() {
+		alert(_dateObj.getTime());
+		return _dateObj.getTime();
 	}
 }

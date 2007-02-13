@@ -52,7 +52,7 @@ function fillComments(logEntry) {
 	var commentArray = logEntry.getComments();
 	if(commentArray){
 		for (var i = 0; i < commentArray.length; i++) {
-			comments = comments + commentArray[i].getDate() +" "+ commentArray[i].getTime() +"\n"+ commentArray[i].getContent() + "\n\n";
+			comments = comments + commentArray[i].getDateString() +" "+ commentArray[i].getTimeString() +"\n"+ commentArray[i].getContent() + "\n\n";
 		}
 //			var i = 0;
 //			i++;
