@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <?xml-stylesheet href="chrome://global/skin/global.css" type="text/css"?>
-<?xml-stylesheet href="chrome://mylog/content/mylog-logEditor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://mylog/skin/mylog-logEditor.css" type="text/css"?>
 
 <!--Created by Brian Cho and Jesus DeLaTorre on December 4.-->
 
