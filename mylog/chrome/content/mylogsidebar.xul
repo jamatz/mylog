@@ -2,6 +2,14 @@
 <?xml-stylesheet href="chrome://global/skin/" type"text/css" ?>
 <?xml-stylesheet href="chrome://mylog/skin/mylogsidebar.css" type"text/css" ?>
 <!DOCTYPE page SYSTEM "chrome://mylog/locale/mylogsidebar.dtd">
+<window
+    windowtype="global:MyLogSidebar"
+    onload="populateListbox();"
+    id="sidebarWindow"
+    xmlns:html="http://www.w3.org/1999/xhtml"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script type="application/x-javascript" src="chrome://mylog/content/mylogsidebar.js"/>
+  
 
 <page id="sbMyLogSidebar" title="&mylogsidebar.title;"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" onload="populateListbox();">
@@ -11,12 +19,13 @@
   
   <vbox flex="1">
 
-  <textbox id="SearchBox" label="Search:" type="timed" onCommand=""></textbox>
+  <textbox id="SearchBox" label="Search:" type="timed" timeout="500" oncommand="searchboxCallback(this.value);"></textbox>
 <img name="" src="" width="180" height="120" alt="" style="background-color: #000099" />
 
-  <listbox id="results-list">
+  <listbox id="results-listbox">
 
  </listbox>
 
   </vbox>
 </page>
+</window>
