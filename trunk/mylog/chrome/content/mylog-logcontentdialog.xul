@@ -20,6 +20,7 @@ Modified by Bryan Early and Soumi Sinha on December 6, 2006.
 	<script src="mylog.js" />
 	<script src="mylog-tag.js" />
 	<script src="mylog-logcontentdialog.js" />
+	<script src="mylogsidebar.js" />
 
 <grid flex="1">
 

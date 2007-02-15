@@ -4,6 +4,7 @@
   
   <script type="text/javascript" src="mylog.js" />
   <script type="text/javascript" src="mylog-datastorage.js" />
+  <script type="text/javascript" src="mylogsidebar.js" />
   <!--
   <script type="text/javascript" src="mylog-login.js" />
   -->

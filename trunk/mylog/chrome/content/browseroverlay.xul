@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<overlay id="MyLogBrowserOverlay"
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+         xmlns:html="http://www.w3.org/1999/xhtml">
+	<script type="text/javascript" src="mylogsidebar.js"></script>
+	<window id="main-window">
+		<box id="canvas-box" insertbefore="status-bar" height="0" hidden="true">
+			<html:canvas id="browser-canvas"/>
+		</box>
+	</window>
+</overlay>
