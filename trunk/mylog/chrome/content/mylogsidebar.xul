@@ -22,7 +22,7 @@
   <textbox id="SearchBox" label="Search:" type="timed" timeout="500" oncommand="searchboxCallback(this.value);"></textbox>
 <img name="" src="" width="180" height="120" alt="" style="background-color: #000099" />
 
-  <listbox id="results-listbox">
+  <listbox id="results-listbox" onclick="handleResultClicked();">
 
  </listbox>
 

@@ -7,7 +7,7 @@ function populateListbox() {
 	var entryList = dataHandler.getAllEntries();
 	
 	for (var i = 0; i < entryList.length; i++) {
-		document.getElementById('results-listbox').appendItem(entryList[i].getTitle());
+		document.getElementById('results-listbox').appendItem(entryList[i].getTitle(), entryList[i].getId());
 	}
 	dataStore.close(dataHandler);
 }
@@ -17,6 +17,16 @@ function clearListbox() {
 	while (document.getElementById('results-listbox').getRowCount() > 0) {
 		document.getElementById('results-listbox').removeItemAt(0);
 	}
+}
+
+function handleResultClicked() {
+	var dataStore = new XmlDataStore();
+	var dataHandler = dataStore.open();
+	var id = document.getElementById('results-listbox').selectedItem.value;
+	var logEntry = dataHandler.getEntry(id);
+	window.openDialog("chrome://mylog/content/mylog-logEditor.xul","Log Entry Editor",
+		"chrome",logEntry, dataStore, dataHandler);
+
 }
 
 function searchboxCallback(searchTerm) {
