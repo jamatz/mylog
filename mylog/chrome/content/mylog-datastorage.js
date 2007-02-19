@@ -432,12 +432,14 @@ function savePage(doc, id)
 		var file = Components.classes["@mozilla.org/file/directory_service;1"]
                      .getService(Components.interfaces.nsIProperties)
                      .get("ProfD", Components.interfaces.nsIFile);
-        file.append("mylog")
-        file.append(id + ".html")
+        file.append("extensions");
+        file.append("mylog");
+        file.append(id + ".html");
         
         var dir = Components.classes["@mozilla.org/file/directory_service;1"]
              .getService(Components.interfaces.nsIProperties)
              .get("ProfD", Components.interfaces.nsIFile);
+        dir.append("extensions");
         dir.append("mylog");
         dir.append(id);
         
@@ -447,6 +449,6 @@ function savePage(doc, id)
 		return file;
 	} catch (e) {
 		//alert('savePage Exception ' + e)
+		return "";
 	}
-	return "";
 }
