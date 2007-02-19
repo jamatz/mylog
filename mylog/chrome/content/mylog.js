@@ -225,7 +225,6 @@ function Comment(content, dateObj) {
 	}
 	
 	function getDateParsableString() {
-		alert(_dateObj.getTime());
 		return _dateObj.getTime();
 	}
 }

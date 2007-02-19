@@ -15,6 +15,7 @@
             
             this.testSavePage1 = function() {
 				var file = savePage(window.content.document, 173);
+				alert(file.path);
 				this.assertEquals(file.exists(),true);
             };
 

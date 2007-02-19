@@ -26,6 +26,7 @@ function handleResultClicked() {
 	var logEntry = dataHandler.getEntry(id);
 	window.openDialog("chrome://mylog/content/mylog-logEditor.xul","Log Entry Editor",
 		"chrome",logEntry, dataStore, dataHandler);
+	openTopWin(logEntry.getFilePath());
 
 }
 
