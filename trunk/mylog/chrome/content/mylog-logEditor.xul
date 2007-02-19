@@ -28,24 +28,37 @@
   <rows>
 	<row>
 		<label control="mylog-url" value="URL:"/>
-		<textbox id="mylog-url" />
+		<textbox id="mylog-url"/>
+		<textbox id="mylog-url-edit"/>
+		<button label="Edit URL" oncommand="setURL();"/>
+		<button label="Delete URL" oncommand="deleteURL();"/>		
 	</row>
 	<row>
 		<label control="mylog-title" value="Title:"/>
 		<textbox id="mylog-title" flex="1"/>
+		<textbox id="mylog-title-edit" flex="1"/>		
+		<button label="Edit Title" oncommand="setTitle();"/>
+		<button label="Delete Title" oncommand="deleteTitle();"/>		
 	</row>
 	<row>
 		<label control="mylog-tags" value="Tags:"/>
 		<textbox id="mylog-tags" flex="1"/>
+		<textbox id="mylog-tags-edit" flex="1"/>
+		<button label="Edit Tag" oncommand="setTagAt(0,'newTag');"/>		
+		<button label="Delete Tag" oncommand="removeTagAt(0);"/>		
 	</row>
  	<row>
 		<label control="mylog-comments" value="Comments:"/>
 		<textbox multiline="true" id="mylog-comments"/>
+		<textbox multiline="true" id="mylog-comments-edit"/>
+		<button label="Edit Comment-notdone" oncommand="setCommentAt(0, 'newComment');"/>		
+		<button label="Delete Comment" oncommand="removeCommentAt(0);"/>				
 	</row>
 	<row>
 		<label control="mylog-comments" value="Add a new comment:"/>
 		<textbox multiline="true" rows="3" id="mylog-add-comments"/>
-		<button label="Add Comment" oncommand="doAddComment();"/>
+		<textbox multiline="true" rows="3" id="mylog-add-comments-edit"/>
+		<button label="Add Comment" oncommand="addComment();"/>
 	</row>
   </rows>
 </grid>

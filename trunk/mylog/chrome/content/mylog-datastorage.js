@@ -446,7 +446,7 @@ function savePage(doc, id)
 		saver.saveDocument(doc, file, dir, null, null, null);
 		return file;
 	} catch (e) {
-		alert('savePage Exception ' + e)
+		//alert('savePage Exception ' + e)
 	}
 	return "";
 }
