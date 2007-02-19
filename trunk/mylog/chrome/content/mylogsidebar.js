@@ -124,7 +124,7 @@ for (var i = 0; i < childNodes.length; i++) {
  // ctx.restore();
 }*/
 
-var NavLoadObserver = {
+/*var NavLoadObserver = {
   observe: function(aWindow)
   {
     update();
@@ -138,3 +138,5 @@ function start() {
 }
 
 window.addEventListener("load", start, false);
+
+*/
