@@ -15,8 +15,15 @@
             
             this.testSavePage1 = function() {
 				var file = savePage(window.content.document, 173);
-				alert(file.path);
-				this.assertEquals(file.exists(),true);
+
+				var path = Components.classes["@mozilla.org/file/directory_service;1"]
+                     .getService(Components.interfaces.nsIProperties)
+                     .get("ProfD", Components.interfaces.nsIFile);
+		        path.append("extensions");
+		        path.append("mylog");
+		        path.append("173.html");
+		        
+				this.assertEquals(file.path, path.path);
             };
 
 			this.tearDown = function() {
