@@ -45,7 +45,7 @@ Modified by Bryan Early and Soumi Sinha on December 6, 2006.
     </row>
 	<row>
 		<label control="mylog-currenttags" value="Current Tags:"/>
-		<menulist label="Select to Remove a Tag" id="mylog-currenttags" flex="1" oncommand="removeTag();" onclick="alert('I got clicked');">
+		<menulist label="Select to Remove a Tag" id="mylog-currenttags" flex="1" oncommand="removeTag();">
 		<menupopup id="mylog-currentTagsPopup"/>
 		</menulist>
 	</row>
