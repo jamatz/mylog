@@ -79,8 +79,13 @@ function LogEntry() {
 
 	this.getTags = getTags;
 	this.addTag = addTag;
+	this.setTagAt = setTagAt;
+	this.removeTagAt = removeTagAt;
+
 	this.getComments = getComments;
 	this.addComment = addComment;
+	this.setCommentAt = setCommentAt;
+	this.removeCommentAt = removeCommentAt;
 
 	this.setFromDomNode = setFromDomNode;
 
@@ -130,6 +135,14 @@ function LogEntry() {
 	function addTag(tag) {
 		_tags.push(tag);
 	}
+	
+	function setTagAt(index, tag) {
+		_tags[index] = tag;
+	}
+
+	function removeTagAt(index) {
+		_tags.splice(index,1);
+	}
 
 	function getComments() {
 		return _comments;
@@ -139,8 +152,16 @@ function LogEntry() {
 		var dateVar = new Date();
 		var c = new Comment(comment, dateVar);
 		_comments.push(c);
-
 	}
+	
+	function setCommentAt(index, comment) {
+		var dateVar = new Date();
+		_comments[index] = new Comment(comment, dateVar);
+	}
+
+	function removeCommentAt(index) {
+		_comments.splice(index,1);
+	}	
 
 	function setFromDomNode(domNode) {
         if(domNode.nodeName != "entry") {

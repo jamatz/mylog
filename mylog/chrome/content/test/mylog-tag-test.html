@@ -12,10 +12,10 @@ body {font-family: Arial}
 <script language="JavaScript" type="text/javascript" src="chrome://mylog/content/mylog-searchwindow.js"></script>
 <script type="text/javascript">
 //<![CDATA[
-// This test for a search that should return 2 results
+// This test for a search that should return 4 results
     function MyLogTestCase() {
         this.name = 'MyLogTestCase';
-        var handler,storage;
+        var handler,storage,entry;
         this.setUp = function() {
             /* not in use here, didn't have to define it but this might be
         used as a reference
@@ -23,6 +23,7 @@ body {font-family: Arial}
             storage = new XmlDataStore();
             storage.setXmlFilepath("mylog-tag-test.xml");
             handler = storage.open();
+            entry = handler.getEntry(0);        
         }
     
         this.testGetAllTags = function() {
@@ -59,6 +60,24 @@ body {font-family: Arial}
             var entryList = handler.findEntries(keyword,"tag");
             this.assertEquals(entryList.length,0);
         }
+
+	    this.testSetTagAt = function() {
+			entry.setTagAt(0,'New Tag');
+			newTag = entry.getTags()[0];
+			this.assertEquals(newTag, 'New Tag');
+		}
+	
+		this.testRemoveTagAt = function() {
+			entry.removeTagAt(0);
+			newTags = entry.getTags();
+			this.assertEquals(newTags.length, 0);
+			
+	        entry = handler.getEntry(3);     
+	        entry.removeTagAt(1);			
+	        newTags = entry.getTags();
+			this.assertEquals(newTags.length, 1);
+	        
+		}
     
         this.tearDown = function() {
             /* not in use here, didn't have to define it but this might be
