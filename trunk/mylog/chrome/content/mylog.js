@@ -1,4 +1,5 @@
-//*** groupmeeting: 02-12-2007: refactored Comment object to use the javascript Date object
+// *** bearly, vviswana: 02-13-2007: Modified handleLogContentSubmission to call savePage.
+// *** groupmeeting: 02-12-2007: refactored Comment object to use the javascript Date object
 
 // Created by Brian Cho and Soumi Sinha on December 1, 2006.
 function handleLogContentRequest() {
@@ -14,7 +15,7 @@ function handleLogContentRequest() {
 	//	alert(title);
 
 	window.openDialog("chrome://mylog/content/mylog-logcontentdialog.xul","mylog-logcontentdialog",
-		"chrome",url,title);
+		"chrome",window.content.document);
 
 	//	handleLogContentSubmission(url);
 }
@@ -27,18 +28,19 @@ function handleSearchLogRequest() {
 }
 
 // Created by Brian Cho and Soumi Sinha on December 1, 2006.
-function handleLogContentSubmission(url, title, tags, comment) {
+function handleLogContentSubmission(url, title, tags, comment, doc) {
 	var le = new LogEntry();
 	le.setUrl(url);
 	le.setTitle(title);
 	for (var i = 0; i < tags.length; i++) {
 		le.addTag(tags[i]);
 	}
+	
 	le.addComment(comment);
 
 	var dataStore = new XmlDataStore();
 	var dataHandler = dataStore.open();
-	dataHandler.addEntry(le);
+	var id = dataHandler.addEntry(le, doc);
 	dataStore.close(dataHandler);
 }
 

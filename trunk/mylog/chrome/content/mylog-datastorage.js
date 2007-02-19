@@ -1,4 +1,5 @@
-//*** groupmeeting: 02-12-2007: refactored to use refactored Comment object
+// *** bearly, vviswana: 02-13-2007: Modified addEntry to return id.  Added savePage function.
+// *** groupmeeting: 02-12-2007: refactored to use refactored Comment object
 
 /* INTERFACES */
 
@@ -203,7 +204,7 @@ function XmlDataHandler() {
 		return true;
 	}
 	
-	function addEntry(logEntry) {
+	function addEntry(logEntry, doc) {
 
 		var idstr = _doc.getElementsByTagName("entries")[0].getAttribute("counter");
 		var id = idstr * 1;
@@ -211,10 +212,14 @@ function XmlDataHandler() {
 		var counter = id + 1;
 		_doc.getElementsByTagName("entries")[0].setAttribute("counter", counter.toString());
 
+		var file = savePage(doc, id);
+		logEntry.setFilePath(file.path);
+
 		var entryElem = _createDomNode(logEntry);
 
 		_doc.getElementsByTagName("entries")[0].appendChild(entryElem); // entriesElem.appendChild(entryElem);
 	
+		return id;
 	}
 
 	// Created by Brian Cho and Jesus DeLaTorre on December 4.
@@ -314,7 +319,7 @@ function XmlDataHandler() {
 		var id = logEntry.getId();
 		var url = logEntry.getUrl();
 		var title = logEntry.getTitle();
-		var filepath = "nowhere"; // TODO: actually get a filepath (once we save an actual file)
+		var filepath = logEntry.getFilePath(); // TODO: actually get a filepath (once we save an actual file)
 		var tags = logEntry.getTags();
 		var comments = logEntry.getComments();
 
@@ -387,5 +392,61 @@ function XpathRetriever(dom, xpathString) {
 			dump( 'XpathRetriever Exception: ' + e );
 		}
 	}
-	
+}
+
+function savePageBlah(url, id) {
+	try {
+		 var data = "";
+		 var req = new XMLHttpRequest();
+		 req.open('GET', url, false); 
+		 req.send(null);
+		 if(req.status == 200)
+		   data = req.responseText;
+  
+		  var file = Components.classes["@mozilla.org/file/directory_service;1"]
+                     .getService(Components.interfaces.nsIProperties)
+                     .get("ProfD", Components.interfaces.nsIFile);
+          file.append("mylog");
+          file.append(id + ".html");
+          
+          // file is nsIFile, data is a string
+		  var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"]
+		                         .createInstance(Components.interfaces.nsIFileOutputStream);
+		
+		  // use 0x02 | 0x10 to open file for appending.
+		  foStream.init(file, 0x02 | 0x08 | 0x20, 0664, 0); // write, create
+		  foStream.write(data, data.length);
+		  foStream.close();
+		  return file;
+          
+	} catch (e) {
+		dump('savePage Exception ' + e);
+	}
+	return "";
+}
+
+function savePage(doc, id)
+{
+	try
+	{
+		var file = Components.classes["@mozilla.org/file/directory_service;1"]
+                     .getService(Components.interfaces.nsIProperties)
+                     .get("ProfD", Components.interfaces.nsIFile);
+        file.append("mylog")
+        file.append(id + ".html")
+        
+        var dir = Components.classes["@mozilla.org/file/directory_service;1"]
+             .getService(Components.interfaces.nsIProperties)
+             .get("ProfD", Components.interfaces.nsIFile);
+        dir.append("mylog");
+        dir.append(id);
+        
+		var saver =  Components.classes["@mozilla.org/embedding/browser/nsWebBrowserPersist;1"]
+			.createInstance(Components.interfaces.nsIWebBrowserPersist); 
+		saver.saveDocument(doc, file, dir, null, null, null);
+		return file;
+	} catch (e) {
+		alert('savePage Exception ' + e)
+	}
+	return "";
 }

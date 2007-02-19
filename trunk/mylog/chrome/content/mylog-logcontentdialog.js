@@ -5,8 +5,9 @@ var selectedTags = new Array();
 
 //  Modified by Bryan Early and Soumi Sinha on December 5, 2006. - fills tag menu.
 function filltextboxes() {
-	var url = window.arguments[0];
-	var title = window.arguments[1];
+	var doc = window.arguments[0];
+	var url = doc.URL;
+	var title = doc.title;
 
 	document.getElementById('mylog-url').setAttribute('value',url);
 	document.getElementById('mylog-title').setAttribute('value',title);
@@ -28,6 +29,7 @@ function fillTagMenu() {
 
 function doOK()
 {	
+	var doc = window.arguments[0];
 	var url = document.getElementById("mylog-url").value;
 	// alert(url);
 	var title = document.getElementById("mylog-title").value;
@@ -43,7 +45,7 @@ function doOK()
 	// alert(tags);
 	var comment = document.getElementById("mylog-comments").value;
 	// alert(comment);
-	handleLogContentSubmission(url, title, tags, comment);
+	handleLogContentSubmission(url, title, tags, comment, doc);
 	return true;
 }
 

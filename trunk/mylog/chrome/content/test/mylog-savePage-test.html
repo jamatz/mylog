@@ -1,0 +1,41 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>ECMAUnit Tests</title>
+    <script language="JavaScript" type="text/javascript" src="chrome://mylog/content/mylog.js"></script>
+    <script language="JavaScript" type="text/javascript" src="chrome://mylog/content/mylog-datastorage.js"></script>
+    <script type="text/javascript" src="chrome://mylog/content/test/ecmaunit.js"> </script>
+    <script type="text/javascript">
+//<![CDATA[
+       
+        function TestSavePage() {
+            this.name = 'TestSavePage';
+            
+            this.setUp = function() { };
+            
+            this.testSavePage1 = function() {
+				var file = savePage(window.content.document, 173);
+				this.assertEquals(file.exists(),true);
+            };
+
+			this.tearDown = function() {
+            
+            };
+        };
+        TestSavePage.prototype = new TestCase;
+
+        function runTests() {
+            placeholder = document.getElementById('placeholder');
+            var testsuite = new TestSuite(new HTMLReporter(placeholder));
+            testsuite.registerTest(TestSavePage);
+            testsuite.runSuite();
+        }
+//]]>
+</script>
+</head>
+
+<body onload="runTests()">
+<h3>EcmaUnit tests for MyLog Save Page</h3>
+<div id="placeholder"> </div>
+</body>
+</html>
