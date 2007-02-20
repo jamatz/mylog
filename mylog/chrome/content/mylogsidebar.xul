@@ -1,10 +1,11 @@
 <?xml version="1.0"?>
+<!-- // *** ebowden2, jamatz: 02-13-2007: Created mylogsidebar.xul -->
 <?xml-stylesheet href="chrome://global/skin/" type"text/css" ?>
 <?xml-stylesheet href="chrome://mylog/skin/mylogsidebar.css" type"text/css" ?>
 <!DOCTYPE page SYSTEM "chrome://mylog/locale/mylogsidebar.dtd">
 <window
     windowtype="global:MyLogSidebar"
-    onload="populateListbox();"
+    onload="initializeGUI();"
     id="sidebarWindow"
     xmlns:html="http://www.w3.org/1999/xhtml"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
@@ -12,7 +13,7 @@
   
 
 <page id="sbMyLogSidebar" title="&mylogsidebar.title;"
-         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" onload="populateListbox();">
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="text/javascript" src="mylog.js"></script>
   <script type="text/javascript" src="mylog-datastorage.js"></script>
   <script type="text/javascript" src="mylogsidebar.js"></script>
@@ -21,10 +22,36 @@
   <vbox flex="1">
 
   <textbox id="SearchBox" label="Search:" type="timed" timeout="500" oncommand="searchboxCallback(this.value);"></textbox>
+	
+	<html:table>
+  <html:tr>
+    <html:td><description id="also-include-description" value="&mylogsidebar.also-include;"/></html:td>
+    </html:tr>
+    </html:table>
+    <html:table>
+    <html:tr>
+    
+    
+    
+    <html:td>
+      <checkbox id="title-checkbox" label="&mylogsidebar.title-checkbox;"/>
+  <checkbox id="comments-checkbox" label="&mylogsidebar.comments-checkbox;"/>
+      </html:td>
+  </html:tr>
+  <html:tr>
+  	<html:td><checkbox id="tags-checkbox" label="&mylogsidebar.tags-checkbox;"/>
+  	<menulist id="tags-menu">
+      <menupopup id="tags-popup">
+      <menuitem label="Select a tag..."/>
+      </menupopup>
+    </menulist></html:td>
+  
+  </html:tr>
+</html:table>
+
 <img name="" src="" width="180" height="120" alt="" style="background-color: #000099" />
 
   <listbox id="results-listbox" onclick="handleResultClicked();">
-
  </listbox>
 
   </vbox>
