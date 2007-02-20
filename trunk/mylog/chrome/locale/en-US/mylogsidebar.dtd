@@ -1,4 +1,9 @@
+<!-- // *** ebowden2, jamatz: 02-14-2007: Created mylogsidebar.dtd -->
 <!ENTITY mylogsidebar.title "MyLog Sidebar">
 <!ENTITY mylogsidebar.SearchBoxLabel "Search:">
 <!ENTITY openMyLogSidebar.commandkey "M">
 <!ENTITY openMyLogSidebar.modifierskey "accel">
+<!ENTITY mylogsidebar.also-include "Search by:">
+<!ENTITY mylogsidebar.title-checkbox "Title">
+<!ENTITY mylogsidebar.comments-checkbox "Comments">
+<!ENTITY mylogsidebar.tags-checkbox "Tags:">

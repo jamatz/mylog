@@ -1,5 +1,11 @@
 // *** ebowden2, jamatz: 02-13-2007: Initial creation of mylogsidebar.js, filled with one simple function to populate the sidebar's listbox.
 
+function initializeGUI() {
+	populateTagsPopupMenu();
+	populateListbox();
+	//populateTagsPopupMenu();
+}
+
 function populateListbox() {
 
 	var dataStore = new XmlDataStore();
@@ -58,7 +64,7 @@ function drawAll() {
 	//var h = mainWindow.document.getElementById("content").innerHeight;
 	var w = 800;
 	var h = 600;
-	alert('w is ' + w);
+	//alert('w is ' + w);
   //var container = mainWindow.document.getElementById("win"); //we changed win
   //var canvasW = container.boxObject.width;
   ///var scale = canvasW/w;
@@ -89,7 +95,38 @@ function drawAll() {
 }
 
 
+function populateTagsPopupMenu() {
 
+	var dataStore = new XmlDataStore();
+	var dataHandler = dataStore.open();
+	var tagNameArr = dataHandler.getAllTags();
+	var tagsPopupMenu = document.getElementById("tags-popup");
+
+	for (var i = 0; i < tagNameArr.length; i++)
+	{
+		//alert("Loop entered! and tag name is: " + tagNameArr[i]);
+		var menuItem = document.createElement("menuitem");
+		menuItem.setAttribute( "label" , tagNameArr[i]);
+		menuItem.setAttribute( "value" , tagNameArr[i]);
+		menuItem.setAttribute( "id" , "mylog-tag-" + tagNameArr[i]);
+		menuItem.setAttribute("oncommand", "processTagSelection(this.value);");
+		tagsPopupMenu.appendChild(menuItem);
+	}
+	
+	dataStore.close(dataHandler);
+	
+}
+
+function processTagSelection(tag) {	
+	var searchBox = document.getElementById("SearchBox");
+	
+	if (searchBox.value.length != 0)
+		searchBox.value = searchBox.value + " ";
+	searchBox.value = searchBox.value + '"' + tag + '"';
+		
+	searchBox.setSelectionRange(searchBox.value.length - tag.length - 2, searchBox.value.length);
+	
+}
 
 
 /*function update(theWindow) {
