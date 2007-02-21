@@ -2,30 +2,29 @@
 <overlay id="mylog-overlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   
-  <script type="text/javascript" src="mylog.js" />
-  <script type="text/javascript" src="mylog-datastorage.js" />
-  <script type="text/javascript" src="mylogsidebar.js" />
-  <!--
-  <script type="text/javascript" src="mylog-login.js" />
-  -->
-    <script type="text/javascript">
-        function showUnitTests() {
-            window.open("chrome://mylog/content/test/mylog-UnitTest-index.html");
-        }
-    </script>
-  <popup id="contentAreaContextMenu">
-    <menuitem id="mylog-contextmenu-create" label="Log Content"
-              oncommand="handleLogContentRequest()" />
-    <menuitem id="mylog-contextmenu-create" label="Search MyLog"
-              oncommand="handleSearchLogRequest()" />
-    <menuitem id="mylog-unittest-index" label="MyLog Unit Tests"
-              oncommand="showUnitTests()" />
-	<!-- Log in removed -->
+	<script type="text/javascript" src="mylog.js" />
+	<script type="text/javascript" src="mylog-datastorage.js" />
+	<script type="text/javascript" src="mylogsidebar.js" />
 	<!--
-    <menuitem id="mylog-contextmenu-create" label="Log In"
-              oncommand="BeginLogIn()" />
+	<script type="text/javascript" src="mylog-login.js" />
 	-->
-
-  </popup>
-
+	<script type="text/javascript">
+	    function showUnitTests() {
+	    	// This function will open the web page in the current tab
+	     	openUILinkIn("chrome://mylog/content/test/mylog-UnitTest-index.html", "current");
+	    }
+	</script>
+	<popup id="contentAreaContextMenu">
+		<menuitem id="mylog-contextmenu-create" label="Log Content"
+		              oncommand="handleLogContentRequest()" />
+		<menuitem id="mylog-contextmenu-create" label="Search MyLog"
+		              oncommand="handleSearchLogRequest()" />
+		<menuitem id="mylog-unittest-index" label="MyLog Unit Tests"
+		             oncommand="showUnitTests()" />
+		<!-- Log in removed -->
+		<!--
+		<menuitem id="mylog-contextmenu-create" label="Log In"
+		              oncommand="BeginLogIn()" />
+		-->
+	</popup>
 </overlay>
