@@ -1,5 +1,6 @@
 // *** bearly, vviswana: 02-13-2007: Modified addEntry to return id.  Added savePage function.
 // *** groupmeeting: 02-12-2007: refactored to use refactored Comment object
+// *** ebowden2, jamatz: 02-23-2007: Changed the findEntries function so it now searchs on a case-insensitive basis.  Firefox does not support the XPath 2.0 lower-case() function, so this is done using translate() instead, with associated possible bugs when non-English-alphabet characters are encountered.  Should work for most cases, though.
 
 /* INTERFACES */
 
@@ -278,7 +279,7 @@ function XmlDataHandler() {
         } else if(searchType == "comment"){
 			xpathStr = "/mylog/entries/entry[count(comments/comment[contains(.,'" + keyword + "')]) > 0]";
         } else {
-			xpathStr = "/mylog/entries/entry[contains("+searchType+",'"+keyword+"')]";
+			xpathStr = "/mylog/entries/entry[contains(translate("+searchType+", 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), translate('"+keyword+"', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'))]";
         }
         
 		var entryResults = new Array();
