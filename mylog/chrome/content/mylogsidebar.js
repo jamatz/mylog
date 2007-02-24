@@ -1,4 +1,7 @@
 // *** ebowden2, jamatz: 02-13-2007: Initial creation of mylogsidebar.js, filled with one simple function to populate the sidebar's listbox.
+// *** ebowden2, jamatz: 02-22-2007: Updated the searchboxCallback function for improved search capabilities.
+// *** ebowden2, jamatz: 02-22-2007: Created helper function parseSearchTerms to tokenize search string
+// *** ebowden2, jamatz: 02-23-2007: Significantly improved searchboxCallback function; should refactor a bit and extract out most of it to another method.  Some known bugs are also present and will be addressed soon.
 
 function initializeGUI() {
 	populateTagsPopupMenu();
@@ -7,11 +10,11 @@ function initializeGUI() {
 }
 
 function populateListbox() {
-
 	var dataStore = new XmlDataStore();
 	var dataHandler = dataStore.open();
 	var entryList = dataHandler.getAllEntries();
 	
+	clearListbox();
 	for (var i = 0; i < entryList.length; i++) {
 		document.getElementById('results-listbox').appendItem(entryList[i].getTitle(), entryList[i].getId());
 	}
@@ -19,7 +22,6 @@ function populateListbox() {
 }
 
 function clearListbox() {
-
 	while (document.getElementById('results-listbox').getRowCount() > 0) {
 		document.getElementById('results-listbox').removeItemAt(0);
 	}
@@ -36,18 +38,166 @@ function handleResultClicked() {
 
 }
 
-function searchboxCallback(searchTerm) {
+// Code from:  http://www.developersdex.com/gurus/articles/276.asp?Page=3
+// This extends the built-in JavaScript Array class to have an intersection method,
+// useful for searches.
+Array.prototype.intersection = function(arr2)	{
+	var returnArray = new Array(); var y = 0;
+	for(var x=0;x<this.length;x++)	{
+		if(arr2.contains(this[x]))	{
+			returnArray[y++] = this[x];
+		}}	return y==0?null:returnArray;
+}
 
+Array.prototype.contains = function(r)	{
+	for(var x=0;x<this.length;x++)	{
+		if(this[x].getId()==r.getId())	{
+			return true;
+		}}	return false; 
+}
+
+// Code from:  http://dev.kanngard.net/Permalinks/ID_20030114184548.html
+function unique(a) {
+	tmp = new Array(0);
+	for(i=0;i<a.length;i++){
+		if(!tmp.contains(a[i])){
+			tmp.length+=1;
+			tmp[tmp.length-1]=a[i];
+		}
+	}
+	return tmp;
+}
+
+// Called after every timeout period on the search box, or if the user hits the return key.
+function searchboxCallback(searchTerms) {
 	var dataStore = new XmlDataStore();
 	var dataHandler = dataStore.open();
-	var entryList = dataHandler.findEntries(searchTerm,"title");
+
+	var theTerms = splitSearchTerms(searchTerms);
+	if (theTerms.length == 0) {
+		populateListbox();
+		return;
+	}
 	
+	var positiveMatches = [];
+	var negativeMatches = [];
+	var finalMatches = [];
+	
+	// Get the first set of positive matches, corresponding to the first positive search term.
+	var termIndex = 0;
+	while((theTerms[termIndex].charAt(0) == "-") && (termIndex < theTerms.length)) termIndex++;
+	if (termIndex < theTerms.length) {
+		if (document.getElementById("title-checkbox").checked) {
+			positiveMatches = positiveMatches.concat(dataHandler.findEntries(theTerms[termIndex], "title"));
+		}
+		if (document.getElementById("tags-checkbox").checked) {
+			positiveMatches = positiveMatches.concat(dataHandler.findEntries(theTerms[termIndex], "tag"));
+		}
+		if (document.getElementById("comments-checkbox").checked) {
+			positiveMatches = positiveMatches.concat(dataHandler.findEntries(theTerms[termIndex], "comment"));
+		}
+		positiveMatches = unique(positiveMatches);
+	}
+
+	
+	// Now, loop over the rest of the positive terms, ANDing the resulting arrays with
+	// our first results array.
+	var nextPositiveMatches = [];
+	for (termIndex = 1; termIndex < theTerms.length; termIndex++) {
+		if (theTerms[termIndex].charAt(0) != "-") {
+			if (document.getElementById("title-checkbox").checked) {
+				nextPositiveMatches = nextPositiveMatches.concat(dataHandler.findEntries(theTerms[termIndex], "title"));
+			}
+			if (document.getElementById("tags-checkbox").checked) {
+				nextPositiveMatches = nextPositiveMatches.concat(dataHandler.findEntries(theTerms[termIndex], "tag"));
+			}
+			if (document.getElementById("comments-checkbox").checked) {
+				nextPositiveMatches = nextPositiveMatches.concat(dataHandler.findEntries(theTerms[termIndex], "comment"));
+			}
+			nextPositiveMatches = unique(nextPositiveMatches);
+			positiveMatches = positiveMatches.intersection(nextPositiveMatches);
+			nextPositiveMatches = [];
+		}
+	}
+	
+	// Get negative matches.
+	for (termIndex = 0; termIndex < theTerms.length; termIndex++) {
+		if (theTerms[termIndex].charAt(0) == "-") {
+			if (document.getElementById("title-checkbox").checked) {
+				negativeMatches = negativeMatches.concat(dataHandler.findEntries(theTerms[termIndex].substring(1), "title"));
+			}
+			if (document.getElementById("tags-checkbox").checked) {
+				negativeMatches = negativeMatches.concat(dataHandler.findEntries(theTerms[termIndex].substring(1), "tag"));
+			}
+			if (document.getElementById("comments-checkbox").checked) {
+				negativeMatches = negativeMatches.concat(dataHandler.findEntries(theTerms[termIndex].substring(1), "comment"));
+			}
+			negativeMatches = unique(negativeMatches);
+		}
+	}
+
+	// Subtract the negative matches from the positive matches; put the result
+	// in finalMatches.
+	var foundNegativeMatch;
+	for (var posIndex = 0; posIndex < positiveMatches.length; posIndex++) {
+		foundNegativeMatch = false;
+		for (var negIndex = 0; negIndex < negativeMatches.length; negIndex++) {
+			if (positiveMatches[posIndex].getId() == negativeMatches[negIndex].getId()) {
+				foundNegativeMatch = true;
+				break;
+			}
+		}
+		if (!foundNegativeMatch) {
+			finalMatches.push(positiveMatches[posIndex]);
+		}
+	}
+	
+	// finalMatches should now have all final matches.
+	
+	
+	// Display the matches in the listbox.
 	clearListbox();
-	for (var i = 0; i < entryList.length; i++) {
-		document.getElementById('results-listbox').appendItem(entryList[i].getTitle());
+	for (var i = 0; i < finalMatches.length; i++) {
+		document.getElementById('results-listbox').appendItem(finalMatches[i].getTitle(), finalMatches[i].getId());
 	}
 	dataStore.close(dataHandler);
+}
+
+// Returns a string array of individual search terms.
+function splitSearchTerms(searchTerms) {
+	if (searchTerms == null) {
+		return null;
+	}
+
+	var splitTerms = [];
 	
+	// Grab all the quoted terms first. If there's a - sign, keep it.
+	var quotedTermsGrabbingRegex = new RegExp("-*\".*?\"", "g");
+	var nextTerm, firstHalf, secondHalf;
+	var nextTerms = [];
+	while (nextTerms = searchTerms.match(quotedTermsGrabbingRegex)) {
+		if (nextTerm = nextTerms[0]) {
+			splitTerms.push(nextTerm.replace(/\"/g, ""));
+			firstHalf = searchTerms.substring(0, searchTerms.indexOf(nextTerm));
+			secondHalf = searchTerms.substring(searchTerms.indexOf(nextTerm) + nextTerm.length, searchTerms.length);
+			searchTerms = firstHalf + secondHalf;
+		}
+	}
+	
+	// Now add in the remaining search terms, stripping off + signs, - signs, empty strings, and single quotes.
+	var remainingTerms = searchTerms.split(/ +/);
+	if (remainingTerms) {
+		for (var i = 0; i < remainingTerms.length; i++) {
+			if (remainingTerms[i].charAt(0) == "+") {
+				remainingTerms[i] = remainingTerms[i].substring(1, remainingTerms[i].length);
+			}
+			if ((remainingTerms[i] != "") && (remainingTerms[i] != "-") && (remainingTerms[i] != "+") && (remainingTerms[i] != "\"") && (remainingTerms[i] != "'")) {
+				splitTerms.push(remainingTerms[i]);
+			}
+		}
+	}
+	
+	return splitTerms;
 }
 
 function drawAll() {

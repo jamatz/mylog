@@ -34,7 +34,7 @@
     
     
     <html:td>
-      <checkbox id="title-checkbox" label="&mylogsidebar.title-checkbox;"/>
+      <checkbox id="title-checkbox" label="&mylogsidebar.title-checkbox;" checked="true"/>
   <checkbox id="comments-checkbox" label="&mylogsidebar.comments-checkbox;"/>
       </html:td>
   </html:tr>
