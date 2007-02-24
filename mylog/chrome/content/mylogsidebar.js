@@ -2,24 +2,51 @@
 // *** ebowden2, jamatz: 02-22-2007: Updated the searchboxCallback function for improved search capabilities.
 // *** ebowden2, jamatz: 02-22-2007: Created helper function parseSearchTerms to tokenize search string
 // *** ebowden2, jamatz: 02-23-2007: Significantly improved searchboxCallback function; should refactor a bit and extract out most of it to another method.  Some known bugs are also present and will be addressed soon.
+// *** ebowden2, jamatz: 02-24-2007: Made the dataStore and handlers global, since practically every function uses them and it's silly to keep opening and closing the store.  Refactored a bit.  Fixed a display bug.  Results are now displayed alphabetically by title by default.  Need to clean up the init code and add a close function to do clean-up when the sidebar is closed.
+
+// Globals
+var dataStore;
+var dataHandler;
 
 function initializeGUI() {
+	dataStore = new XmlDataStore();
+	dataHandler = dataStore.open();
 	populateTagsPopupMenu();
 	populateListbox();
-	//populateTagsPopupMenu();
 }
 
-function populateListbox() {
-	var dataStore = new XmlDataStore();
-	var dataHandler = dataStore.open();
-	var entryList = dataHandler.getAllEntries();
+// Populates the listbox with the entries passed in via the array
+// entryList.  If no array is given, we just assume all entries
+// are wanted.  sortOrder is optional and currently defaults to
+// "title", which sorts alphabetically ascending by title
+function populateListbox(entryList, sortOrder) {
+	// JavaScript doesn't support default parameter values directly.
+	// Too bad, but this works.
+	if (typeof(entryList) == "undefined")
+		entryList = dataHandler.getAllEntries();
+	if (typeof(sortOrder) == "undefined")
+		sortOrder = "title";
+	
 	
 	clearListbox();
+	if (sortOrder == "title") {
+		entryList = entryList.sort(compareTitles);
+	}
 	for (var i = 0; i < entryList.length; i++) {
 		document.getElementById('results-listbox').appendItem(entryList[i].getTitle(), entryList[i].getId());
 	}
-	dataStore.close(dataHandler);
 }
+
+// Case-insensitive title compare helper function.
+function compareTitles(a, b) {
+	if (a.getTitle().toLowerCase() >= b.getTitle().toLowerCase()) {
+		return 1;
+	}
+	else {
+		return -1;
+	}
+}
+
 
 function clearListbox() {
 	while (document.getElementById('results-listbox').getRowCount() > 0) {
@@ -28,8 +55,6 @@ function clearListbox() {
 }
 
 function handleResultClicked() {
-	var dataStore = new XmlDataStore();
-	var dataHandler = dataStore.open();
 	var id = document.getElementById('results-listbox').selectedItem.value;
 	var logEntry = dataHandler.getEntry(id);
 	window.openDialog("chrome://mylog/content/mylog-logEditor.xul","Log Entry Editor",
@@ -69,31 +94,41 @@ function unique(a) {
 }
 
 // Called after every timeout period on the search box, or if the user hits the return key.
-function searchboxCallback(searchTerms) {
-	var dataStore = new XmlDataStore();
-	var dataHandler = dataStore.open();
+function searchboxCallback(searchString) {
+	var commentsSearchBool = document.getElementById("comments-checkbox").checked;
+	var tagsSearchBool = document.getElementById("tags-checkbox").checked;
+	var titleSearchBool = document.getElementById("title-checkbox").checked;
+	
+	var matches = search(searchString, titleSearchBool, tagsSearchBool, commentsSearchBool);
 
-	var theTerms = splitSearchTerms(searchTerms);
+	populateListbox(matches);
+}
+
+// Takes the search string and searches the appropriate fields with it, returning an array of matching entries.
+// If called with an empty search string, we simply return an array of all entries.
+function search(searchString, titleSearchBool, tagsSearchBool, commentsSearchBool) {
+	var theTerms = splitSearchString(searchString);
 	if (theTerms.length == 0) {
-		populateListbox();
-		return;
+		var allEntries = dataHandler.getAllEntries();
+		return allEntries;
 	}
 	
 	var positiveMatches = [];
 	var negativeMatches = [];
 	var finalMatches = [];
+
 	
 	// Get the first set of positive matches, corresponding to the first positive search term.
 	var termIndex = 0;
 	while((theTerms[termIndex].charAt(0) == "-") && (termIndex < theTerms.length)) termIndex++;
 	if (termIndex < theTerms.length) {
-		if (document.getElementById("title-checkbox").checked) {
+		if (titleSearchBool) {
 			positiveMatches = positiveMatches.concat(dataHandler.findEntries(theTerms[termIndex], "title"));
 		}
-		if (document.getElementById("tags-checkbox").checked) {
+		if (tagsSearchBool) {
 			positiveMatches = positiveMatches.concat(dataHandler.findEntries(theTerms[termIndex], "tag"));
 		}
-		if (document.getElementById("comments-checkbox").checked) {
+		if (commentsSearchBool) {
 			positiveMatches = positiveMatches.concat(dataHandler.findEntries(theTerms[termIndex], "comment"));
 		}
 		positiveMatches = unique(positiveMatches);
@@ -105,13 +140,13 @@ function searchboxCallback(searchTerms) {
 	var nextPositiveMatches = [];
 	for (termIndex = 1; termIndex < theTerms.length; termIndex++) {
 		if (theTerms[termIndex].charAt(0) != "-") {
-			if (document.getElementById("title-checkbox").checked) {
+			if (titleSearchBool) {
 				nextPositiveMatches = nextPositiveMatches.concat(dataHandler.findEntries(theTerms[termIndex], "title"));
 			}
-			if (document.getElementById("tags-checkbox").checked) {
+			if (tagsSearchBool) {
 				nextPositiveMatches = nextPositiveMatches.concat(dataHandler.findEntries(theTerms[termIndex], "tag"));
 			}
-			if (document.getElementById("comments-checkbox").checked) {
+			if (commentsSearchBool) {
 				nextPositiveMatches = nextPositiveMatches.concat(dataHandler.findEntries(theTerms[termIndex], "comment"));
 			}
 			nextPositiveMatches = unique(nextPositiveMatches);
@@ -123,13 +158,13 @@ function searchboxCallback(searchTerms) {
 	// Get negative matches.
 	for (termIndex = 0; termIndex < theTerms.length; termIndex++) {
 		if (theTerms[termIndex].charAt(0) == "-") {
-			if (document.getElementById("title-checkbox").checked) {
+			if (titleSearchBool) {
 				negativeMatches = negativeMatches.concat(dataHandler.findEntries(theTerms[termIndex].substring(1), "title"));
 			}
-			if (document.getElementById("tags-checkbox").checked) {
+			if (tagsSearchBool) {
 				negativeMatches = negativeMatches.concat(dataHandler.findEntries(theTerms[termIndex].substring(1), "tag"));
 			}
-			if (document.getElementById("comments-checkbox").checked) {
+			if (commentsSearchBool) {
 				negativeMatches = negativeMatches.concat(dataHandler.findEntries(theTerms[termIndex].substring(1), "comment"));
 			}
 			negativeMatches = unique(negativeMatches);
@@ -153,19 +188,12 @@ function searchboxCallback(searchTerms) {
 	}
 	
 	// finalMatches should now have all final matches.
-	
-	
-	// Display the matches in the listbox.
-	clearListbox();
-	for (var i = 0; i < finalMatches.length; i++) {
-		document.getElementById('results-listbox').appendItem(finalMatches[i].getTitle(), finalMatches[i].getId());
-	}
-	dataStore.close(dataHandler);
+	return finalMatches;
 }
 
 // Returns a string array of individual search terms.
-function splitSearchTerms(searchTerms) {
-	if (searchTerms == null) {
+function splitSearchString(searchString) {
+	if (searchString == null) {
 		return null;
 	}
 
@@ -175,17 +203,17 @@ function splitSearchTerms(searchTerms) {
 	var quotedTermsGrabbingRegex = new RegExp("-*\".*?\"", "g");
 	var nextTerm, firstHalf, secondHalf;
 	var nextTerms = [];
-	while (nextTerms = searchTerms.match(quotedTermsGrabbingRegex)) {
+	while (nextTerms = searchString.match(quotedTermsGrabbingRegex)) {
 		if (nextTerm = nextTerms[0]) {
 			splitTerms.push(nextTerm.replace(/\"/g, ""));
-			firstHalf = searchTerms.substring(0, searchTerms.indexOf(nextTerm));
-			secondHalf = searchTerms.substring(searchTerms.indexOf(nextTerm) + nextTerm.length, searchTerms.length);
-			searchTerms = firstHalf + secondHalf;
+			firstHalf = searchString.substring(0, searchString.indexOf(nextTerm));
+			secondHalf = searchString.substring(searchString.indexOf(nextTerm) + nextTerm.length, searchString.length);
+			searchString = firstHalf + secondHalf;
 		}
 	}
 	
 	// Now add in the remaining search terms, stripping off + signs, - signs, empty strings, and single quotes.
-	var remainingTerms = searchTerms.split(/ +/);
+	var remainingTerms = searchString.split(/ +/);
 	if (remainingTerms) {
 		for (var i = 0; i < remainingTerms.length; i++) {
 			if (remainingTerms[i].charAt(0) == "+") {
@@ -246,9 +274,6 @@ function drawAll() {
 
 
 function populateTagsPopupMenu() {
-
-	var dataStore = new XmlDataStore();
-	var dataHandler = dataStore.open();
 	var tagNameArr = dataHandler.getAllTags();
 	var tagsPopupMenu = document.getElementById("tags-popup");
 
@@ -261,19 +286,20 @@ function populateTagsPopupMenu() {
 		menuItem.setAttribute( "id" , "mylog-tag-" + tagNameArr[i]);
 		menuItem.setAttribute("oncommand", "processTagSelection(this.value);");
 		tagsPopupMenu.appendChild(menuItem);
-	}
-	
-	dataStore.close(dataHandler);
-	
+	}	
 }
 
 function processTagSelection(tag) {	
 	var searchBox = document.getElementById("SearchBox");
+	var tagsPopupMenu = document.getElementById("tags-menu");
+	var tagsCheckbox = document.getElementById("tags-checkbox");
 	
 	if (searchBox.value.length != 0)
 		searchBox.value = searchBox.value + " ";
 	searchBox.value = searchBox.value + '"' + tag + '"';
 		
+	tagsPopupMenu.selectedIndex = 0;
+	tagsCheckbox.checked = true;
 	searchBox.setSelectionRange(searchBox.value.length - tag.length - 2, searchBox.value.length);
 	
 }
