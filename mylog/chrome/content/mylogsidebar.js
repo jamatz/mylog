@@ -233,6 +233,12 @@ function splitSearchString(searchString) {
 	return splitTerms;
 }
 
+
+function takePreviewScreenshot() {
+	
+
+}
+
 function drawAll() {
 
 	var mainWindow = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
