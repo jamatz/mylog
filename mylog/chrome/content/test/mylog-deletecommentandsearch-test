@@ -1,0 +1,63 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>ECMAUnit Tests</title>
+    <script language="JavaScript" type="text/javascript" src="chrome://mylog/content/mylog.js"></script>
+    <script language="JavaScript" type="text/javascript" src="chrome://mylog/content/mylog-datastorage.js"></script>
+    <script language="JavaScript" type="text/javascript" src="chrome://mylog/content/mylogsidebar.js"></script>
+    <script type="text/javascript" src="chrome://mylog/content/test/ecmaunit.js"> </script>
+    <script type="text/javascript">
+//<![CDATA[
+var testWindow;
+var dataStore;
+var dataHandler;
+
+function TestDeleteCommentAndSearch() {
+    this.name = 'TestDeleteCommentAndSearch';
+    
+    this.setUp = function() {
+    	dataStore = new XmlDataStore();
+		dataHandler = dataStore.open();
+    };
+    
+    this.testDeleteCommentAndSearch1 = function() {
+		
+		handleLogContentSubmission("http://www.fakeurlmadefortesting.com", DCAS System Test Page, new Array('uniquetag1', 'uniquetag2'), "uniqueComment1", window.content.document);
+		var searchResults = search("uniqueComment1", false, false, true);  //Search by commment only
+		assertTrue(searchResults != null);
+		assertEquals(searchResults.length, 1);
+		searchResults[0].removeCommentAt(0);
+		dataHandler.replaceEntry(searchResults[0].getId());
+		searchResults = search("uniqueComment1", false, false, true); //Search by comment only
+		assertTrue(searchResults != null);
+		assertEquals(searchResults.length, 0); //It no longer should find the entry by that comment
+		
+		searchResults = search("DCAS", true, false, false); //Search by title
+		assertTrue(searchResults != null);
+		assertEquals(searchResults.length, 1); //The entry is still around though, just without that comment
+		
+    };
+
+	
+	this.tearDown = function() {
+    	dataStore.close(dataHandler);
+    };
+};
+TestDeleteCommentAndSearch.prototype = new TestCase;
+
+function runTests() {
+    placeholder = document.getElementById('placeholder');
+    var testsuite = new TestSuite(new HTMLReporter(placeholder));
+    testsuite.registerTest(TestDeleteCommentAndSearch);
+    testsuite.runSuite();
+}
+        
+//]]>
+</script>
+</head>
+
+<body onload="runTests()">
+<h3>EcmaUnit tests for MyLog Search And Log System Tests</h3>
+<div id="placeholder"> </div>
+</body>
+</html>
