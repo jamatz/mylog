@@ -1,4 +1,4 @@
-<!-- // *** ebowden2, jamatz: 02-26-2007: Added sorting comparison functions test. -->
+<!-- // *** ebowden2, jamatz: 02-26-2007: Add case insensitive searching test. -->
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -13,21 +13,21 @@ var testWindow;
 var dataStore;
 var dataHandler;
 
-        function TestCompares() {
-            this.name = 'TestCompares';
+        function TestCaseSensitivity() {
+            this.name = 'TestCaseSensitivity';
             
             this.setUp = function() {
             	dataStore = new XmlDataStore();
 				dataHandler = dataStore.open();
             };
             
-            this.testCompares1 = function() {
-            // Tests the title compare function (the only one implemented so far).
-            	handleLogContentSubmission("http://fakeurl/for/testing", "Fake Entry", new Array('nothing'), "This is a fake entry for testing.", window.content.document);
-				handleLogContentSubmission("http://fakeurl/for/testing", "Second Fake Entry", new Array('nothing'), "This is a fake entry for testing.", window.content.document);
-				var allEntries = dataHandler.getAllEntries();
-				var theResult = compareTitles(allEntries[allEntries.length - 1], allEntries[allEntries.length - 2]);
-				this.assertEquals(theResult, 1);
+            this.testCaseSensitivity1 = function() {
+            // Tests the XPath translation function and case-insensitive sorting in mylog-datastorage.js
+            	handleLogContentSubmission("http://fakeurl/for/testing", "fAkE enTRY", new Array('nothing'), "This is a fake entry for testing.", window.content.document);
+				handleLogContentSubmission("http://fakeurl/for/testing", "fake entry", new Array('nothing'), "This is a fake entry for testing.", window.content.document);
+				var foundEntries = dataHandler.findEntries("FAKE", "title");
+				this.assertTrue(foundEntries != null);
+				this.assertEquals(foundEntries.length, 2);
             };
 
 			
@@ -35,12 +35,12 @@ var dataHandler;
             	dataStore.close(dataHandler);
             };
         };
-        TestCompares.prototype = new TestCase;
+        TestCaseSensitivity.prototype = new TestCase;
 
         function runTests() {
             placeholder = document.getElementById('placeholder');
             var testsuite = new TestSuite(new HTMLReporter(placeholder));
-            testsuite.registerTest(TestCompares);
+            testsuite.registerTest(TestCaseSensitivity);
             testsuite.runSuite();
         }
         
@@ -49,8 +49,7 @@ var dataHandler;
 </head>
 
 <body onload="runTests()">
-<h3>EcmaUnit tests for MyLog Sorting Comparison Functions</h3>
+<h3>EcmaUnit tests for MyLog Case Insensitive Searching</h3>
 <div id="placeholder"> </div>
 </body>
 </html>
-
