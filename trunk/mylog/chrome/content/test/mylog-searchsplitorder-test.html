@@ -1,0 +1,81 @@
+<!-- // *** ebowden2, jamatz: 02-26-2007: Created Test Case to ensure the function splitSearchString finds search terms in the proper order-->
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>ECMAUnit Tests</title>
+    <script language="JavaScript" type="text/javascript" src="chrome://mylog/content/mylog.js"></script>
+    <script language="JavaScript" type="text/javascript" src="chrome://mylog/content/mylog-datastorage.js"></script>
+    <script language="JavaScript" type="text/javascript" src="chrome://mylog/content/mylogsidebar.js"></script>
+    <script type="text/javascript" src="chrome://mylog/content/test/ecmaunit.js"> </script>
+    <script type="text/javascript">
+//<![CDATA[
+       
+        function TestSearchSplitOrder() {
+            this.name = 'TestSearchSplitOrder';
+            
+            this.setUp = function() { };
+            
+            this.testSearchSplitOrder1 = function() {
+            	var counter = 0;
+            	var testString = 'keyword1 "quoted keyword 1" keyword2';
+            	var results = splitSearchString(testString);
+            	var correct_results = new Array('quoted keyword 1', 'keyword1', 'keyword2');
+            	this.assertEquals(results.length, correct_results.length);
+            	for (var i = 0; i < correct_results.length; i++) {
+					this.assertEquals(correct_results[i], results[i]);
+				}
+			};
+			
+			this.testSearchSplitOrder2 = function() {
+            	var counter = 0;
+            	var testString = 'keyword1 keyword2 keyword3';
+            	var results = splitSearchString(testString);
+            	var correct_results = new Array('keyword1', 'keyword2', 'keyword3');
+            	this.assertEquals(results.length, correct_results.length);
+            	for (var i = 0; i < correct_results.length; i++) {
+					this.assertEquals(correct_results[i], results[i]);
+				}
+			};
+			
+			this.testSearchSplitOrder3 = function() {
+            	var counter = 0;
+            	var testString = '"quoted keyword 1" "quoted keyword 2" keyword1 "quoted keyword 3"';
+            	var results = splitSearchString(testString);
+            	var correct_results = new Array('quoted keyword 1', 'quoted keyword 2', 'quoted keyword 3', 'keyword1');
+            	this.assertEquals(results.length, correct_results.length);
+            	for (var i = 0; i < correct_results.length; i++) {
+					this.assertEquals(correct_results[i], results[i]);
+				}
+			};		
+
+			this.testSearchSplitOrder4 = function() {
+            	var counter = 0;
+            	var testString = '"num 1" "num 2" "num 3"';
+            	var results = splitSearchString(testString);
+            	var correct_results = new Array("num 1", "num 2", "num 3");
+            	this.assertEquals(results.length, correct_results.length);
+            	for (var i = 0; i < correct_results.length; i++) {
+					this.assertEquals(correct_results[i], results[i]);
+				}
+			};
+
+			this.tearDown = function() { };
+        };
+        
+        TestSearchSplitOrder.prototype = new TestCase;
+
+        function runTests() {
+            placeholder = document.getElementById('placeholder');
+            var testsuite = new TestSuite(new HTMLReporter(placeholder));
+            testsuite.registerTest(TestSearchSplitOrder);
+            testsuite.runSuite();
+        }
+//]]>
+</script>
+</head>
+
+<body onload="runTests()">
+<h3>EcmaUnit tests for Splitting Search Strings</h3>
+<div id="placeholder"> </div>
+</body>
+</html>
