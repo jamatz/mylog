@@ -193,6 +193,11 @@ function search(searchString, titleSearchBool, tagsSearchBool, commentsSearchBoo
 
 // Returns a string array of individual search terms.
 function splitSearchString(searchString) {
+
+	if (typeof(searchString) == "undefined") {
+		return null;
+	}
+	
 	if (searchString == null) {
 		return null;
 	}
