@@ -1,0 +1,55 @@
+<!-- // *** ebowden2, jamatz: 02-26-2007: Added sorting comparison functions test. -->
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>ECMAUnit Tests</title>
+    <script language="JavaScript" type="text/javascript" src="chrome://mylog/content/mylog.js"></script>
+    <script language="JavaScript" type="text/javascript" src="chrome://mylog/content/mylog-datastorage.js"></script>
+    <script language="JavaScript" type="text/javascript" src="chrome://mylog/content/mylogsidebar.js"></script>
+    <script type="text/javascript" src="chrome://mylog/content/test/ecmaunit.js"> </script>
+    <script type="text/javascript">
+//<![CDATA[
+var testWindow;
+var dataStore;
+var dataHandler;
+
+        function TestCompares() {
+            this.name = 'TestCompares';
+            
+            this.setUp = function() {
+            	dataStore = new XmlDataStore();
+				dataHandler = dataStore.open();
+            };
+            
+            this.testCompares1 = function() {
+            // Tests the title compare function (the only one implemented so far).
+            	handleLogContentSubmission("http://fakeurl/for/testing", "Fake Entry", new Array('nothing'), "This is a fake entry for testing.", window.content.document);
+				handleLogContentSubmission("http://fakeurl/for/testing", "Second Fake Entry", new Array('nothing'), "This is a fake entry for testing.", window.content.document);
+				var allEntries = dataHandler.getAllEntries();
+				var theResult = compareTitles(allEntries[allEntries.length - 1], allEntries[allEntries.length - 2]);
+				this.assertEquals(theResult, 1);
+            };
+
+			
+			this.tearDown = function() {
+            	dataStore.close(dataHandler);
+            };
+        };
+        TestCompares.prototype = new TestCase;
+
+        function runTests() {
+            placeholder = document.getElementById('placeholder');
+            var testsuite = new TestSuite(new HTMLReporter(placeholder));
+            testsuite.registerTest(TestCompares);
+            testsuite.runSuite();
+        }
+        
+//]]>
+</script>
+</head>
+
+<body onload="runTests()">
+<h3>EcmaUnit tests for MyLog Sorting Comparison Functions</h3>
+<div id="placeholder"> </div>
+</body>
+</html>
