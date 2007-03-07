@@ -316,6 +316,40 @@ function processTagSelection(tag) {
 }
 
 
+function createThumbnail() {
+
+  //var w = content.innerWidth + content.scrollMaxX;
+  //var h = content.innerHeight;
+  //if (w > 10000) w = 10000;
+  //if (h > 10000) h = 10000;
+  //if (h < 300)
+  
+  var w = 800;
+  var h = 600;
+
+  var container = document.getElementById("sidebarWindow");
+  var canvasW = 400;
+  //var scale = canvasW/w;
+  //var canvasH = Math.round(h*scale);
+  var canvasH = 300;
+
+  
+
+  var canvas = document.getElementById("preview-canvas");
+  canvas.style.width = canvasW+"px";
+  canvas.style.height = canvasH+"px";
+  canvas.width = canvasW;
+  canvas.height = canvasH;
+  var ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvasW, canvasH);
+  ctx.save();
+  ctx.scale(canvasW/w, canvasH/h);
+  ctx.drawWindow(content, 0, 0, w, h, "rgb(0,0,0)");
+  ctx.restore();
+}
+
+
+
 /*function update(theWindow) {
 
   var w = content.innerWidth + content.scrollMaxX;
