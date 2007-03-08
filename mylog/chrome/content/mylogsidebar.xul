@@ -52,8 +52,8 @@
   </html:tr>
 </html:table>
 
-<html:canvas id="preview-canvas" name="" width="180" height="120" alt="" style="background-color: #000099" />
-
+<html:canvas id="preview-canvas" name="" width="180" height="135" alt="" style="background-color: #000099" />
+<html:canvas id="create-thumbnail-canvas" width="400" height="300" style="display: none;" />
   <listbox id="results-listbox" onclick="handleResultClicked();">
  </listbox>
 
