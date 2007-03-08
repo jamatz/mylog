@@ -26,6 +26,7 @@
     <script type="text/javascript" src="mylog.js"></script>
     <script type="text/javascript" src="mylog-datastorage.js"></script>
 	<script type="text/javascript" src="mylog-tag.js"></script>
+	<script type="text/javascript" src="mylog-utility.js"></script>
     <script type="text/javascript" src="XMLUtil.js"></script>
 
 	<script type="text/javascript">

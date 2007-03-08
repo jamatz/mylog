@@ -1,3 +1,4 @@
+// *** bearly, vviswana: 03-07-2007: Created handleSearchContentRequest
 // *** bearly, vviswana: 02-13-2007: Modified handleLogContentSubmission to call savePage.
 // *** groupmeeting: 02-12-2007: refactored Comment object to use the javascript Date object
 
@@ -25,6 +26,14 @@ function handleSearchLogRequest() {
 	var dataHandler = dataStore.open();
 	window.openDialog("chrome://mylog/content/mylog-searchwindow.xul","mylog-searchwindow",
 		"chrome", dataStore, dataHandler);
+}
+
+function handleSearchContentRequest() {
+	var dataStore = new XmlDataStore();
+	var dataHandler = dataStore.open();
+	var keyword=prompt("Please enter your search keyword","");
+	dataHandler.findEntries(keyword,"content");
+	showResultsPage();
 }
 
 // Created by Brian Cho and Soumi Sinha on December 1, 2006.
