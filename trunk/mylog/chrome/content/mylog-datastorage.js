@@ -373,16 +373,16 @@ function XmlDataHandler() {
                            .createInstance(Components.interfaces.nsILocalFile);
 				file.initWithPath(filepath);
 				
-				var string = fileToString(file);
+				var fileString = fileToString(file);
 				
 				// replace anything in and including "<*>" with " "
-				string = string.replace(/<(.|\n)+?>/gi," ");
-				//string = string.replace(/<.*>/g," ");
-				string = string.replace(/</g,"&lt;");
-				string = string.replace(/>/g,"&gt;");
-				//logMsg(string);
+				fileString = fileString.replace(/<(.|\n)+?>/gi," ");
+				//fileString = fileString.replace(/<.*>/g," ");
+				fileString = fileString.replace(/</g,"&lt;");
+				fileString = fileString.replace(/>/g,"&gt;");
+				//logMsg(fileString);
 				
-				var pos = string.indexOf(keyword);
+				var pos = fileString.indexOf(keyword);
 				if(pos >= 0) {
 					snippetStart = pos - snippetSize;
 					if(snippetStart < 0) {
@@ -390,7 +390,12 @@ function XmlDataHandler() {
 					}
 					
 					resEntries.push(entries[i]);
-					resSnippets.push(string.substr(snippetStart,snippetSize*2 + keyword.length));
+					var snippet = fileString.substr(snippetStart,snippetSize*2 + keyword.length);
+					
+					// Add the bold html tag (<b>) to the keyword
+					var re = new RegExp("" + keyword + "","g");
+					snippet = snippet.replace(re,"<b>" + keyword + "</b>");
+					resSnippets.push(snippet);
 				}
 			}
 			
@@ -456,7 +461,7 @@ function savePage(doc, id)
 
 function saveResultsPage(keyword,entries,snippets) {
 	try {
-		var htmlStr = "<html><head><title>Results for <b>" + keyword + "</b></title></head><body>";
+		var htmlStr = "<html><head><title>Results for " + keyword + "</title></head><body>";
 		htmlStr += "<table>";
 		
 		for (var i=0;i<entries.length;i++) {
