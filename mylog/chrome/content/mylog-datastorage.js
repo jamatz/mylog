@@ -235,8 +235,10 @@ function XmlDataHandler() {
 		var oldNode = xpathRetriever.getNext();
 		if (oldNode) {
 			entriesNode.removeChild(oldNode);
+			return true;
 		} else {
-			dump("removeEntry: No previous node");
+			// dump("removeEntry: No previous node");
+			return false;
 		}
 	}
 
@@ -456,6 +458,31 @@ function savePage(doc, id)
 	} catch (e) {
 		logMsg('savePage Exception ' + e)
 		return "";
+	}
+}
+
+function deleteLocalPage(id) {
+	try	{
+		var file = Components.classes["@mozilla.org/file/directory_service;1"]
+                     .getService(Components.interfaces.nsIProperties)
+                     .get("ProfD", Components.interfaces.nsIFile);
+        file.append("extensions");
+        file.append("mylog");
+        file.append(id + ".html");
+        file.remove(false);
+        
+        var dir = Components.classes["@mozilla.org/file/directory_service;1"]
+             .getService(Components.interfaces.nsIProperties)
+             .get("ProfD", Components.interfaces.nsIFile);
+        dir.append("extensions");
+        dir.append("mylog");
+        dir.append(id);
+        dir.remove(true);
+        
+		return true;
+	} catch (e) {
+		//alert('savePage Exception ' + e)
+		return false;
 	}
 }
 

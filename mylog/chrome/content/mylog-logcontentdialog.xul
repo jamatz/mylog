@@ -46,9 +46,10 @@ Modified by Bryan Early and Soumi Sinha on December 6, 2006.
     </row>
 	<row>
 		<label control="mylog-currenttags" value="Current Tags:"/>
-		<menulist label="Select to Remove a Tag" id="mylog-currenttags" flex="1" oncommand="removeTag();">
-		<menupopup id="mylog-currentTagsPopup"/>
-		</menulist>
+		<listbox id="mylog-currenttags"
+		         flex="1"
+		         onkeypress="if (event.keyCode == 46) removeTag();">
+		</listbox>
 	</row>
  	<row>
 		<label control="mylog-comments" value="Comments:"/>

@@ -54,13 +54,31 @@ function clearListbox() {
 	}
 }
 
-function handleResultClicked() {
+function removeListboxEntry() {
+	var listboxItem = document.getElementById('results-listbox').getSelectedItem(0);
+	var listboxItemId = document.getElementById('results-listbox').getIndexOfItem(listboxItem);
+	document.getElementById('results-listbox').removeItemAt(listboxItemId);
+}
+
+function handleResultClicked(aEvent) {
 	var id = document.getElementById('results-listbox').selectedItem.value;
 	var logEntry = dataHandler.getEntry(id);
-	window.openDialog("chrome://mylog/content/mylog-logEditor.xul","Log Entry Editor",
-		"chrome",logEntry, dataStore, dataHandler);
-	openTopWin(logEntry.getFilePath());
+	if (aEvent.button == 0) { // left click
+		window.openDialog("chrome://mylog/content/mylog-logEditor.xul","Log Entry Editor",
+			"chrome",logEntry, dataStore, dataHandler);
+		openTopWin(logEntry.getFilePath());
+	}
+}
 
+function handleDeleteEntry() {
+	var id = document.getElementById('results-listbox').selectedItem.value;
+	var success = dataHandler.removeEntry(id);
+	if (success) {
+		dataStore.close(dataHandler);
+		deleteLocalPage(id);
+		removeListboxEntry();
+	}
+	return success;
 }
 
 // Code from:  http://www.developersdex.com/gurus/articles/276.asp?Page=3

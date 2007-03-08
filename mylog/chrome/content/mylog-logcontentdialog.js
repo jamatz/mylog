@@ -1,6 +1,7 @@
 // *** bcho2, ebluhm: 02-06-2007: Moved code from mylog-logcontentdialog.xul to mylog-logcontentdialog.js.
 // *** bcho2, ebluhm: 02-06-2007: Fixed bug with Add Tag/Remove Tag.
 
+var availableTags = new Array();
 var selectedTags = new Array();
 
 //  Modified by Bryan Early and Soumi Sinha on December 5, 2006. - fills tag menu.
@@ -25,6 +26,10 @@ function fillTagMenu() {
 	menuItem.setAttribute( "id" , "mylog-createTag");
 	menuPopup.appendChild(menuItem);
 	document.getElementById("mylog-tags").appendChild(menuPopup);
+}
+
+function addToTagMenu(tag) {
+	document.getElementById("mylog-tags").appendItem(tag, tag);
 }
 
 function doOK()
@@ -66,21 +71,16 @@ function addTag() {
 			return;
 		}
 	}
-	var menuItem = document.createElement("menuitem");
-	menuItem.setAttribute( "label" , tag);
-	menuItem.setAttribute( "value" , tag);
-	menuItem.setAttribute( "id" , "mylog-remove-" + tag);
+	
+	// Put into current tags
 	selectedTags.push(tag);
-	document.getElementById("mylog-currentTagsPopup").appendChild(menuItem);
-	menuItem.selectedIndex = -1;
-}
-
-//	Added by Bryan Early on December 6, 2006.
-//	This function will remove a tag from the current tags.
-function removeTag() {
+	document.getElementById("mylog-currenttags").appendItem(tag, tag);
+	
+	// TODO: BROKENNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+	// Remove from available tags list
 	var tag = document.getElementById("mylog-currenttags").value;
-	var menuElem = document.getElementById("mylog-currentTagsPopup");
-	var tagElem = document.getElementById("mylog-remove-" + tag);
+	var menuElem = document.getElementById("mylog-tagsMenuPopup");
+	var tagElem = document.getElementById("mylog-tag-" + tag);
 	for (var i = 0; i < selectedTags.length; i++) {
 		if (selectedTags[i] == tag) {
 			selectedTags.splice(i,1);
@@ -88,6 +88,22 @@ function removeTag() {
 	}
 	menuElem.removeChild(tagElem);
 	menuElem.selectedItem = -1;
+}
+
+//	Added by Bryan Early on December 6, 2006.
+//	This function will remove a tag from the current tags.
+function removeTag() {
+	var listboxItem = document.getElementById('mylog-currenttags').getSelectedItem(0);
+	var listboxItemId = document.getElementById('mylog-currenttags').getIndexOfItem(listboxItem);
+	document.getElementById('mylog-currenttags').removeItemAt(listboxItemId);
+	
+	var tag = listboxItem.value;
+	alert(tag);
+	for (var i = 0; i < selectedTags.length; i++) {
+		if (selectedTags[i] == tag) {
+			selectedTags.splice(i,1);
+		}		
+	}
 }
 
 //	Added by Bryan Early and Soumi Sinha on December 6, 2006.
