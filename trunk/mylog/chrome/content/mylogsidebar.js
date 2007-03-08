@@ -316,26 +316,17 @@ function processTagSelection(tag) {
 }
 
 
-function createThumbnail() {
-
-  //var w = content.innerWidth + content.scrollMaxX;
-  //var h = content.innerHeight;
-  //if (w > 10000) w = 10000;
-  //if (h > 10000) h = 10000;
-  //if (h < 300)
+function createThumbnail(id) {
+  var widthToCapture = content.innerWidth + content.scrollMaxX;
+  var heightToCapture = Math.round(widthToCapture * 0.75);
   
-  var w = 800;
-  var h = 600;
+  var scaleFactor = 400.0 / widthToCapture;
 
   var container = document.getElementById("sidebarWindow");
   var canvasW = 400;
-  //var scale = canvasW/w;
-  //var canvasH = Math.round(h*scale);
   var canvasH = 300;
 
-  
-
-  var canvas = document.getElementById("preview-canvas");
+  var canvas = document.getElementById("create-thumbnail-canvas");
   canvas.style.width = canvasW+"px";
   canvas.style.height = canvasH+"px";
   canvas.width = canvasW;
@@ -343,9 +334,24 @@ function createThumbnail() {
   var ctx = canvas.getContext("2d");
   ctx.clearRect(0, 0, canvasW, canvasH);
   ctx.save();
-  ctx.scale(canvasW/w, canvasH/h);
-  ctx.drawWindow(content, 0, 0, w, h, "rgb(0,0,0)");
+  ctx.scale(scaleFactor, scaleFactor);
+  ctx.drawWindow(content, 0, 0, widthToCapture, heightToCapture, "rgb(0,0,0)");
   ctx.restore();
+  
+  var dataurl = canvas.toDataURL(); 
+	
+  var file = Components.classes["@mozilla.org/file/directory_service;1"]
+                     .getService(Components.interfaces.nsIProperties)
+                     .get("ProfD", Components.interfaces.nsIFile);
+       
+  file.append("extensions");
+  file.append("mylog");
+  file.append("id" + "-preview.png");
+  
+  var uri  = Components.classes['@mozilla.org/network/standard-url;1'].createInstance(Components.interfaces.nsIURI); 
+  var persist = Components.classes["@mozilla.org/embedding/browser/nsWebBrowserPersist;1"].createInstance(Components.interfaces.nsIWebBrowserPersist); 
+  uri.spec = dataurl;
+  persist.saveURI(uri, null, null, null, null, fileThing);
 }
 
 
