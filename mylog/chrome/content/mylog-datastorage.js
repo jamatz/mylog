@@ -200,9 +200,9 @@ function XmlDataHandler() {
 		_doc.getElementsByTagName("entries")[0].setAttribute("counter", counter.toString());
 
 		var file = savePage(doc, id);
-		var previewFile = createThumbnail(doc, id);
+		//var previewFile = createThumbnail(doc, id);
 		logEntry.setFilePath(file.path);
-		logEntry.setPreviewFilePath(previewFile.path);
+		//logEntry.setPreviewFilePath(previewFile.path);
 
 		var entryElem = _createDomNode(logEntry);
 
