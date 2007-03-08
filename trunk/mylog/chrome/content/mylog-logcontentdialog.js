@@ -78,16 +78,16 @@ function addTag() {
 	
 	// TODO: BROKENNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
 	// Remove from available tags list
-	var tag = document.getElementById("mylog-currenttags").value;
-	var menuElem = document.getElementById("mylog-tagsMenuPopup");
-	var tagElem = document.getElementById("mylog-tag-" + tag);
-	for (var i = 0; i < selectedTags.length; i++) {
-		if (selectedTags[i] == tag) {
-			selectedTags.splice(i,1);
-		}		
-	}
-	menuElem.removeChild(tagElem);
-	menuElem.selectedItem = -1;
+//	var tag = document.getElementById("mylog-currenttags").value;
+//	var menuElem = document.getElementById("mylog-tagsMenuPopup");
+//	var tagElem = document.getElementById("mylog-tag-" + tag);
+//	for (var i = 0; i < selectedTags.length; i++) {
+//		if (selectedTags[i] == tag) {
+//			selectedTags.splice(i,1);
+//		}		
+//	}
+//	menuElem.removeChild(tagElem);
+//	menuElem.selectedItem = -1;
 }
 
 //	Added by Bryan Early on December 6, 2006.
