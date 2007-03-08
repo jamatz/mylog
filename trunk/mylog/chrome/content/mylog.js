@@ -72,6 +72,7 @@ function LogEntry() {
 	var _tags = new Array();      //Array of strings
 	var _comments = new Array();  //Array of Comments
 	var _filePath;
+	var _previewFilePath;
 	var _date;
 	var _time;
 	var _id; /* int (not string) */
@@ -81,8 +82,10 @@ function LogEntry() {
 	this.getTitle = getTitle;
 	this.setTitle = setTitle;
 	this.getFilePath = getFilePath;
+	this.getPreviewFilePath = getPreviewFilePath;
 	this.getFilePathText = getFilePathText;
 	this.setFilePath = setFilePath;
+	this.setPreviewFilePath = setPreviewFilePath;
 	this.getId = getId;
 	this.setId = setId;
 
@@ -120,6 +123,10 @@ function LogEntry() {
 	function getFilePath() {
 		return _filePath;
 	}
+	
+	function getPreviewFilePath() {
+		return _previewFilePath;
+	}
 
 	function getFilePathText() {
 		return _filePath.path;
@@ -127,6 +134,10 @@ function LogEntry() {
 
 	function setFilePath(filePath) {
 		_filePath = filePath;
+	}
+	
+	function setPreviewFilePath(previewFilePath) {
+		_previewFilePath = previewFilePath;
 	}
 
 	function getId() {
