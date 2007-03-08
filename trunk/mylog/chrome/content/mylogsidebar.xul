@@ -13,6 +13,9 @@
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/x-javascript" src="chrome://mylog/content/mylogsidebar.js"/>
   
+  <popup id="sidebarEntriesContextMenu">
+    <menuitem id="sidebar_delete" oncommand="handleDeleteEntry();" label="&mylogsidebar.delete-entry;"/>
+  </popup>
 
 <page id="sbMyLogSidebar" title="&mylogsidebar.title;"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
@@ -54,7 +57,10 @@
 
 <html:canvas id="preview-canvas" name="" width="180" height="135" alt="" style="background-color: #000099" />
 <html:canvas id="create-thumbnail-canvas" width="400" height="300" style="display: none;" />
-  <listbox id="results-listbox" onclick="handleResultClicked();">
+  <listbox id="results-listbox"
+           onclick="handleResultClicked(event);"
+           onkeypress="if (event.keyCode == 46) handleDeleteEntry();" 
+           context="sidebarEntriesContextMenu">
  </listbox>
 
   </vbox>
