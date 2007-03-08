@@ -3,6 +3,9 @@
 // *** ebowden2, jamatz: 02-22-2007: Created helper function parseSearchTerms to tokenize search string
 // *** ebowden2, jamatz: 02-23-2007: Significantly improved searchboxCallback function; should refactor a bit and extract out most of it to another method.  Some known bugs are also present and will be addressed soon.
 // *** ebowden2, jamatz: 02-24-2007: Made the dataStore and handlers global, since practically every function uses them and it's silly to keep opening and closing the store.  Refactored a bit.  Fixed a display bug.  Results are now displayed alphabetically by title by default.  Need to clean up the init code and add a close function to do clean-up when the sidebar is closed.
+// *** ebowden2, jamatz: 03-07-2007: Added the createThumbnail function for creating and saving a thumbnail image of a logged page for use in the preview area of the sidebar.
+// *** ebowden2, jamatz: 03-08-2007: Fixed up createThumbnail a bit, added real support for getting the ID of the page.
+
 
 // Globals
 var dataStore;
@@ -334,13 +337,24 @@ function processTagSelection(tag) {
 }
 
 
-function createThumbnail(id) {
+function createThumbnail(doc, id) {
+  
   var widthToCapture = content.innerWidth + content.scrollMaxX;
   var heightToCapture = Math.round(widthToCapture * 0.75);
   
   var scaleFactor = 400.0 / widthToCapture;
-
-  var container = document.getElementById("sidebarWindow");
+  
+  var heightOfPreview = Math.round(heightToCapture * scaleFactor);
+  var heightOfTransparentSection = 300 - heightOfPreview;
+  var yOffset;
+  if (heightOfTransparentSection > 0) {
+  	yOffset = Math.round(heightOfTransparentSection / 2);
+  }
+  else {
+  	yOffset = 0;
+  }
+ 
+  //var container = doc.getElementById("sidebarWindow");
   var canvasW = 400;
   var canvasH = 300;
 
@@ -353,7 +367,7 @@ function createThumbnail(id) {
   ctx.clearRect(0, 0, canvasW, canvasH);
   ctx.save();
   ctx.scale(scaleFactor, scaleFactor);
-  ctx.drawWindow(content, 0, 0, widthToCapture, heightToCapture, "rgb(0,0,0)");
+  ctx.drawWindow(content, 0, yOffset, widthToCapture, heightToCapture, "rgba(0,0,0,0)");
   ctx.restore();
   
   var dataurl = canvas.toDataURL(); 
@@ -364,12 +378,14 @@ function createThumbnail(id) {
        
   file.append("extensions");
   file.append("mylog");
-  file.append("id" + "-preview.png");
+  file.append(id + "-preview.png");
   
   var uri  = Components.classes['@mozilla.org/network/standard-url;1'].createInstance(Components.interfaces.nsIURI); 
   var persist = Components.classes["@mozilla.org/embedding/browser/nsWebBrowserPersist;1"].createInstance(Components.interfaces.nsIWebBrowserPersist); 
   uri.spec = dataurl;
-  persist.saveURI(uri, null, null, null, null, fileThing);
+  persist.saveURI(uri, null, null, null, null, file);
+  
+  return file;
 }
 
 

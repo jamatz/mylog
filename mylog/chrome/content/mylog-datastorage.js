@@ -1,7 +1,9 @@
+// *** ebowden2, jamatz: 03-08-2007: Modified addEntry to add support for storing .png previews of entries.  Also added a "preview" tag to the XML file output for the path to the preview .png file.
 // *** vviswana, bearly: 03-07-2007: Added content searching into findEntries. Also added helper functions,_searchContent and saveResultsPage, to actually search through the saved  pages and also display the results, respectively. Also refactored _readXmlFile to use fileToString(). Added showResultsPage() to display search by content results.                                 
 // *** ebowden2, jamatz: 02-23-2007: Changed the findEntries function so it now searchs on a case-insensitive basis.  Firefox does not support the XPath 2.0 lower-case() function, so this is done using translate() instead, with associated possible bugs when non-English-alphabet characters are encountered.  Should work for most cases, though.
 // *** bearly, vviswana: 02-13-2007: Modified addEntry to return id.  Added savePage function.
 // *** groupmeeting: 02-12-2007: refactored to use refactored Comment object
+
 
 /* INTERFACES */
 
@@ -198,7 +200,9 @@ function XmlDataHandler() {
 		_doc.getElementsByTagName("entries")[0].setAttribute("counter", counter.toString());
 
 		var file = savePage(doc, id);
+		var previewFile = createThumbnail(doc, id);
 		logEntry.setFilePath(file.path);
+		logEntry.setPreviewFilePath(previewFile.path);
 
 		var entryElem = _createDomNode(logEntry);
 
@@ -309,6 +313,7 @@ function XmlDataHandler() {
 		var url = logEntry.getUrl();
 		var title = logEntry.getTitle();
 		var filepath = logEntry.getFilePath(); // TODO: actually get a filepath (once we save an actual file)
+		var previewFilePath = logEntry.getPreviewFilePath();
 		var tags = logEntry.getTags();
 		var comments = logEntry.getComments();
 
@@ -317,12 +322,14 @@ function XmlDataHandler() {
 		var titleElem = _doc.createElement("title");
 		var urlElem = _doc.createElement("url");
 		var filepathElem = _doc.createElement("filepath");
+		var previewFilePathElem = _doc.createElement("preview");
 		var commentsElem = _doc.createElement("comments");
 		entryElem.setAttribute("id", id.toString());
 
 		var titleElemText = _doc.createTextNode(title);
 		var urlElemText = _doc.createTextNode(url);
 		var filepathElemText = _doc.createTextNode(filepath);
+		var previewFilePathElemText = _doc.createTextNode(previewFilePath);
 
 
 		titleElem.appendChild(titleElemText);
@@ -330,6 +337,7 @@ function XmlDataHandler() {
 		urlElem.appendChild(urlElemText);
 		entryElem.appendChild(urlElem);
 		filepathElem.appendChild(filepathElemText);
+		previewFilePathElem.appendChild(previewFilePathElemText);
 		entryElem.appendChild(filepathElem);
 
 		// Add all tags
