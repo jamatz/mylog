@@ -98,7 +98,6 @@ function removeTag() {
 	document.getElementById('mylog-currenttags').removeItemAt(listboxItemId);
 	
 	var tag = listboxItem.value;
-	alert(tag);
 	for (var i = 0; i < selectedTags.length; i++) {
 		if (selectedTags[i] == tag) {
 			selectedTags.splice(i,1);
