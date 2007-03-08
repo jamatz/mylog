@@ -16,7 +16,7 @@
 	<script src="mylog-datastorage.js" />
 	<script src="mylog.js" />
 	<script src="mylog-logEditor.js" />
-
+	<script src="mylog-utility.js" />
 
 <grid flex="1">
 

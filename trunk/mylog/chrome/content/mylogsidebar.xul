@@ -19,6 +19,7 @@
   <script type="text/javascript" src="mylog.js"></script>
   <script type="text/javascript" src="mylog-datastorage.js"></script>
   <script type="text/javascript" src="mylogsidebar.js"></script>
+  <script src="mylog-utility.js" />
   <script type="application/x-javascript" src="chrome://browser/content/utilityOverlay.js"/>
   
   <vbox flex="1">

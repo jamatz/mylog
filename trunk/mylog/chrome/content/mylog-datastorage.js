@@ -1,6 +1,7 @@
+// *** vviswana, bearly: 03-07-2007: Added content searching into findEntries. Also added helper functions,_searchContent and saveResultsPage, to actually search through the saved  pages and also display the results, respectively. Also refactored _readXmlFile to use fileToString(). Added showResultsPage() to display search by content results.                                 
+// *** ebowden2, jamatz: 02-23-2007: Changed the findEntries function so it now searchs on a case-insensitive basis.  Firefox does not support the XPath 2.0 lower-case() function, so this is done using translate() instead, with associated possible bugs when non-English-alphabet characters are encountered.  Should work for most cases, though.
 // *** bearly, vviswana: 02-13-2007: Modified addEntry to return id.  Added savePage function.
 // *** groupmeeting: 02-12-2007: refactored to use refactored Comment object
-// *** ebowden2, jamatz: 02-23-2007: Changed the findEntries function so it now searchs on a case-insensitive basis.  Firefox does not support the XPath 2.0 lower-case() function, so this is done using translate() instead, with associated possible bugs when non-English-alphabet characters are encountered.  Should work for most cases, though.
 
 /* INTERFACES */
 
@@ -99,24 +100,7 @@ function XmlDataStore() {
 			rootElem.appendChild(tagsElem);
 		} else {
 			// alert("File exists");
-
-			// Read file to string (data)
-			var data = "";
-			var fstream = Components.classes["@mozilla.org/network/file-input-stream;1"]
-									.createInstance(Components.interfaces.nsIFileInputStream);
-			var sstream = Components.classes["@mozilla.org/scriptableinputstream;1"]
-									.createInstance(Components.interfaces.nsIScriptableInputStream);
-			fstream.init(file, -1, 0, 0);
-			sstream.init(fstream); 
-
-			var str = sstream.read(4096);
-			while (str.length > 0) {
-			  data += str;
-			  str = sstream.read(4096);
-			}
-
-			sstream.close();
-			fstream.close();
+			var data = fileToString(file);
 
 			// Parse string (data) to DOM object
 			var domParser = new DOMParser();
@@ -277,10 +261,12 @@ function XmlDataHandler() {
 		if(searchType == "tag") {
 			xpathStr = "/mylog/entries/entry[entrytags/entrytag/@name = '"+keyword+"']";
         } else if(searchType == "comment"){
-			xpathStr = "/mylog/entries/entry[count(comments/comment[contains(.,'" + keyword + "')]) > 0]";
+			xpathStr = "/mylog/entries/entry[count(comments/comment[contains(.,'" + keyword + "')]) > 0]";  
+        } else if(searchType == "content") {
+        	return _searchContent(keyword);
         } else {
 			xpathStr = "/mylog/entries/entry[contains(translate("+searchType+", 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), translate('"+keyword+"', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'))]";
-        }
+      	}
         
 		var entryResults = new Array();
 		if(doSearch == true) {
@@ -373,6 +359,48 @@ function XmlDataHandler() {
 		_doc = doc;
 	}
 
+	function _searchContent(keyword) {
+		try {
+			var snippetSize = 70;
+			var snippetStart = 0;
+			var entries = getAllEntries();
+			var resEntries = new Array();
+			var resSnippets = new Array();
+		
+			for(var i=0;i<entries.length;i++) {
+				var filepath = entries[i].getFilePath();
+				var file = Components.classes["@mozilla.org/file/local;1"]
+                           .createInstance(Components.interfaces.nsILocalFile);
+				file.initWithPath(filepath);
+				
+				var string = fileToString(file);
+				
+				// replace anything in and including "<*>" with " "
+				string = string.replace(/<(.|\n)+?>/gi," ");
+				//string = string.replace(/<.*>/g," ");
+				string = string.replace(/</g,"&lt;");
+				string = string.replace(/>/g,"&gt;");
+				//logMsg(string);
+				
+				var pos = string.indexOf(keyword);
+				if(pos >= 0) {
+					snippetStart = pos - snippetSize;
+					if(snippetStart < 0) {
+						snippetStart = 0;
+					}
+					
+					resEntries.push(entries[i]);
+					resSnippets.push(string.substr(snippetStart,snippetSize*2 + keyword.length));
+				}
+			}
+			
+			saveResultsPage(keyword,resEntries,resSnippets);
+			
+			return resEntries;
+		} catch(e) {
+			logMsg('Encountered LogEntry::_searchContent() exception:' + e);
+		}
+	}
 }
 
 function XpathRetriever(dom, xpathString) {
@@ -390,40 +418,9 @@ function XpathRetriever(dom, xpathString) {
 			var thisNode = _resultsIter.iterateNext();
 			return thisNode;
 		} catch (e) {
-			dump( 'XpathRetriever Exception: ' + e );
+			logMsg( 'XpathRetriever Exception: ' + e );
 		}
 	}
-}
-
-function savePageBlah(url, id) {
-	try {
-		 var data = "";
-		 var req = new XMLHttpRequest();
-		 req.open('GET', url, false); 
-		 req.send(null);
-		 if(req.status == 200)
-		   data = req.responseText;
-  
-		  var file = Components.classes["@mozilla.org/file/directory_service;1"]
-                     .getService(Components.interfaces.nsIProperties)
-                     .get("ProfD", Components.interfaces.nsIFile);
-          file.append("mylog");
-          file.append(id + ".html");
-          
-          // file is nsIFile, data is a string
-		  var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"]
-		                         .createInstance(Components.interfaces.nsIFileOutputStream);
-		
-		  // use 0x02 | 0x10 to open file for appending.
-		  foStream.init(file, 0x02 | 0x08 | 0x20, 0664, 0); // write, create
-		  foStream.write(data, data.length);
-		  foStream.close();
-		  return file;
-          
-	} catch (e) {
-		dump('savePage Exception ' + e);
-	}
-	return "";
 }
 
 function savePage(doc, id)
@@ -442,14 +439,66 @@ function savePage(doc, id)
              .get("ProfD", Components.interfaces.nsIFile);
         dir.append("extensions");
         dir.append("mylog");
+        
+     	createDirectory(dir);
         dir.append(id);
+        createDirectory(dir);
         
 		var saver =  Components.classes["@mozilla.org/embedding/browser/nsWebBrowserPersist;1"]
 			.createInstance(Components.interfaces.nsIWebBrowserPersist); 
 		saver.saveDocument(doc, file, dir, null, null, null);
 		return file;
 	} catch (e) {
-		//alert('savePage Exception ' + e)
+		logMsg('savePage Exception ' + e)
 		return "";
+	}
+}
+
+function saveResultsPage(keyword,entries,snippets) {
+	try {
+		var htmlStr = "<html><head><title>Results for <b>" + keyword + "</b></title></head><body>";
+		htmlStr += "<table>";
+		
+		for (var i=0;i<entries.length;i++) {
+			htmlStr += "<tr><td><a href=" + entries[i].getUrl() + ">" + entries[i].getTitle() + "</a></td></tr>\n";
+			//alert(snippets[i]);
+			htmlStr += "<tr><td>" + snippets[i] + "</td></tr>\n";
+			htmlStr += "<tr><td><a href=file://" + entries[i].getFilePath() + ">" + entries[i].getFilePath() + "</a></td></tr>\n";
+			htmlStr += "<tr><td>&nbsp;</td></tr>\n";
+		}
+	
+		htmlStr += "</table></body></html>";
+		
+		// construct an nsIFile for the page stored on (profile)/mylog/results
+		var file = Components.classes["@mozilla.org/file/directory_service;1"]
+	                     .getService(Components.interfaces.nsIProperties)
+	                     .get("ProfD", Components.interfaces.nsIFile);
+	    file.append("extensions");
+	    file.append("mylog");
+	    file.append("results");
+	    createDirectory(file);
+	    file.append("results.html");
+		stringToFile(file,htmlStr);
+		
+		return htmlStr;
+	} catch(e) {
+		logMsg("Exception caught in saveResultsPage(): " + e);
+		return "";
+	}
+}
+
+function showResultsPage() {
+	try {
+		// construct an nsIFile for the page stored on (profile)/mylog/results
+		var file = Components.classes["@mozilla.org/file/directory_service;1"]
+	                     .getService(Components.interfaces.nsIProperties)
+	                     .get("ProfD", Components.interfaces.nsIFile);
+	    file.append("extensions");
+	    file.append("mylog");
+	    file.append("results");
+	    file.append("results.html");
+		openUILinkIn(file.path, "current");
+	}catch(e) {
+		logMsg("Exception caught in showResultsPage(): " + e);
 	}
 }
