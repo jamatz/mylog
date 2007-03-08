@@ -387,12 +387,11 @@ function XmlDataHandler() {
 				
 				// replace anything in and including "<*>" with " "
 				fileString = fileString.replace(/<(.|\n)+?>/gi," ");
-				//fileString = fileString.replace(/<.*>/g," ");
 				fileString = fileString.replace(/</g,"&lt;");
 				fileString = fileString.replace(/>/g,"&gt;");
-				//logMsg(fileString);
 				
-				var pos = fileString.indexOf(keyword);
+				var keyRe = new RegExp("(" + keyword + ")","i");
+				var pos = fileString.search(keyRe);
 				if(pos >= 0) {
 					snippetStart = pos - snippetSize;
 					if(snippetStart < 0) {
@@ -403,8 +402,9 @@ function XmlDataHandler() {
 					var snippet = fileString.substr(snippetStart,snippetSize*2 + keyword.length);
 					
 					// Add the bold html tag (<b>) to the keyword
-					var re = new RegExp("" + keyword + "","g");
-					snippet = snippet.replace(re,"<b>" + keyword + "</b>");
+					var actualWord = keyRe.exec(snippet);
+					var re = new RegExp("" + actualWord[0] + "","ig");
+					snippet = snippet.replace(re,"<b>" + actualWord[0] + "</b>");
 					resSnippets.push(snippet);
 				}
 			}
