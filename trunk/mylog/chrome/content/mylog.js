@@ -28,6 +28,15 @@ function handleSearchLogRequest() {
 		"chrome", dataStore, dataHandler);
 }
 
+<<<<<<< .mine
+function handleExportRequest() {
+	var dataStore = new XmlDataStore();
+	var dataHandler = dataStore.open();
+	window.openDialog("chrome://mylog/content/mylog-exportwindow.xul","mylog-exportwindow",
+		"chrome", dataStore, dataHandler);
+}
+
+=======
 function handleSearchContentRequest() {
 	var dataStore = new XmlDataStore();
 	var dataHandler = dataStore.open();
@@ -36,6 +45,7 @@ function handleSearchContentRequest() {
 	showResultsPage();
 }
 
+>>>>>>> .r111
 // Created by Brian Cho and Soumi Sinha on December 1, 2006.
 function handleLogContentSubmission(url, title, tags, comment, doc) {
 	var le = new LogEntry();
@@ -161,7 +171,8 @@ function LogEntry() {
 	}
 
 	function removeTagAt(index) {
-		_tags.splice(index,1);
+		if((index > -1) && (index < _tags.length))
+			_tags.splice(index,1);
 	}
 
 	function getComments() {
@@ -180,7 +191,8 @@ function LogEntry() {
 	}
 
 	function removeCommentAt(index) {
-		_comments.splice(index,1);
+		if((index > -1) && (index < _comments.length))
+			_comments.splice(index,1);
 	}	
 
 	function setFromDomNode(domNode) {

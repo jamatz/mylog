@@ -41,6 +41,7 @@
 function XmlDataStore() {
 	this.open = open;
 	this.close = close;
+	this.saveXML = saveXML;
 
 	this.setXmlFilepath = setXmlFilepath;
 	
@@ -137,6 +138,28 @@ function XmlDataStore() {
 		//serializer.serializeToStream(doc, foStream, "");
 		foStream.close();
 	}
+	
+	function saveXML(doc,dir,fileName) {
+
+		// Also save the tags.xml
+		var file = Components.classes["@mozilla.org/file/local;1"]
+                     .createInstance(Components.interfaces.nsILocalFile);
+		file.initWithPath(dir);
+		file.append(fileName);
+				             
+		var serializer = new XMLSerializer();
+		// The actual string that is written to file
+		var data = serializer.serializeToString(doc);
+
+		var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"]
+		                         .createInstance(Components.interfaces.nsIFileOutputStream);
+		// use 0x02 | 0x10 to open file for appending.
+		foStream.init(file, 0x02 | 0x08 | 0x20, 0664, 0); // write, create, truncate
+		foStream.write(data, data.length);
+		foStream.close();
+
+	}
+	
 }
 
 // Created by Brian Cho and Soumi Sinha on December 1, 2006.
@@ -239,11 +262,17 @@ function XmlDataHandler() {
 		var oldNode = xpathRetriever.getNext();
 		if (oldNode) {
 			entriesNode.removeChild(oldNode);
+<<<<<<< .mine
+			return true;
+		} else 
+			return false;
+=======
 			return true;
 		} else {
 			// dump("removeEntry: No previous node");
 			return false;
 		}
+>>>>>>> .r111
 	}
 
 	// argument id is an int (not a string!)
@@ -256,7 +285,8 @@ function XmlDataHandler() {
 			var logEntry = new LogEntry();
 			logEntry.setFromDomNode(thisNode);
 			return logEntry;
-		}
+		} else 
+			return false;		
 	}
 
 	// Modified by Vinayak Viswanathan and Thomas Park on December 7.
@@ -437,7 +467,6 @@ function XpathRetriever(dom, xpathString) {
 		}
 	}
 }
-
 function savePage(doc, id)
 {
 	try

@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<!--
+// *** jdelator, thpark2:03-07-2007:Created the Export/Import of MyLog Content
+-->
+
+<window
+    id="findfile-window"
+    title="Export/Import Content"
+    orient="horizontal"
+	onload="showAllContent();"
+    xmlns:html="http://www.w3.org/1999/xhtml"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+ 
+    <script type="text/javascript" src="mylog-exportwindow.js"></script>
+    <script type="text/javascript" src="mylog.js"></script>
+    <script type="text/javascript" src="mylog-datastorage.js"></script>
+	<script type="text/javascript" src="mylog-tag.js"></script>
+    <script type="text/javascript" src="XMLUtil.js"></script>
+
+	<script type="text/javascript">
+		var dataStore;
+		var dataHandler;
+	
+		function showAllContent() {
+			dataStore = window.arguments[0];
+			dataHandler = window.arguments[1];
+			var entryList = dataHandler.getAllEntries();
+			if(entryList.length > 0) {
+				displayResults(entryList);
+			}		
+		}
+  	</script>
+  	
+  <vbox style="width: 500px;">
+    <hbox id="mylog-hbox">
+		<button 
+            id="find-button" 
+            label="Select All"
+            oncommand="selectAll();"
+        />
+        <button 
+            id="find-button" 
+            label="Deselect All"
+            oncommand="deselectAll();"
+        />
+        <button 
+            id="find-button" 
+            label="Export"
+            oncommand="exportContent();"
+        />        
+        <button 
+            id="find-button" 
+            label="Import"
+            oncommand="alert('Not done');"
+        />
+    </hbox>
+    <hbox id="help">
+		<label control="help-text" value="Select multiple individual items by holding CTRL or select continous items by holding shift"/>
+    </hbox>
+    <listbox id="content" seltype="multiple" onclick="handleContentClicked();">
+    </listbox>
+  </vbox>
+</window>
