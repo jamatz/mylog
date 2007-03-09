@@ -56,7 +56,7 @@ function saveExportXML(exportItems){
 		}
 		exportHandler.addEntry(currentItem);
 	}
-	exportStore.saveXML(exportHandler.getDomDoc(),"C:\\", "test.xml");
+	exportStore.saveXML(exportHandler.getDomDoc(),"C:\\test", "test.xml");
 	alert("Save successful");
 	createDir("test");
 }
