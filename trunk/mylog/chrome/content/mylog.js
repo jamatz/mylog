@@ -28,7 +28,7 @@ function handleSearchLogRequest() {
 		"chrome", dataStore, dataHandler);
 }
 
-<<<<<<< .mine
+
 function handleExportRequest() {
 	var dataStore = new XmlDataStore();
 	var dataHandler = dataStore.open();
@@ -36,7 +36,7 @@ function handleExportRequest() {
 		"chrome", dataStore, dataHandler);
 }
 
-=======
+
 function handleSearchContentRequest() {
 	var dataStore = new XmlDataStore();
 	var dataHandler = dataStore.open();
@@ -45,7 +45,7 @@ function handleSearchContentRequest() {
 	showResultsPage();
 }
 
->>>>>>> .r111
+
 // Created by Brian Cho and Soumi Sinha on December 1, 2006.
 function handleLogContentSubmission(url, title, tags, comment, doc) {
 	var le = new LogEntry();
