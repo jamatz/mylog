@@ -8,17 +8,9 @@
 	<script type="text/javascript" src="mylog.js" />
 	<script type="text/javascript" src="mylog-datastorage.js" />
 	<script type="text/javascript" src="mylogsidebar.js" />
-<<<<<<< .mine
 
-
-
-
-=======
 	<script type="text/javascript" src="mylog-utility.js" />
-	<!--
-	<script type="text/javascript" src="mylog-login.js" />
-	-->
->>>>>>> .theirs
+
 	<script type="text/javascript">
 	    function showUnitTests() {
 	    	// This function will open the web page in the current tab
@@ -34,22 +26,9 @@
 		              oncommand="handleSearchLogRequest()" />
 		<menuitem id="mylog-unittest-index" label="MyLog Unit Tests"
 		             oncommand="showUnitTests()" />
-<<<<<<< .mine
 
-
-
-
-
-
-
-=======
 		<menuitem id="mylog-content-search" label="Search By Content"
 	              oncommand="handleSearchContentRequest()" />
-		<!-- Log in removed -->
-		<!--
-		<menuitem id="mylog-contextmenu-create" label="Log In"
-		              oncommand="BeginLogIn()" />
-		-->
->>>>>>> .theirs
+
 	</popup>
 </overlay>
