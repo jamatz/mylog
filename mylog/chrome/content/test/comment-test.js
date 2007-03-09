@@ -10,6 +10,77 @@ function MyLogTestCase() {
         comments = entry.getComments();
     }
 
+	this.testGetComments = function() {
+		//Already has one comment added from setUp
+		//comment[0] = "First Comment";
+		//getComments returns an array of Comment objects
+		//Each comment object has a string with the content
+		//of the comment and the date
+		
+		var secondComment = "Second comment";
+		var thirdComment = "Third comment";
+		entry.addComment(secondComment);	
+		entry.addComment(thirdComment);		
+		commentsReturned = entry.getComments();
+		this.assertEquals(commentsReturned.length, 3);
+		this.assertEquals(commentsReturned[0].getContent(), "First comment");
+		this.assertEquals(commentsReturned[1].getContent(), "Second comment");
+		this.assertEquals(commentsReturned[2].getContent(), "Third comment");
+	}
+	
+	this.testRemoveComments = function() {
+		//Already has one comment added from setUp
+		//comment[0] = "First Comment";
+		
+		//This should not remove a comment at all or
+		//even give an error message
+		entry.removeCommentAt(-1);
+		this.assertEquals(entry.getComments().length, 1);
+
+		//Boundary Value Analysis
+		//This should remove the first comment				
+		entry.removeCommentAt(0);		
+		commentsReturned = entry.getComments();
+		this.assertEquals(commentsReturned.length, 0);
+
+		//These should remove arbitary comments and
+		//check to make the comments array is the correct length
+		//and the unremoved comments are still there
+		//It will also check for boundary values
+		entry.addComment("First comment");		
+		entry.addComment("Second comment");		
+		entry.addComment("Third comment");
+
+		entry.removeCommentAt(3);		
+		commentsReturned = entry.getComments();
+		this.assertEquals(commentsReturned.length, 3);
+		
+		entry.removeCommentAt(1);		
+		commentsReturned = entry.getComments();
+		this.assertEquals(commentsReturned.length, 2);
+		this.assertEquals(commentsReturned[0].getContent(), "First comment");
+		this.assertEquals(commentsReturned[1].getContent(), "Third comment");
+
+		entry.removeCommentAt(1);
+		commentsReturned = entry.getComments();
+		this.assertEquals(commentsReturned.length, 1);
+		this.assertEquals(commentsReturned[0].getContent(), "First comment");
+
+		entry.removeCommentAt(-1);		
+		commentsReturned = entry.getComments();
+		this.assertEquals(commentsReturned.length, 1);
+
+		entry.removeCommentAt(1);		
+		commentsReturned = entry.getComments();
+		this.assertEquals(commentsReturned.length, 1);
+		
+		entry.removeCommentAt(0);
+		commentsReturned = entry.getComments();
+		this.assertEquals(commentsReturned.length, 0);
+
+	
+	}
+
 	this.testGetDateString = function() {
 		var origDateString = "2007/2/18";
 		var dateString = comments[0].getDateString();
