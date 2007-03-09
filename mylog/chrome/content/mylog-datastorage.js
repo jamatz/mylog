@@ -262,17 +262,10 @@ function XmlDataHandler() {
 		var oldNode = xpathRetriever.getNext();
 		if (oldNode) {
 			entriesNode.removeChild(oldNode);
-<<<<<<< .mine
 			return true;
 		} else 
 			return false;
-=======
-			return true;
-		} else {
-			// dump("removeEntry: No previous node");
-			return false;
-		}
->>>>>>> .r111
+
 	}
 
 	// argument id is an int (not a string!)
