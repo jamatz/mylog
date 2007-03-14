@@ -409,9 +409,10 @@ function XmlDataHandler() {
 				var fileString = fileToString(file);
 				
 				// replace anything in and including "<*>" with " "
-				fileString = fileString.replace(/<(.|\n)+?>/gi," ");
-				fileString = fileString.replace(/</g,"&lt;");
-				fileString = fileString.replace(/>/g,"&gt;");
+				var fileString = fileString.replace(/<(.|\n|\r|\u2028|\u2029)*?>/gi, "");
+//				fileString = fileString.replace(/<\/?[^>]+(>|$)/g, "");
+//				fileString = fileString.replace(/</g,"&lt;");
+//				fileString = fileString.replace(/>/g,"&gt;");
 				
 				var keyRe = new RegExp("(" + keyword + ")","i");
 				var pos = fileString.search(keyRe);
@@ -518,14 +519,14 @@ function deleteLocalPage(id) {
 
 function saveResultsPage(keyword,entries,snippets) {
 	try {
-		var htmlStr = "<html><head><title>Results for " + keyword + "</title></head><body>";
+		var htmlStr = "<html><head><meta http-equiv='content-type' content='text/html; charset=UTF-8'><title>Results for " + keyword + "</title></head><body>";
 		htmlStr += "<table>";
 		
 		for (var i=0;i<entries.length;i++) {
-			htmlStr += "<tr><td><a href=" + entries[i].getUrl() + ">" + entries[i].getTitle() + "</a></td></tr>\n";
+			htmlStr += "<tr><td><a href='" + entries[i].getUrl() + "'>" + entries[i].getTitle() + "</a></td></tr>\n";
 			//alert(snippets[i]);
 			htmlStr += "<tr><td>" + snippets[i] + "</td></tr>\n";
-			htmlStr += "<tr><td><a href=file://" + entries[i].getFilePath() + ">" + entries[i].getFilePath() + "</a></td></tr>\n";
+			htmlStr += "<tr><td>" + entries[i].getUrl() + " - <a href='file://" + entries[i].getFilePath() + "'>Cached</a></td></tr>\n";
 			htmlStr += "<tr><td>&nbsp;</td></tr>\n";
 		}
 	
