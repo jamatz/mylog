@@ -67,6 +67,9 @@ function removeListboxEntry() {
 
 function handleResultClicked(aEvent) {
 	var id = document.getElementById('results-listbox').selectedItem.value;
+	var button = document.getElementById('delete');
+	button.disabled=false;
+	
 	var logEntry = dataHandler.getEntry(id);
 	var titleTBox = document.getElementById('logEntry-title');
 	var tagsTBox = document.getElementById('logEntry-tags');
@@ -101,6 +104,9 @@ function handleResultDblClicked(aEvent) {
 }
 
 function handleDeleteEntry() {
+	var button = document.getElementById('delete');
+	button.disabled=true;
+	
 	var id = document.getElementById('results-listbox').selectedItem.value;
 	var success = dataHandler.removeEntry(id);
 	if (success) {
@@ -410,7 +416,6 @@ function createThumbnail(doc, id) {
   return file;
 }
 
-
 function handleCommentsTreeSelection() {
 	var tree = document.getElementById("comments-tree");
 	tree.startEditing(0,0);
@@ -427,5 +432,4 @@ function handleCommentsTreeSelection() {
 	}
 	alert ("huh?");
 	*/
-	
 }
