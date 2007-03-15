@@ -103,6 +103,7 @@ function LogEntry() {
 	this.addTag = addTag;
 	this.setTagAt = setTagAt;
 	this.removeTagAt = removeTagAt;
+	this.removeTags = removeTags;
 
 	this.getComments = getComments;
 	this.addComment = addComment;
@@ -173,6 +174,13 @@ function LogEntry() {
 	function removeTagAt(index) {
 		if((index > -1) && (index < _tags.length))
 			_tags.splice(index,1);
+	}
+	
+	function removeTags() {
+		var tagLength = _tags.length;
+		for(var i=0;i<tagLength;i++) {
+			removeTagAt(i);
+		}
 	}
 
 	function getComments() {
