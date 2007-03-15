@@ -118,9 +118,8 @@ function handleSaveLogEntryDetails() {
 		var logEntry = dataHandler.getEntry(id);
 		var titleTBox = document.getElementById('logEntry-title');
 		var tagsTBox = document.getElementById('logEntry-tags');
-		
 		logEntry.setTitle(titleTBox.value);
-		
+	
 		// Right now we're removing all current tags first, then adding whatever is in
 		// the textbox, this may be inefficient so feel free to change it
 		logEntry.removeTags();
@@ -130,11 +129,11 @@ function handleSaveLogEntryDetails() {
 		}
 		
 		// Need to deal with comments later
-		
-	
-		dataHandler.close();
+		dataHandler.replaceEntry(logEntry);
+		dataStore.close(dataHandler);
 		dataHandler = dataStore.open();
-	}catch(e) {
+	}
+	catch(e) {
 		logMsg("Exception occurred in handleSaveLogEntryDetails()" + e);
 	}
 }
