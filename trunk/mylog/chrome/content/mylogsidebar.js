@@ -13,6 +13,7 @@ var dataStore;
 var dataHandler;
 
 function initializeGUI() {
+	install_handlers(); // From accjax.  Who knows why?
 	dataStore = new XmlDataStore();
 	dataHandler = dataStore.open();
 	populateTagsPopupMenu();
@@ -382,4 +383,24 @@ function createThumbnail(doc, id) {
   persist.saveURI(uri, null, null, null, null, file);
   
   return file;
+}
+
+
+function handleCommentsTreeSelection() {
+	var tree = document.getElementById("comments-tree");
+	tree.startEditing(0,0);
+	/*var start = new Object();
+	var end = new Object();
+	var numRanges = tree.view.selection.getRangeCount();
+
+	for (var t = 0; t < numRanges; t++){
+		tree.view.selection.getRangeAt(t,start,end);
+		tree.startEditing(start.value, 1);
+		//for (var v = start.value; v <= end.value; v++){
+		//	alert("Item " + v + " is selected.");
+		//}
+	}
+	alert ("huh?");
+	*/
+	
 }
