@@ -6,6 +6,7 @@
 <?xml-stylesheet href="chrome://mylog/skin/mylogsidebar.css" type="text/css" ?>
 <?xml-stylesheet href="chrome://mylog/skin/accjax.css" type="text/css" ?>
 <!DOCTYPE page SYSTEM "chrome://mylog/locale/mylogsidebar.dtd">
+
 <window
     windowtype="global:MyLogSidebar"
     onload="initializeGUI();"
@@ -126,6 +127,10 @@
            onkeypress="if (event.keyCode == 46) handleDeleteEntry();" 
            context="sidebarEntriesContextMenu">
  </listbox>
- </vbox>
+
+<!-- delete button removes the selected logged page and addentry logs content -->
+<button id="delete" label="Delete Entry" oncommand ="handleDeleteEntry();" disabled="true"/>
+<button id="addentry" label="Log Current Page" oncommand ="handleLogContentRequest();"/>
+  </vbox>
 </page>
 </window>
