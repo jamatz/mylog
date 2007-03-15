@@ -10,6 +10,7 @@ const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 const X2_NS ="http://www.w3.org/TR/xhtml2"
 
 var gFocusCell = null;
+var curCell = null;
 
 function spreadsheet_focus(e) {
     if (e.target.tagName == 'grid') {
@@ -31,7 +32,10 @@ function spreadsheet_keypress(e) {
 }
 
 function spreadsheet_click(e) {
-    e.target.focus();
+	curCell = e.target;
+    curCell.focus();
+   // start_edit(clickedCell);
+    setTimeout("start_curcell_edit();", 1000);
 }
 
 const KEY_UP = 38;
@@ -139,6 +143,10 @@ function start_edit(label) {
 	textbox.addEventListener("blur", editable_cell_blur, true);
 	textbox.addEventListener("keypress", editable_cell_keypress, true);
     }, 0);
+}
+
+function start_curcell_edit() {
+	start_edit(curCell);
 }
 
 function done_edit(textbox, keepValue) {
