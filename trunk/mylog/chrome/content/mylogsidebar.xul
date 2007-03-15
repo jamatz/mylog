@@ -33,7 +33,7 @@
   <script src="mylog-utility.js" />
   <script type="application/x-javascript" src="chrome://browser/content/utilityOverlay.js"/>
   
-  <vbox flex="1">
+  <vbox>
 
   <textbox id="SearchBox" label="Search:" type="timed" timeout="100" oncommand="searchboxCallback(this.value);"></textbox>
 	
@@ -67,10 +67,10 @@
 <html:canvas id="create-thumbnail-canvas" width="400" height="300" style="display: none;" />
 <button id="show-logEntry-details" label="Show Details" oncommand="hideDetails();"/>
   <html:div id="logEntry-details" >
-	  <grid flex="1">
+	  <grid>
 	  <columns>
-	    <column flex="2"/>
-	    <column flex="1"/>
+	    <column/>
+	    <column/>
 	  </columns>
 	
 	  <rows>
@@ -81,6 +81,7 @@
 	    <row>
 	      <label value="Comments"/>
 	     
+
 	      <box orient="vertical" flex="1"><hbox flex="1">
 			<grid x2:role="wairole:spreadsheet" class="spreadsheet" id="accjaxspreadsheet" flex="1">
 			  <rows flex="1"></rows>
@@ -97,7 +98,7 @@
 			    </column>
 			    <column flex="1">
 			      <description x2:role="wairole:columnheader" value="Comment"/>
-			      <label x2:role="wairole:gridcell" value="Oh guys, this is such a long comment.  It's like, so long, and stuff, and things, and yet more things, and WHAT IN THE WORLD COULD THAT BE?"/>
+			      <label x2:role="wairole:gridcell" value="Poooop."/>
 			      <label x2:role="wairole:gridcell" value="03/15/05" flex="1"/>
 			      <label x2:role="wairole:gridcell" value="03/15/05" flex="1"/>
 			      <label x2:role="wairole:gridcell" value="03/16/05" flex="1"/>
