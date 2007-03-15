@@ -81,8 +81,13 @@ function handleResultClicked(aEvent) {
 		}
 	}
 	
-	dataHandler.close();
-	dataHandler = dataStore.open();
+	// Show details section
+	var div = document.getElementById("logEntry-details");
+	var button = document.getElementById("show-logEntry-details");
+	if (div.style.display=="none") {
+		div.style.display ="block";
+		button.label = "Hide Details";
+	}
 }
 
 function handleResultDblClicked(aEvent) {
@@ -127,9 +132,30 @@ function handleSaveLogEntryDetails() {
 		// Need to deal with comments later
 		
 	
+		dataHandler.close();
+		dataHandler = dataStore.open();
 	}catch(e) {
 		logMsg("Exception occurred in handleSaveLogEntryDetails()" + e);
 	}
+}
+
+function hideDetails() {
+	try {
+		var div = document.getElementById("logEntry-details");
+		var button = document.getElementById("show-logEntry-details");
+		if (div.style.display=="none") {
+			div.style.display ="block";
+			button.label = "Hide Details";
+		}
+		else {
+			div.style.display ="none";
+			button.label = "Show Details";
+		}
+	
+	}catch(e) {
+		logMsg("Exception occurred in hideDetails()" + e);
+	}
+
 }
 
 // Code from:  http://www.developersdex.com/gurus/articles/276.asp?Page=3

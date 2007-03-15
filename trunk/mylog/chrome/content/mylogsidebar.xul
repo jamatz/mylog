@@ -65,9 +65,8 @@
 
 <html:canvas id="preview-canvas" name="" width="180" height="135" alt="" style="background-color: #000099" />
 <html:canvas id="create-thumbnail-canvas" width="400" height="300" style="display: none;" />
-
-
-  <html:div id="logEntry-details">
+<button id="show-logEntry-details" label="Show Details" oncommand="hideDetails();"/>
+  <html:div id="logEntry-details" >
 	  <grid flex="1">
 	  <columns>
 	    <column flex="2"/>
@@ -81,36 +80,34 @@
 	    </row>
 	    <row>
 	      <label value="Comments"/>
-	      
-	      
+	     
 	      <box orient="vertical" flex="1"><hbox flex="1">
-<grid x2:role="wairole:spreadsheet" class="spreadsheet" id="accjaxspreadsheet" flex="1">
-  <rows flex="1"></rows>
-  <columns flex="1">
-    <column>
-      <description x2:role="wairole:columnheader" value="Date"/>
-      <label x2:role="wairole:gridcell" value="03/14/05" flex="1"/>
-      <label x2:role="wairole:gridcell" value="03/15/05" flex="1"/>
-      <label x2:role="wairole:gridcell" value="03/15/05" flex="1"/>
-      <label x2:role="wairole:gridcell" value="03/16/05" flex="1"/>
-      <label x2:role="wairole:gridcell" value="03/16/05" flex="1"/>
-      <label x2:role="wairole:gridcell" value="03/16/05" flex="1"/>
-      <label x2:role="wairole:gridcell" value="03/16/05" flex="1"/>
-    </column>
-    <column flex="1">
-      <description x2:role="wairole:columnheader" value="Comment"/>
-      <label x2:role="wairole:gridcell" value="Oh guys, this is such a long comment.  It's like, so long, and stuff, and things, and yet more things, and WHAT IN THE WORLD COULD THAT BE?"/>
-      <label x2:role="wairole:gridcell" value="03/15/05" flex="1"/>
-      <label x2:role="wairole:gridcell" value="03/15/05" flex="1"/>
-      <label x2:role="wairole:gridcell" value="03/16/05" flex="1"/>
-      <label x2:role="wairole:gridcell" value="03/16/05" flex="1"/>
-      <label x2:role="wairole:gridcell" value="03/16/05" flex="1"/>
-      <label x2:role="wairole:gridcell" value="03/16/05" flex="1"/>
-    </column>
-  </columns>
-</grid>
-</hbox></box>
-	      
+			<grid x2:role="wairole:spreadsheet" class="spreadsheet" id="accjaxspreadsheet" flex="1">
+			  <rows flex="1"></rows>
+			  <columns flex="1">
+			    <column>
+			      <description x2:role="wairole:columnheader" value="Date"/>
+			      <label x2:role="wairole:gridcell" value="03/14/05" flex="1"/>
+			      <label x2:role="wairole:gridcell" value="03/15/05" flex="1"/>
+			      <label x2:role="wairole:gridcell" value="03/15/05" flex="1"/>
+			      <label x2:role="wairole:gridcell" value="03/16/05" flex="1"/>
+			      <label x2:role="wairole:gridcell" value="03/16/05" flex="1"/>
+			      <label x2:role="wairole:gridcell" value="03/16/05" flex="1"/>
+			      <label x2:role="wairole:gridcell" value="03/16/05" flex="1"/>
+			    </column>
+			    <column flex="1">
+			      <description x2:role="wairole:columnheader" value="Comment"/>
+			      <label x2:role="wairole:gridcell" value="Oh guys, this is such a long comment.  It's like, so long, and stuff, and things, and yet more things, and WHAT IN THE WORLD COULD THAT BE?"/>
+			      <label x2:role="wairole:gridcell" value="03/15/05" flex="1"/>
+			      <label x2:role="wairole:gridcell" value="03/15/05" flex="1"/>
+			      <label x2:role="wairole:gridcell" value="03/16/05" flex="1"/>
+			      <label x2:role="wairole:gridcell" value="03/16/05" flex="1"/>
+			      <label x2:role="wairole:gridcell" value="03/16/05" flex="1"/>
+			      <label x2:role="wairole:gridcell" value="03/16/05" flex="1"/>
+			    </column>
+			  </columns>
+			</grid>
+			</hbox></box>
 	    </row>
 	    <row>
 	      <label value="Tag"/>
@@ -128,7 +125,6 @@
            onkeypress="if (event.keyCode == 46) handleDeleteEntry();" 
            context="sidebarEntriesContextMenu">
  </listbox>
-
-  </vbox>
+ </vbox>
 </page>
 </window>
