@@ -1,3 +1,4 @@
+// *** ebowden2, vviswana: 03-15-2007: Added handler functions for displaying logEntry details and saving to file
 // *** ebowden2, jamatz: 02-13-2007: Initial creation of mylogsidebar.js, filled with one simple function to populate the sidebar's listbox.
 // *** ebowden2, jamatz: 02-22-2007: Updated the searchboxCallback function for improved search capabilities.
 // *** ebowden2, jamatz: 02-22-2007: Created helper function parseSearchTerms to tokenize search string
@@ -66,9 +67,29 @@ function removeListboxEntry() {
 function handleResultClicked(aEvent) {
 	var id = document.getElementById('results-listbox').selectedItem.value;
 	var logEntry = dataHandler.getEntry(id);
+	var titleTBox = document.getElementById('logEntry-title');
+	var tagsTBox = document.getElementById('logEntry-tags');
+	titleTBox.value = logEntry.getTitle();
+	
+	// Load tags
+	var tags = logEntry.getTags();
+	if(tags.length > 0) {
+		tagsTBox.value = tags[0];
+		for(var i=1;i<tags.length;i++) {
+			tagsTBox.value += ", " + tags[i];
+		}
+	}
+	
+	dataHandler.close();
+	dataHandler = dataStore.open();
+}
+
+function handleResultDblClicked(aEvent) {
+	var id = document.getElementById('results-listbox').selectedItem.value;
+	var logEntry = dataHandler.getEntry(id);
 	if (aEvent.button == 0) { // left click
-		window.openDialog("chrome://mylog/content/mylog-logEditor.xul","Log Entry Editor",
-			"chrome",logEntry, dataStore, dataHandler);
+	//	window.openDialog("chrome://mylog/content/mylog-logEditor.xul","Log Entry Editor",
+	//		"chrome",logEntry, dataStore, dataHandler);
 		openTopWin(logEntry.getFilePath());
 	}
 }
@@ -82,6 +103,32 @@ function handleDeleteEntry() {
 		removeListboxEntry();
 	}
 	return success;
+}
+
+function handleSaveLogEntryDetails() {
+	try {
+		// Set necessary data
+		var id = document.getElementById('results-listbox').selectedItem.value;
+		var logEntry = dataHandler.getEntry(id);
+		var titleTBox = document.getElementById('logEntry-title');
+		var tagsTBox = document.getElementById('logEntry-tags');
+		
+		logEntry.setTitle(titleTBox.value);
+		
+		// Right now we're removing all current tags first, then adding whatever is in
+		// the textbox, this may be inefficient so feel free to change it
+		logEntry.removeTags();
+		var tags = tagsTBox.value.split(",");
+		for(var i=0;i<tags.length;i++) {
+			logEntry.addTag(tags[i]);
+		}
+		
+		// Need to deal with comments later
+		
+	
+	}catch(e) {
+		logMsg("Exception occurred in handleSaveLogEntryDetails()" + e);
+	}
 }
 
 // Code from:  http://www.developersdex.com/gurus/articles/276.asp?Page=3
