@@ -1,4 +1,4 @@
-// *** ebowden2, vviswana: 03-15-2007: Added handler functions for displaying logEntry details and saving to file
+// *** ebowden2, vviswana: 03-15-2007: Added handler functions for displaying logEntry details and saving to file.
 // *** ebowden2, jamatz: 02-13-2007: Initial creation of mylogsidebar.js, filled with one simple function to populate the sidebar's listbox.
 // *** ebowden2, jamatz: 02-22-2007: Updated the searchboxCallback function for improved search capabilities.
 // *** ebowden2, jamatz: 02-22-2007: Created helper function parseSearchTerms to tokenize search string
@@ -148,7 +148,7 @@ function hideDetails() {
 	try {
 		var div = document.getElementById("logEntry-details");
 		var button = document.getElementById("show-logEntry-details");
-		if (div.style.display=="none") {
+		if (div.style.display == "none") {
 			div.style.display ="block";
 			button.label = "Hide Details";
 		}
@@ -363,7 +363,6 @@ function processTagSelection(tag) {
 	searchBox.setSelectionRange(searchBox.value.length - tag.length - 2, searchBox.value.length);
 	
 }
-
 
 function createThumbnail(doc, id) {
   
