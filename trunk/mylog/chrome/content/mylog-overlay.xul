@@ -20,7 +20,7 @@
 	<popup id="contentAreaContextMenu">
 		<menuitem id="mylog-contextmenu-create" label="Log Content"
 		              oncommand="handleLogContentRequest()" />
-      	<menuitem id="mylog-contextmenu-create" label="Export/Import MyLog Content"
+    <menuitem id="mylog-contextmenu-create" label="Export/Import MyLog Content"
 		              oncommand="handleExportRequest()" />
 		<menuitem id="mylog-contextmenu-create" label="Search MyLog"
 		              oncommand="handleSearchLogRequest()" />

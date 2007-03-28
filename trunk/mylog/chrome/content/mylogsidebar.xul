@@ -36,6 +36,7 @@
   
   <vbox>
 
+  <textbox id="SearchBox" label="Search:" type="timed" timeout="1000" oncommand="searchboxCallback(this.value);"></textbox>
   <textbox id="SearchBox" label="Search:" persist = "value" type="timed" timeout="100" oncommand="searchboxCallback(this.value);" ></textbox>
 	
 	<html:table>

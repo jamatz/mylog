@@ -170,6 +170,27 @@
             };
         };
         
+        this.testSplitSearchString11 = function() {
+           	var counter = 0;
+           	var testString = 'cheese -------------"cheese and crackers"';
+           	var results = splitSearchString(testString);
+           	var correct_results = new Array("cheese", "-cheese and crackers");
+           	this.assertEquals(results.length, correct_results.length);
+           	for (var i = 0; i < correct_results.length; i++) {
+				counter = 0;
+				this.assertTrue(results != null);
+				if (results != null) {
+					for (var j = 0; j<results.length; j++) {
+						if (results[j] == correct_results[i]) {
+							counter++ ;
+						}
+					}
+				}
+				this.assertEquals(counter, 1);
+			}
+		};
+       
+        
         TestSplitSearchString.prototype = new TestCase;
 
         function runTests() {

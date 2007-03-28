@@ -316,9 +316,15 @@ function splitSearchString(searchString) {
 			searchString = firstHalf + secondHalf;
 		}
 	}
-	
 	// Now add in the remaining search terms, stripping off + signs, - signs, empty strings, and single quotes.
+	searchString = searchString.replace(/\+/g,"");
+	searchString = searchString.replace(/-+/g,"-");
 	var remainingTerms = searchString.split(/ +/);
+	var debug = "";
+	for( var i = 0; i < remainingTerms.length; i++){
+		debug = debug + remainingTerms[i] + "\n";
+	}	
+	alert(debug);
 	if (remainingTerms) {
 		for (var i = 0; i < remainingTerms.length; i++) {
 			if (remainingTerms[i].charAt(0) == "+") {
@@ -329,7 +335,11 @@ function splitSearchString(searchString) {
 			}
 		}
 	}
-	
+	var debug = "";
+	for( var i = 0; i < splitTerms.length; i++){
+		debug = debug + splitTerms[i] + "\n";
+	}	
+	alert(debug);
 	return splitTerms;
 }
 
