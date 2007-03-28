@@ -52,7 +52,7 @@
         <button 
             id="find-button" 
             label="Import"
-            oncommand="alert('Not done');"
+            oncommand="importContent();"
         />
     </hbox>
     <hbox id="help">

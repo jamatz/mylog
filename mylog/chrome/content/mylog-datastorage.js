@@ -40,9 +40,11 @@
 // Created by Brian Cho and Soumi Sinha on December 1, 2006.
 function XmlDataStore() {
 	this.open = open;
+	this.openLocal = openLocal;
 	this.close = close;
 	this.saveXML = saveXML;
-
+	this.readXML = readXML;
+	
 	this.setXmlFilepath = setXmlFilepath;
 	
 	// Private members
@@ -55,11 +57,50 @@ function XmlDataStore() {
 		handler.setDomDoc(doc);
 		return handler;
 	}
+	
+	function openLocal(filePath){
+		var doc = readXML(filePath);      
+		var handler = new XmlDataHandler();
+		handler.setDomDoc(doc);
+		return handler;
+	}
 
 	function close(handler) {
 		var doc = handler.getDomDoc();
 		_saveXmlFile(doc);
 	}
+
+	function readXML(filePath) {
+		var doc;
+		var file = Components.classes["@mozilla.org/file/local;1"]
+	                        .createInstance(Components.interfaces.nsILocalFile);
+		file.initWithPath(filePath);
+		if (!file.exists()) {
+			alert("File doesn't exist");
+		} else {
+			var data = "";
+			var fstream = Components.classes["@mozilla.org/network/file-input-stream;1"]
+			                        .createInstance(Components.interfaces.nsIFileInputStream);
+			var sstream = Components.classes["@mozilla.org/scriptableinputstream;1"]
+			                        .createInstance(Components.interfaces.nsIScriptableInputStream);
+			fstream.init(file, -1, 0, 0);
+			sstream.init(fstream); 
+			
+			var str = sstream.read(4096);
+			while (str.length > 0) {
+			  data += str;
+			  str = sstream.read(4096);
+			}
+			
+			sstream.close();
+			fstream.close();
+			var domParser = new DOMParser();
+			doc = domParser.parseFromString(data, "text/xml");
+		}
+		return doc;
+    }
+
+
 
 	// Created by Vinayak Viswanathan and Thomas Park on December 7.
     function _readXmlFileNew() {
@@ -144,20 +185,17 @@ function XmlDataStore() {
 		// Also save the tags.xml
 		var file = Components.classes["@mozilla.org/file/local;1"]
                      .createInstance(Components.interfaces.nsILocalFile);
-		file.initWithPath(dir);
 		file.append(fileName);
-				             
 		var serializer = new XMLSerializer();
 		// The actual string that is written to file
 		var data = serializer.serializeToString(doc);
-
 		var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"]
 		                         .createInstance(Components.interfaces.nsIFileOutputStream);
+		
 		// use 0x02 | 0x10 to open file for appending.
 		foStream.init(file, 0x02 | 0x08 | 0x20, 0664, 0); // write, create, truncate
 		foStream.write(data, data.length);
 		foStream.close();
-
 	}
 	
 }
@@ -169,6 +207,7 @@ function XmlDataHandler() {
 	this.getAllTags = getAllTags;
 	this.addTag = addTag;
 	this.addEntry = addEntry;
+	this.addPredefinedEntry = addPredefinedEntry;
 	this.replaceEntry = replaceEntry;
 	this.removeEntry = removeEntry;
 	this.getEntry = getEntry;
@@ -215,22 +254,28 @@ function XmlDataHandler() {
 	}
 	
 	function addEntry(logEntry, doc) {
-
 		var idstr = _doc.getElementsByTagName("entries")[0].getAttribute("counter");
 		var id = idstr * 1;
 		logEntry.setId(id);
 		var counter = id + 1;
 		_doc.getElementsByTagName("entries")[0].setAttribute("counter", counter.toString());
-
-		var file = savePage(doc, id);
-		//var previewFile = createThumbnail(doc, id);
-		logEntry.setFilePath(file.path);
-		//logEntry.setPreviewFilePath(previewFile.path);
-
+		if(doc != ""){
+			var file = savePage(doc, id);
+			//var previewFile = createThumbnail(doc, id);
+			logEntry.setFilePath(file.path);
+			//logEntry.setPreviewFilePath(previewFile.path);
+		}
 		var entryElem = _createDomNode(logEntry);
-
-		_doc.getElementsByTagName("entries")[0].appendChild(entryElem); // entriesElem.appendChild(entryElem);
+		_doc.getElementsByTagName("entries")[0].appendChild(entryElem); 
+		return id;
+	}
 	
+	function addPredefinedEntry(logEntry, id) {
+		logEntry.setId(id);
+		var counter = id + 1;
+		_doc.getElementsByTagName("entries")[0].setAttribute("counter", counter.toString());
+		var entryElem = _createDomNode(logEntry);
+		_doc.getElementsByTagName("entries")[0].appendChild(entryElem); 
 		return id;
 	}
 
@@ -477,7 +522,6 @@ function savePage(doc, id)
              .get("ProfD", Components.interfaces.nsIFile);
         dir.append("extensions");
         dir.append("mylog");
-        
      	createDirectory(dir);
         dir.append(id);
         createDirectory(dir);
@@ -564,4 +608,30 @@ function showResultsPage() {
 	}catch(e) {
 		logMsg("Exception caught in showResultsPage(): " + e);
 	}
+}
+
+function readPage(fileName){
+	var file = Components.classes["@mozilla.org/file/directory_service;1"]
+                 .getService(Components.interfaces.nsIProperties)
+                 .get("ProfD", Components.interfaces.nsIFile);
+    file.append("extensions");
+    file.append("mylog");
+    file.append(fileName);
+
+    var data = "";
+	var fstream = Components.classes["@mozilla.org/network/file-input-stream;1"]
+	                        .createInstance(Components.interfaces.nsIFileInputStream);
+	var sstream = Components.classes["@mozilla.org/scriptableinputstream;1"]
+	                        .createInstance(Components.interfaces.nsIScriptableInputStream);
+	fstream.init(file, -1, 0, 0);
+	sstream.init(fstream); 
+	
+	var str = sstream.read(4096);
+	while (str.length > 0) {
+	  data += str;
+	  str = sstream.read(4096);
+	}	
+	sstream.close();
+	fstream.close();
+	return data;
 }
