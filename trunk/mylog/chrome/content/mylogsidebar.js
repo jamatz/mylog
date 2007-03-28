@@ -18,6 +18,7 @@ function initializeGUI() {
 	dataHandler = dataStore.open();
 	populateTagsPopupMenu();
 	populateListbox();
+	hideSearchByContent();
 }
 
 // Populates the listbox with the entries passed in via the array
@@ -374,6 +375,7 @@ function processTagSelection(tag) {
 	
 }
 
+
 function createThumbnail(doc, id) {
   
   var widthToCapture = content.innerWidth + content.scrollMaxX;
@@ -423,6 +425,32 @@ function createThumbnail(doc, id) {
   persist.saveURI(uri, null, null, null, null, file);
   
   return file;
+}
+
+function hideSearchByContent() {
+	document.getElementById("searchContentDiv").style.display = "none";
+	document.getElementById("searchDiv").style.display = "block";
+}
+
+function displaySearchByContent() {
+	document.getElementById("searchDiv").style.display = "none";
+	document.getElementById("searchContentDiv").style.display = "block";
+}
+
+function handleSearchByContentClick(searchContent) {
+	if (searchContent) {
+		displaySearchByContent();
+	} else {
+		hideSearchByContent();
+	}
+}
+
+function handleSearchContentRequest() {
+	var keyword = document.getElementById("searchContentBox").value;
+	var dataStore = new XmlDataStore();
+	var dataHandler = dataStore.open();
+	dataHandler.findEntries(keyword,"content");
+	showResultsPage();
 }
 
 function handleCommentsTreeSelection() {

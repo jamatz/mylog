@@ -34,37 +34,61 @@
   <script src="mylog-utility.js" />
   <script type="application/x-javascript" src="chrome://browser/content/utilityOverlay.js"/>
   
-  <vbox>
+  <vbox id="searchVBox" flex="1">
 
-  <textbox id="SearchBox" label="Search:" type="timed" timeout="1000" oncommand="searchboxCallback(this.value);"></textbox>
-  <textbox id="SearchBox" label="Search:" persist = "value" type="timed" timeout="100" oncommand="searchboxCallback(this.value);" ></textbox>
+    
+	<html:div id="searchDiv">
+    	<textbox id="SearchBox" label="Search:" type="timed" timeout="100" oncommand="searchboxCallback(this.value);"></textbox>
+		<html:table>
+		  <html:tr>
+		    <html:td><description id="also-include-description" value="&mylogsidebar.also-include;"/></html:td>
+		  </html:tr>
+		</html:table>
+		<html:table>
+		  <html:tr>
+		    <html:td>
+		      <checkbox id="title-checkbox" label="&mylogsidebar.title-checkbox;" checked="true" oncommand="searchboxCallback(document.getElementById('SearchBox').value);"/>
+		      <checkbox id="comments-checkbox" label="&mylogsidebar.comments-checkbox;" oncommand="searchboxCallback(document.getElementById('SearchBox').value);"/>
+		    </html:td>
+		  </html:tr>
+		  <html:tr>
+		  	<html:td><checkbox id="tags-checkbox" label="&mylogsidebar.tags-checkbox;" oncommand="searchboxCallback(document.getElementById('SearchBox').value);"/>
+		  	  <menulist id="tags-menu">
+		        <menupopup id="tags-popup">
+		        <menuitem label="Select a tag..."/>
+		        </menupopup>
+		      </menulist>
+		    </html:td>
+		  </html:tr>
+		</html:table>
+		<html:table>
+		  <html:tr>
+		    <html:td>
+			  <html:span style="align: right; cursor: pointer" onclick="handleSearchByContentClick(true);">search by content &gt;&gt;&gt;</html:span>
+		    </html:td>
+		  </html:tr>
+		</html:table>
+		
+	</html:div>
+	<html:div id="searchContentDiv">
+		<html:table>
+		  <html:tr>
+		    <html:td>
+				<textbox id="searchContentBox" label="Search:"></textbox>
+				<button label="Search" oncommand="handleSearchContentRequest()"></button>
+			</html:td>
+		  </html:tr>
+		  <html:tr>
+		    <html:td>
+		<html:span style="align: right; cursor: pointer" onclick="handleSearchByContentClick(false);">&lt;&lt;&lt; back</html:span>
+			</html:td>
+		  </html:tr>
+		</html:table>
+	</html:div>
 	
-	<html:table>
-  <html:tr>
-    <html:td><description id="also-include-description" value="&mylogsidebar.also-include;"/></html:td>
-    </html:tr>
-    </html:table>
-    <html:table>
-    <html:tr>
-    
-    
-    
-    <html:td>
-      <checkbox id="title-checkbox" label="&mylogsidebar.title-checkbox;" checked="true" persist="checked" oncommand="searchboxCallback(document.getElementById('SearchBox').value);"/>
-  <checkbox id="comments-checkbox" label="&mylogsidebar.comments-checkbox;" persist = "checked" oncommand="searchboxCallback(document.getElementById('SearchBox').value);"/>
-      </html:td>
-  </html:tr>
-  <html:tr>
-  	<html:td><checkbox id="tags-checkbox" label="&mylogsidebar.tags-checkbox;" persist = "checked" oncommand="searchboxCallback(document.getElementById('SearchBox').value);"/>
-  	<menulist id="tags-menu" persist="selectedIndex">
-      <menupopup id="tags-popup">
-      <menuitem label="Select a tag..."/>
-      </menupopup>
-    </menulist></html:td>
-  
-  </html:tr>
-</html:table>
 
+  </vbox>
+  <vbox>
 <html:canvas id="preview-canvas" name="" width="180" height="135" alt="" style="background-color: #000099" />
 <html:canvas id="create-thumbnail-canvas" width="400" height="300" style="display: none;" />
 <button id="show-logEntry-details" label="Show Details" persist = "label" oncommand="hideDetails();"/>
