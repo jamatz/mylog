@@ -71,6 +71,8 @@ function handleResultClicked(aEvent) {
 	var button = document.getElementById('delete');
 	button.disabled=false;
 	
+	var div = document.getElementById("logEntry-details");
+	
 	var logEntry = dataHandler.getEntry(id);
 	var titleTBox = document.getElementById('logEntry-title');
 	var tagsTBox = document.getElementById('logEntry-tags');
@@ -85,13 +87,6 @@ function handleResultClicked(aEvent) {
 		}
 	}
 	
-	// Show details section
-	var div = document.getElementById("logEntry-details");
-	var button = document.getElementById("show-logEntry-details");
-	if (div.style.display=="none") {
-		div.style.display ="block";
-		button.label = "Hide Details";
-	}
 }
 
 function handleResultDblClicked(aEvent) {

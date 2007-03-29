@@ -156,6 +156,6 @@
 <!-- delete button removes the selected logged page and addentry logs content -->
 <button id="delete" label="Delete Entry" oncommand ="handleDeleteEntry();" disabled="true"/>
 <button id="addentry" label="Log Current Page" oncommand ="handleLogContentRequest();"/>
-  </vbox>
+</vbox>
 </page>
 </window>
