@@ -320,7 +320,7 @@ function splitSearchString(searchString) {
 	for( var i = 0; i < remainingTerms.length; i++){
 		debug = debug + remainingTerms[i] + "\n";
 	}	
-	alert(debug);
+
 	if (remainingTerms) {
 		for (var i = 0; i < remainingTerms.length; i++) {
 			if (remainingTerms[i].charAt(0) == "+") {
@@ -335,7 +335,7 @@ function splitSearchString(searchString) {
 	for( var i = 0; i < splitTerms.length; i++){
 		debug = debug + splitTerms[i] + "\n";
 	}	
-	alert(debug);
+
 	return splitTerms;
 }
 

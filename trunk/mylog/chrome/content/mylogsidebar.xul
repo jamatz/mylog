@@ -47,12 +47,12 @@
 		<html:table>
 		  <html:tr>
 		    <html:td>
-		      <checkbox id="title-checkbox" label="&mylogsidebar.title-checkbox;" checked="true" oncommand="searchboxCallback(document.getElementById('SearchBox').value);"/>
-		      <checkbox id="comments-checkbox" label="&mylogsidebar.comments-checkbox;" oncommand="searchboxCallback(document.getElementById('SearchBox').value);"/>
+		      <checkbox id="title-checkbox" label="&mylogsidebar.title-checkbox;" oncommand="searchboxCallback(document.getElementById('SearchBox').value);" persist="checked"/>
+		      <checkbox id="comments-checkbox" label="&mylogsidebar.comments-checkbox;" oncommand="searchboxCallback(document.getElementById('SearchBox').value);" persist="checked"/>
 		    </html:td>
 		  </html:tr>
 		  <html:tr>
-		  	<html:td><checkbox id="tags-checkbox" label="&mylogsidebar.tags-checkbox;" oncommand="searchboxCallback(document.getElementById('SearchBox').value);"/>
+		  	<html:td><checkbox id="tags-checkbox" label="&mylogsidebar.tags-checkbox;" oncommand="searchboxCallback(document.getElementById('SearchBox').value);" persist="checked"/>
 		  	  <menulist id="tags-menu">
 		        <menupopup id="tags-popup">
 		        <menuitem label="Select a tag..."/>
