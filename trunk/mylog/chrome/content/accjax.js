@@ -33,9 +33,11 @@ function spreadsheet_keypress(e) {
 
 function spreadsheet_click(e) {
 	curCell = e.target;
-    curCell.focus();
-   // start_edit(clickedCell);
-    setTimeout("start_curcell_edit();", 1000);
+	if (curCell.tagName == 'label') {
+		curCell.focus();
+   		// start_edit(clickedCell);
+		setTimeout("start_curcell_edit();", 1000);
+	}
 }
 
 const KEY_UP = 38;
