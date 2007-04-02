@@ -18,6 +18,7 @@ function initializeGUI() {
 	dataHandler = dataStore.open();
 	populateTagsPopupMenu();
 	populateListbox();
+	clearCommentsGrid();
 	hideSearchByContent();
 }
 
@@ -40,6 +41,39 @@ function populateListbox(entryList, sortOrder) {
 	}
 	for (var i = 0; i < entryList.length; i++) {
 		document.getElementById('results-listbox').appendItem(entryList[i].getTitle(), entryList[i].getId());
+	}
+}
+
+// Fills in comments in the comments grid.
+function populateCommentsGrid(theEntry) {
+	clearCommentsGrid();
+	
+	var commentDates = document.getElementById("commentGridDates");
+	var commentComments = document.getElementById("commentGridComments");
+	
+	var tempNode;
+	var tempNode2;
+	var commentArray = theEntry.getComments();
+	for (var i = 0; i < commentArray.length; i++) {
+		tempNode = document.createElement("label");
+		tempNode.setAttribute("x2:role", "wairole:gridcell");
+		tempNode.setAttribute("value", commentArray[i].getDateString());
+		tempNode.setAttribute("flex", "1");
+		commentDates.appendChild(tempNode);
+		tempNode2 = document.createElement("label");
+		tempNode2.setAttribute("x2:role", "wairole:gridcell");
+		tempNode2.setAttribute("value", commentArray[i].getContent());
+		tempNode2.setAttribute("flex", "1");
+		commentComments.appendChild(tempNode2);
+	}
+}
+
+function clearCommentsGrid() {
+	var commentDates = document.getElementById("commentGridDates");
+	var commentComments = document.getElementById("commentGridComments");
+	while (commentDates.childNodes.length > 1) {
+		commentDates.removeChild(commentDates.childNodes[1]);
+		commentComments.removeChild(commentComments.childNodes[1]);
 	}
 }
 
@@ -86,6 +120,9 @@ function handleResultClicked(aEvent) {
 			tagsTBox.value += ", " + tags[i];
 		}
 	}
+	
+	// Load comments
+	populateCommentsGrid(logEntry);
 	
 }
 
