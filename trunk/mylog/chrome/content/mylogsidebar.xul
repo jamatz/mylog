@@ -113,25 +113,11 @@
 			<grid x2:role="wairole:spreadsheet" class="spreadsheet" id="accjaxspreadsheet" flex="1">
 			  <rows flex="1"></rows>
 			  <columns flex="1">
-			    <column>
+			    <column id="commentGridDates">
 			      <description x2:role="wairole:columnheader" value="Date"/>
-			      <label x2:role="wairole:gridcell" value="03/14/05" flex="1"/>
-			      <label x2:role="wairole:gridcell" value="03/15/05" flex="1"/>
-			      <label x2:role="wairole:gridcell" value="03/15/05" flex="1"/>
-			      <label x2:role="wairole:gridcell" value="03/16/05" flex="1"/>
-			      <label x2:role="wairole:gridcell" value="03/16/05" flex="1"/>
-			      <label x2:role="wairole:gridcell" value="03/16/05" flex="1"/>
-			      <label x2:role="wairole:gridcell" value="03/16/05" flex="1"/>
 			    </column>
-			    <column flex="1">
+			    <column flex="1" id="commentGridComments">
 			      <description x2:role="wairole:columnheader" value="Comment"/>
-			      <label x2:role="wairole:gridcell" value="Poooop."/>
-			      <label x2:role="wairole:gridcell" value="03/15/05" flex="1"/>
-			      <label x2:role="wairole:gridcell" value="03/15/05" flex="1"/>
-			      <label x2:role="wairole:gridcell" value="03/16/05" flex="1"/>
-			      <label x2:role="wairole:gridcell" value="03/16/05" flex="1"/>
-			      <label x2:role="wairole:gridcell" value="03/16/05" flex="1"/>
-			      <label x2:role="wairole:gridcell" value="03/16/05" flex="1"/>
 			    </column>
 			  </columns>
 			</grid>
