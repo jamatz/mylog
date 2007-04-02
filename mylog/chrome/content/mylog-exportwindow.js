@@ -47,6 +47,7 @@ function exportContent(){
 
 function importContent(){
 	var XMLPath = getXMLBox("Select the folder where export.xml is located");
+	var folderPath = XMLPath.substr(0,XMLPath.lastIndexOf("\\"));
 	var importDataStore = new XmlDataStore();
 	var importDataHandler = importDataStore.openLocal(XMLPath);
 	var entries = importDataHandler.getAllEntries();
