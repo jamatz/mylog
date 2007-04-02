@@ -63,11 +63,13 @@ function populateCommentsGrid(theEntry) {
 		tempNode.setAttribute("x2:role", "wairole:gridcell");
 		tempNode.setAttribute("value", commentArray[i].getDateString());
 		tempNode.setAttribute("flex", "1");
+		tempNode.setAttribute("id", "comdate-" + theEntry.getId() + "-" + i);
 		commentDates.appendChild(tempNode);
 		tempNode2 = document.createElement("label");
 		tempNode2.setAttribute("x2:role", "wairole:gridcell");
 		tempNode2.setAttribute("value", commentArray[i].getContent());
 		tempNode2.setAttribute("flex", "1");
+		tempNode2.setAttribute("id", "comcom-" + theEntry.getId() + "-" + i);
 		commentComments.appendChild(tempNode2);
 	}
 }
@@ -185,6 +187,9 @@ function handleSaveLogEntryDetails() {
 		}
 		
 		// Need to deal with comments later
+		
+		
+		
 		dataHandler.replaceEntry(logEntry);
 		dataStore.close(dataHandler);
 		dataHandler = dataStore.open();
