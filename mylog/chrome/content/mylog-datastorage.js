@@ -181,10 +181,10 @@ function XmlDataStore() {
 	}
 	
 	function saveXML(doc,dir,fileName) {
-
 		// Also save the tags.xml
 		var file = Components.classes["@mozilla.org/file/local;1"]
                      .createInstance(Components.interfaces.nsILocalFile);
+		file.initWithPath(dir);
 		file.append(fileName);
 		var serializer = new XMLSerializer();
 		// The actual string that is written to file
@@ -196,6 +196,7 @@ function XmlDataStore() {
 		foStream.init(file, 0x02 | 0x08 | 0x20, 0664, 0); // write, create, truncate
 		foStream.write(data, data.length);
 		foStream.close();
+		
 	}
 	
 }
@@ -259,21 +260,22 @@ function XmlDataHandler() {
 		logEntry.setId(id);
 		var counter = id + 1;
 		_doc.getElementsByTagName("entries")[0].setAttribute("counter", counter.toString());
-		if(doc != ""){
+		if(doc.length != 0){
 			var file = savePage(doc, id);
-			//var previewFile = createThumbnail(doc, id);
 			logEntry.setFilePath(file.path);
-			//logEntry.setPreviewFilePath(previewFile.path);
 		}
 		var entryElem = _createDomNode(logEntry);
 		_doc.getElementsByTagName("entries")[0].appendChild(entryElem); 
 		return id;
 	}
 	
-	function addPredefinedEntry(logEntry, id) {
+	function addPredefinedEntry(logEntry, filePath) {
+		var idstr = _doc.getElementsByTagName("entries")[0].getAttribute("counter");
+		var id = idstr * 1;
 		logEntry.setId(id);
 		var counter = id + 1;
 		_doc.getElementsByTagName("entries")[0].setAttribute("counter", counter.toString());
+		logEntry.setFilePath(filePath  + "\\extensions\\mylog\\" + id + ".html");		 		
 		var entryElem = _createDomNode(logEntry);
 		_doc.getElementsByTagName("entries")[0].appendChild(entryElem); 
 		return id;
