@@ -1,3 +1,5 @@
+// *** bearly, jamatz: 04-01-2007: Fixed search() and processTagSelection()
+// *** ebowden2, vviswana: 04-01-2007: Added uniqueTags and trimString as helper functions
 // *** ebowden2, vviswana: 03-15-2007: Added handler functions for displaying logEntry details and saving to file.
 // *** ebowden2, jamatz: 02-13-2007: Initial creation of mylogsidebar.js, filled with one simple function to populate the sidebar's listbox.
 // *** ebowden2, jamatz: 02-22-2007: Updated the searchboxCallback function for improved search capabilities.
@@ -164,8 +166,21 @@ function handleSaveLogEntryDetails() {
 		// Right now we're removing all current tags first, then adding whatever is in
 		// the textbox, this may be inefficient so feel free to change it
 		logEntry.removeTags();
-		var tags = tagsTBox.value.split(",");
+		var tagsString= tagsTBox.value;
+		var tags = tagsString.split(",");
 		for(var i=0;i<tags.length;i++) {
+			tags[i] = trimString(tags[i]);
+		}
+		tags = uniqueTags(tags);
+		var curTags = dataHandler.getAllTags();
+		
+		var index;
+		for(var i=0;i<tags.length;i++) {
+			index = curTags.indexOf(tags[i]);
+			if(index == -1) {
+				dataHandler.addTag(tags[i]);
+				curTags.push(tags[i]);
+			}
 			logEntry.addTag(tags[i]);
 		}
 		
@@ -219,12 +234,37 @@ Array.prototype.contains = function(r)	{
 // Code from:  http://dev.kanngard.net/Permalinks/ID_20030114184548.html
 function unique(a) {
 	tmp = new Array(0);
-	for(i=0;i<a.length;i++){
-		if(!tmp.contains(a[i])){
-			tmp.length+=1;
-			tmp[tmp.length-1]=a[i];
+	try {
+		
+		for(i=0;i<a.length;i++){
+			if(!tmp.contains(a[i])){
+				tmp.length+=1;
+				tmp[tmp.length-1]=a[i];
+			}
 		}
 	}
+	catch(e) {
+		logMsg("Exception in unique: " + e);
+	}
+		
+	return tmp;
+}
+
+function uniqueTags(a) {
+	tmp = new Array(0);
+	try {
+		
+		for(i=0;i<a.length;i++){
+			if(tmp.indexOf(a[i]) == -1){
+				tmp.length+=1;
+				tmp[tmp.length-1]=a[i];
+			}
+		}
+	}
+	catch(e) {
+		logMsg("Exception in uniqueTags: " + e);
+	}
+		
 	return tmp;
 }
 
@@ -507,4 +547,16 @@ function handleCommentsTreeSelection() {
 	}
 	alert ("huh?");
 	*/
+}
+
+function trimString(str) {
+	while(str.charAt(0) == (" ")) {
+		str = str.substring(1);
+	}
+	
+	while(str.charAt(str.length -1) == " ") {
+		str = str.substring(0,str.length-1);
+	}
+	
+	return str;
 }

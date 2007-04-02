@@ -177,10 +177,7 @@ function LogEntry() {
 	}
 	
 	function removeTags() {
-		var tagLength = _tags.length;
-		for(var i=0;i<tagLength;i++) {
-			removeTagAt(i);
-		}
+		_tags = new Array();
 	}
 
 	function getComments() {
