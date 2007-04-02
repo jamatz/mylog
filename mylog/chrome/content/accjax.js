@@ -136,6 +136,7 @@ function start_edit(label) {
     var value = label.value;
     setTimeout(function(){
 	var textbox = document.createElementNS(XUL_NS, "textbox");
+	textbox.setAttribute("id", label.id);
 	label.parentNode.replaceChild(textbox, label);
 	textbox.value = value;
 	textbox.origValue = value;
@@ -155,9 +156,18 @@ function done_edit(textbox, keepValue) {
     var value = textbox.value;
     var label = document.createElementNS(XUL_NS, "label");
     label.setAttributeNS(X2_NS, "role", "wairole:gridcell");
+    label.setAttribute("id", textbox.id);
     textbox.parentNode.replaceChild(label, textbox);
     if (keepValue) {
 	label.value = value;
+	// Actually update the MyLog comments.
+	var theComment = label.id.split("-");
+	var theEntry = dataHandler.getEntry(theComment[1]);
+	theEntry.setCommentAt(theComment[2] * 1, label.value);
+	dataHandler.replaceEntry(theEntry);
+	dataStore.close(dataHandler);
+	dataHandler = dataStore.open();
+	
     } else {
 	label.value = textbox.origValue;
     }

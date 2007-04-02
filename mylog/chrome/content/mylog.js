@@ -106,6 +106,7 @@ function LogEntry() {
 	this.removeTags = removeTags;
 
 	this.getComments = getComments;
+	this.removeComments = removeComments;
 	this.addComment = addComment;
 	this.setCommentAt = setCommentAt;
 	this.removeCommentAt = removeCommentAt;
@@ -199,6 +200,10 @@ function LogEntry() {
 		if((index > -1) && (index < _comments.length))
 			_comments.splice(index,1);
 	}	
+	
+	function removeComments() {
+		_comments = [];
+	}
 
 	function setFromDomNode(domNode) {
         if(domNode.nodeName != "entry") {
