@@ -39,7 +39,8 @@ function exportContent(){
 		var folderPath = getFolderDialogueBox("Export Items to...");
 		folderPath = folderPath + "\\MyLog_Exported_Content"; 
 		saveExportXML(folderPath, items); 
-		copyExportedContent(folderPath, items);	
+		copyExportedContent(folderPath, items);
+		alert("Successfully exported " + selectedItems.length + " items.");	
 	}
 	else
 		alert("Please select items before attempting to export.");
@@ -61,8 +62,9 @@ function importContent(){
 	}
 	dataStore.close(dataHandler);
 	dataHandler = dataStore.open();
-	copyImportedContent(folderPath, oldIDs,newIDs);
+	copyImportedContent(folderPath, oldIDs, newIDs);
 	var entryList = dataHandler.getAllEntries();
+	alert("Successfully imported " + entries.length + " items.");	
 	if(entryList.length > 0) {
 		displayResults(entryList);
 	}
@@ -89,9 +91,11 @@ function copyImportedContent(folderPath, oldIDs, newIDs){
 		var data = readFile(folderPath + "\\" + + i + ".html");
 		writeBinaryFile(data,profileDir + "\\extensions\\mylog\\" + newIDs[i] + ".html");
 		var files = getAllFilesInDir(folderPath + "\\" + i,"local");		
-		for(var j = 0; j < files.length; j++){
-			data = readFile(files[j].path);
-			writeBinaryFileInProfile(data,newIDs[i],files[j].leafName);	
+		if(files){
+			for(var j = 0; j < files.length; j++){
+				data = readFile(files[j].path);
+				writeBinaryFileInProfile(data,newIDs[i],files[j].leafName);	
+			}
 		}
 	}
 }
@@ -100,10 +104,12 @@ function copyExportedContent(folderPath, exportItems){
 	for(var i = 0; i < exportItems.length; i++){
 		var data = readPage(exportItems[i] + ".html");
 		saveFile(folderPath,i + ".html",data);
-		var files = getAllFilesInDir(exportItems[i],"profile");		
-		for(var j = 0; j < files.length; j++){
-			data = readFile(files[j].path);
-			writeBinaryFile(data,folderPath + "\\" + i + "\\" + files[j].leafName);
+		var files = getAllFilesInDir(exportItems[i],"profile");
+		if(files.length != 0){		
+			for(var j = 0; j < files.length; j++){
+				data = readFile(files[j].path);
+				writeBinaryFile(data,folderPath + "\\" + i + "\\" + files[j].leafName);
+			}
 		}
 	}
 }
@@ -182,12 +188,16 @@ function getAllFilesInDir(path,dirLocation){
                      .createInstance(Components.interfaces.nsILocalFile);
 		dir.initWithPath(path);		             
 	}
-	var entries = dir.directoryEntries;
-	var array = [];
-	while(entries.hasMoreElements()){
-	  var entry = entries.getNext();
-	  entry.QueryInterface(Components.interfaces.nsIFile);
-	  array.push(entry);
+	if(dir.exists()){
+		var entries = dir.directoryEntries;
+		var array = [];
+		while(entries.hasMoreElements()){
+		  var entry = entries.getNext();
+		  entry.QueryInterface(Components.interfaces.nsIFile);
+		  array.push(entry);
+		}
+	} else {
+		array = false;
 	}
 	return array;
 }
