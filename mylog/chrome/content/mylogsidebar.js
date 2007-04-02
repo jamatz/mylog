@@ -506,13 +506,14 @@ function createThumbnail(doc, id) {
 }
 
 function hideSearchByContent() {
+//	alert(document.getElementById("searchContentDiv").style.display);
 	document.getElementById("searchContentDiv").style.display = "none";
-	document.getElementById("searchDiv").style.display = "block";
+	document.getElementById("searchDiv").style.display = "";
 }
 
 function displaySearchByContent() {
 	document.getElementById("searchDiv").style.display = "none";
-	document.getElementById("searchContentDiv").style.display = "block";
+	document.getElementById("searchContentDiv").style.display = "";
 }
 
 function handleSearchByContentClick(searchContent) {
