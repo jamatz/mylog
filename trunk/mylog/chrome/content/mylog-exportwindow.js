@@ -35,49 +35,59 @@ function exportContent(){
 	var items = [];
 	for(var i = 0; i < selectedItems.length; i++)
 		items.push(selectedItems[i].value);	
-	if(selectedItems.length != 0){
-		getFolderDialogueBox("Export Items to...");
-		saveExportXML(items); 
-		copyExportedContent(items);	
+	if(selectedItems.length != 0){		
+		var folderPath = getFolderDialogueBox("Export Items to...");
+		folderPath = folderPath + "\\MyLog_Exported_Content"; 
+		saveExportXML(folderPath, items); 
+		copyExportedContent(folderPath, items);	
 	}
 	else
 		alert("Please select items before attempting to export.");
 }
 
 function importContent(){
+	var XMLPath = getXMLBox("Select the folder where export.xml is located");
 	var importDataStore = new XmlDataStore();
-	var importDataHandler = importDataStore.openLocal("C:\\test.xml");	
+	var importDataHandler = importDataStore.openLocal(XMLPath);
 	var entries = importDataHandler.getAllEntries();
 	var oldIDs = [];
 	var newIDs = [];
+	var profileDir = getProfileDirectory();
 	for(var i = 0; i < entries.length; i++){
-		oldIDs.push(entries[i].getId());
-		var newID = dataHandler.addEntry(entries[i]);
+		oldIDs.push(entries[i].getId());		
+		var newID = dataHandler.addPredefinedEntry(entries[i],profileDir);
 		newIDs.push(newID);
 	}
 	dataStore.close(dataHandler);
 	dataHandler = dataStore.open();
-	copyImportedContent(oldIDs,newIDs);
+	copyImportedContent(folderPath, oldIDs,newIDs);
+	var entryList = dataHandler.getAllEntries();
+	if(entryList.length > 0) {
+		displayResults(entryList);
+	}
 }
 
-function saveExportXML(exportItems){
+function saveExportXML(folderPath, exportItems){
 	exportStore = new XmlDataStore();
-	exportStore.setXmlFilepath("test.xml");
-	exportHandler = exportStore.open();
+	exportStore.setXmlFilepath("exported.xml");
+	exportHandler = exportStore.open();	
 	for(var i = 0; i < exportItems.length; i++){
 		var currentItem = dataHandler.getEntry(exportItems[i]);
 		var exportTags = currentItem.getTags();
-		exportHandler.addPredefinedEntry(currentItem,exportItems[i]);
+		exportHandler.addPredefinedEntry(currentItem,"exported");
 		for(var j =0; j < exportTags.length; j++)
 			exportHandler.addTag(exportTags[j]);
 	}
-	createDir("C:\\","test");
-	exportStore.saveXML(exportHandler.getDomDoc(),"C:\\test", "test.xml");
+	createDir(folderPath,"");
+	exportStore.saveXML(exportHandler.getDomDoc(),folderPath, "exported.xml");
 }
 
-function copyImportedContent(oldIDs, newIDs){
+function copyImportedContent(folderPath, oldIDs, newIDs){
+	var profileDir = getProfileDirectory();	
 	for(var i = 0; i < oldIDs.length; i++){
-		var files = getAllFilesInDir(oldIDs[i],"local");		
+		var data = readFile(folderPath + "\\" + + i + ".html");
+		writeBinaryFile(data,profileDir + "\\extensions\\mylog\\" + newIDs[i] + ".html");
+		var files = getAllFilesInDir(folderPath + "\\" + i,"local");		
 		for(var j = 0; j < files.length; j++){
 			data = readFile(files[j].path);
 			writeBinaryFileInProfile(data,newIDs[i],files[j].leafName);	
@@ -85,15 +95,14 @@ function copyImportedContent(oldIDs, newIDs){
 	}
 }
 
-function copyExportedContent(exportItems){
+function copyExportedContent(folderPath, exportItems){
 	for(var i = 0; i < exportItems.length; i++){
 		var data = readPage(exportItems[i] + ".html");
-		saveFile("C:\\test",exportItems[i] + ".html",data);
+		saveFile(folderPath,i + ".html",data);
 		var files = getAllFilesInDir(exportItems[i],"profile");		
-		createDir("C:\\test\\", exportItems[i]);
 		for(var j = 0; j < files.length; j++){
 			data = readFile(files[j].path);
-			writeBinaryFile(data,"C:\\test\\" + exportItems[i] + "\\" + files[j].leafName);
+			writeBinaryFile(data,folderPath + "\\" + i + "\\" + files[j].leafName);
 		}
 	}
 }
@@ -145,14 +154,13 @@ function writeBinaryFileInProfile(data,path,fileName){
 	    stream.finish();
 	} else {
 	    stream.close();
-	}
-	
+	}	
 }
 
 function createDir(initPath,dir){
 	var file = Components.classes["@mozilla.org/file/local;1"]
                      .createInstance(Components.interfaces.nsILocalFile);
-	file.initWithPath(initPath);		             
+	file.initWithPath(initPath);
 	file.append(dir);
 	if( !file.exists() || !file.isDirectory() ) {   // if it doesn't exist, create
 	   file.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, 0664);
@@ -171,8 +179,7 @@ function getAllFilesInDir(path,dirLocation){
 	} else {
 		var dir = Components.classes["@mozilla.org/file/local;1"]
                      .createInstance(Components.interfaces.nsILocalFile);
-		dir.initWithPath("C:\\test");		             
-		dir.append(path);
+		dir.initWithPath(path);		             
 	}
 	var entries = dir.directoryEntries;
 	var array = [];
@@ -209,7 +216,26 @@ function getFolderDialogueBox(dialogText){
 	fp.appendFilters(nsIFilePicker.filterAll | nsIFilePicker.filterText);
 	var rv = fp.show();
 	if (rv == nsIFilePicker.returnOK){
-	  var file = fp.file;
-	  var path = fp.file.path;
+	  //var file = fp.file;
+	  return fp.file.path;
 	}
+}
+
+function getXMLBox(dialogText){
+	nsIFilePicker = Components.interfaces.nsIFilePicker;	
+	var fp = Components.classes["@mozilla.org/filepicker;1"]
+		           .createInstance(nsIFilePicker);
+	fp.init(window, dialogText, nsIFilePicker.modeOpen);
+	fp.appendFilters(nsIFilePicker.filterXML);
+	var rv = fp.show();
+	if (rv == nsIFilePicker.returnOK){
+	  return fp.file.path;
+	}
+}
+
+function getProfileDirectory(){
+	var dir = Components.classes["@mozilla.org/file/directory_service;1"]
+                 .getService(Components.interfaces.nsIProperties)
+                 .get("ProfD", Components.interfaces.nsIFile);
+    return dir.path;       
 }
