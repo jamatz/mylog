@@ -29,6 +29,8 @@ function initializeGUI() {
 function populateListbox(entryList, sortOrder) {
 	// JavaScript doesn't support default parameter values directly.
 	// Too bad, but this works.
+	//alert("entryList is: " + entryList);
+	//alert("sortOrder is: " + sortOrder);
 	if (typeof(entryList) == "undefined")
 		entryList = dataHandler.getAllEntries();
 	if (typeof(sortOrder) == "undefined")
@@ -284,6 +286,8 @@ function search(searchString, titleSearchBool, tagsSearchBool, commentsSearchBoo
 			}
 			nextPositiveMatches = unique(nextPositiveMatches);
 			positiveMatches = positiveMatches.intersection(nextPositiveMatches);
+			if (positiveMatches == null)
+				return [];
 			nextPositiveMatches = [];
 		}
 	}
@@ -400,6 +404,8 @@ function processTagSelection(tag) {
 	if (searchBox.value.length != 0)
 		searchBox.value = searchBox.value + " ";
 	searchBox.value = searchBox.value + '"' + tag + '"';
+	
+	searchboxCallback(searchBox.value);
 		
 	tagsPopupMenu.selectedIndex = 0;
 	tagsCheckbox.checked = true;
