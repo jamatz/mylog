@@ -51,7 +51,7 @@
 		</box>
   	</box>
   	<box id="searchContentDiv" orient="vertical">
-		<textbox id="searchContentBox" label="Search:"></textbox>
+		<textbox id="searchContentBox" label="Search:" onkeypress="if(event.keyCode == 13){handleSearchContentRequest();}"></textbox>
 		<box orient="horizontal">
 		<button label="Search Content" oncommand="handleSearchContentRequest()"></button>
 		</box>
