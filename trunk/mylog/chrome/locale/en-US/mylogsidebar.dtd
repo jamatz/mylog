@@ -8,3 +8,12 @@
 <!ENTITY mylogsidebar.comments-checkbox "Comments">
 <!ENTITY mylogsidebar.tags-checkbox "Tags:">
 <!ENTITY mylogsidebar.delete-entry "Delete Entry">
+<!ENTITY mylogsidebar.toolbarAdd "Log Current Page">
+<!ENTITY mylogsidebar.toolbarDelete "Delete Entry">
+<!ENTITY mylogsidebar.toolbarShowDetails "Show Details">
+<!ENTITY mylogsidebar.toolbarHideDetails "Hide Details">
+<!ENTITY mylogsidebar.toolbarSave "Save Changes">
+<!ENTITY mylogsidebar.toolbarSearchContent "Search By Content">
+
+
+

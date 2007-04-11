@@ -61,8 +61,35 @@
 
 <!--<html:canvas id="preview-canvas" name="" width="180" height="135" alt="" style="background-color: #000099" />
 <html:canvas id="create-thumbnail-canvas" width="400" height="300" style="display: none;" />-->
-<button id="show-logEntry-details" label="Show Details" persist = "label" oncommand="hideDetails();"/>
-  <html:div id="logEntry-details" persist="style" >
+   <toolbox>
+	  <toolbar align="right" id="mylog-toolbar">
+	    <toolbarbutton id="toolbarSave" 
+	    			   image="chrome://mylog/skin/filesave.png" 
+	    			   hidden="true"
+	    			   tooltiptext="&mylogsidebar.toolbarSave;"/>
+	    <toolbarbutton id="toolbarDetails" 
+	    			   image="chrome://mylog/skin/2downarrow.png"
+	    			   tooltiptext="&mylogsidebar.toolbarShowDetails;"
+	    			   oncommand="handleDetails();"/>
+	    <toolbarseparator />
+	    <toolbarbutton id="toolbarFind" 
+	    			   image="chrome://mylog/skin/find.png"
+	    			   tooltiptext="&mylogsidebar.toolbarSearchContent;"
+	    			   checked="true"
+	    			   type="checkbox"/>	    
+	    <toolbarseparator />
+	    <toolbarbutton id="toolbarDelete" 
+	                   image="chrome://mylog/skin/button_cancel.png"
+	                   tooltiptext="&mylogsidebar.toolbarDelete;"
+	                   oncommand ="handleDeleteEntry();"/>
+	    <toolbarseparator />
+	    <toolbarbutton id="toolbarAdd" 
+	                   image="chrome://mylog/skin/bookmark_add.png"
+	                   tooltiptext="&mylogsidebar.toolbarAdd;"
+	                   oncommand ="handleLogContentRequest();"/>
+	  </toolbar>
+	</toolbox>	   
+  <html:div id="logEntry-details" persist="style">
 	  <grid>
 	  <columns>
 	    <column/>
@@ -93,13 +120,13 @@
 			</hbox></box>
 	    </row>
 	    <row>
-	      <label value="Tag"/>
+	      <label value="Tags"/>
 	      <textbox id="logEntry-tags" multiline="true"></textbox>
 	    </row>
 	    <button label="Save" oncommand="handleSaveLogEntryDetails();"/>
 	  </rows>
 	</grid>
-  
+
   </html:div>
 
   <listbox id="results-listbox"
@@ -109,10 +136,6 @@
            context="sidebarEntriesContextMenu"
            seltype="multiple">
  </listbox>
-
-<!-- delete button removes the selected logged page and addentry logs content -->
-<button id="delete" label="Delete Entry" oncommand ="handleDeleteEntry();" disabled="true"/>
-<button id="addentry" label="Log Current Page" oncommand ="handleLogContentRequest();"/>
 
 </box>
 </page>
