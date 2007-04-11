@@ -110,7 +110,7 @@ function removeListboxEntry() {
 
 function handleResultClicked(aEvent) {
 	var id = document.getElementById('results-listbox').selectedItem.value;
-	var button = document.getElementById('delete');
+	var button = document.getElementById('toolbarDelete');
 	button.disabled=false;
 	
 	var div = document.getElementById("logEntry-details");
