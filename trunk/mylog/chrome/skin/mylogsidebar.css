@@ -1,7 +1,16 @@
 /* // *** ebowden2, jamatz: 02-14-2007: Created mylogsidebar.css */
 
 #sbMyLogSidebar {
-	background-color:#6699CC;
+	background-color:#ffffff;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	margin: 0px;
+}
+
+#mylog-toolbox {
+	background-color:#ffffff;
+	border: 0px;
+}
+
+#mylog-toolbar {
+	border: 0px;
 }

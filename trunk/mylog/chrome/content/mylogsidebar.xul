@@ -49,34 +49,33 @@
 		        </menupopup>
 		    </menulist>
 		</box>
-		<label style="align: right; cursor: pointer" onclick="handleSearchByContentClick(true);"
-				value="search by content &gt;&gt;&gt;"></label>		
   	</box>
   	<box id="searchContentDiv" orient="vertical">
 		<textbox id="searchContentBox" label="Search:"></textbox>
-		<button label="Search" oncommand="handleSearchContentRequest()"></button>
-		<label style="align: right; cursor: pointer" onclick="handleSearchByContentClick(false);"
-				value="&lt;&lt;&lt; back"></label>
+		<box orient="horizontal">
+		<button label="Search Content" oncommand="handleSearchContentRequest()"></button>
+		</box>
 	</box>
 
 <!--<html:canvas id="preview-canvas" name="" width="180" height="135" alt="" style="background-color: #000099" />
 <html:canvas id="create-thumbnail-canvas" width="400" height="300" style="display: none;" />-->
-   <toolbox>
+   <toolbox id="mylog-toolbox">
 	  <toolbar align="right" id="mylog-toolbar">
 	    <toolbarbutton id="toolbarSave" 
 	    			   image="chrome://mylog/skin/filesave.png" 
 	    			   hidden="true"
-	    			   tooltiptext="&mylogsidebar.toolbarSave;"/>
+	    			   tooltiptext="&mylogsidebar.toolbarSave;"
+	    			   oncommand="handleSaveLogEntryDetails();"/>
 	    <toolbarbutton id="toolbarDetails" 
 	    			   image="chrome://mylog/skin/2downarrow.png"
 	    			   tooltiptext="&mylogsidebar.toolbarShowDetails;"
 	    			   oncommand="handleDetails();"/>
-	    <toolbarseparator />
+	    <toolbarseparator style="color: #000000;"/>
 	    <toolbarbutton id="toolbarFind" 
 	    			   image="chrome://mylog/skin/find.png"
 	    			   tooltiptext="&mylogsidebar.toolbarSearchContent;"
-	    			   checked="true"
-	    			   type="checkbox"/>	    
+	    			   type="checkbox"
+	    			   oncommand="handleSearchByContentClick();"/>
 	    <toolbarseparator />
 	    <toolbarbutton id="toolbarDelete" 
 	                   image="chrome://mylog/skin/button_cancel.png"
@@ -123,7 +122,6 @@
 	      <label value="Tags"/>
 	      <textbox id="logEntry-tags" multiline="true"></textbox>
 	    </row>
-	    <button label="Save" oncommand="handleSaveLogEntryDetails();"/>
 	  </rows>
 	</grid>
 
