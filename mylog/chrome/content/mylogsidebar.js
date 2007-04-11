@@ -143,7 +143,7 @@ function handleResultDblClicked(aEvent) {
 }
 
 function handleDeleteEntry() {
-	var button = document.getElementById('delete');
+	var button = document.getElementById('toolbarDelete');
 	button.disabled=true;
 	
 	var id = document.getElementById('results-listbox').selectedItem.value;
@@ -199,17 +199,21 @@ function handleSaveLogEntryDetails() {
 	}
 }
 
-function hideDetails() {
+function handleDetails() {
 	try {
 		var div = document.getElementById("logEntry-details");
-		var button = document.getElementById("show-logEntry-details");
-		if (div.style.display == "none") {
+		var button = document.getElementById("toolbarDetails");
+		var saveButton = document.getElementById("toolbarSave");
+		if ((!div.style) || (div.style.display == "none")) {
 			div.style.display ="block";
-			button.label = "Hide Details";
-		}
-		else {
+			saveButton.hidden = false;
+			button.tooltiptext = "&mylogsidebar.toolbarHideDetails;";
+			button.image = "chrome://mylog/skin/2uparrow.png";
+		} else {
 			div.style.display ="none";
-			button.label = "Show Details";
+			saveButton.hidden = "true";
+			button.tooltiptext = "&mylogsidebar.toolbarShowDetails;";
+			button.image = "chrome://mylog/skin/2downarrow.png";
 		}
 	
 	}catch(e) {
