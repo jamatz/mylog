@@ -14,3 +14,35 @@
 #mylog-toolbar {
 	border: 0px;
 }
+
+toolbarbutton#toolbarSave {
+	list-style-image: url("chrome://mylog/skin/filesave.png");
+}
+
+toolbarbutton[disabled="true"]#toolbarSave {
+	list-style-image: url("chrome://mylog/skin/filesave_disabled.png");
+}
+
+toolbarbutton#toolbarDetails {
+	list-style-image: url("chrome://mylog/skin/2downarrow.png");
+}
+/* Maybe try again later.
+toolbarbutton[checked="true"]#toolbarDetails {
+	list-style-image: url("chrome://mylog/skin/2uparrow.png");
+}
+*/
+toolbarbutton#toolbarFind {
+	list-style-image: url("chrome://mylog/skin/find.png");
+}
+
+toolbarbutton#toolbarAdd {
+	list-style-image: url("chrome://mylog/skin/bookmark_add.png");
+}
+
+toolbarbutton#toolbarDelete {
+	list-style-image: url("chrome://mylog/skin/button_cancel.png");
+}
+
+toolbarbutton[disabled="true"]#toolbarDelete {
+	list-style-image: url("chrome://mylog/skin/button_cancel_disabled.png");
+}

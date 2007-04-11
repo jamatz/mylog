@@ -69,6 +69,7 @@
 	    <toolbarbutton id="toolbarDetails" 
 	    			   image="chrome://mylog/skin/2downarrow.png"
 	    			   tooltiptext="&mylogsidebar.toolbarShowDetails;"
+	    			   type="checkbox"
 	    			   oncommand="handleDetails();"/>
 	    <toolbarseparator style="color: #000000;"/>
 	    <toolbarbutton id="toolbarFind" 
@@ -77,10 +78,10 @@
 	    			   type="checkbox"
 	    			   oncommand="handleSearchByContentClick();"/>
 	    <toolbarseparator />
-	    <toolbarbutton id="toolbarDelete" 
-	                   image="chrome://mylog/skin/button_cancel.png"
+	    <toolbarbutton id="toolbarDelete"
 	                   tooltiptext="&mylogsidebar.toolbarDelete;"
-	                   oncommand ="handleDeleteEntry();"/>
+	                   oncommand ="handleDeleteEntry();"
+	                   disabled="true"/>
 	    <toolbarseparator />
 	    <toolbarbutton id="toolbarAdd" 
 	                   image="chrome://mylog/skin/bookmark_add.png"
