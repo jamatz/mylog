@@ -14,6 +14,8 @@
 var dataStore;
 var dataHandler;
 
+var showingSearchByContent = false;
+
 function initializeGUI() {
 	install_handlers(); // From accjax.  Who knows why?
 	dataStore = new XmlDataStore();
@@ -515,7 +517,6 @@ function createThumbnail(doc, id) {
 }
 
 function hideSearchByContent() {
-//	alert(document.getElementById("searchContentDiv").style.display);
 	document.getElementById("searchContentDiv").style.display = "none";
 	document.getElementById("searchDiv").style.display = "";
 }
@@ -525,11 +526,13 @@ function displaySearchByContent() {
 	document.getElementById("searchContentDiv").style.display = "";
 }
 
-function handleSearchByContentClick(searchContent) {
-	if (searchContent) {
-		displaySearchByContent();
-	} else {
+function handleSearchByContentClick() {
+	if (showingSearchByContent) {
+		showingSearchByContent = false;
 		hideSearchByContent();
+	} else {
+		showingSearchByContent = true;
+		displaySearchByContent();
 	}
 }
 
