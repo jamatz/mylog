@@ -108,6 +108,16 @@ function removeListboxEntry() {
 	document.getElementById('results-listbox').removeItemAt(listboxItemId);
 }
 
+function removeListboxEntries() {
+	var resultsBox = document.getElementById('results-listbox');
+	var selection = new Array();
+	selection = resultsBox.selectedItems;
+	while(selection.length > 0) {
+		var index = resultsBox.getIndexOfItem(selection[0]);
+		resultsBox.removeItemAt(index);
+	}
+}
+
 function handleResultClicked(aEvent) {
 	var id = document.getElementById('results-listbox').selectedItem.value;
 	var button = document.getElementById('toolbarDelete');
@@ -145,15 +155,23 @@ function handleResultDblClicked(aEvent) {
 }
 
 function handleDeleteEntry() {
-	var button = document.getElementById('toolbarDelete');
-	button.disabled=true;
-	
-	var id = document.getElementById('results-listbox').selectedItem.value;
-	var success = dataHandler.removeEntry(id);
-	if (success) {
-		dataStore.close(dataHandler);
-		deleteLocalPage(id);
-		removeListboxEntry();
+	var success = false;
+	try {
+		var button = document.getElementById('toolbarDelete');
+		button.disabled=true;
+		var selection = document.getElementById('results-listbox').selectedItems;
+		for (var i = 0;i<selection.length;i++) {
+      		success = dataHandler.removeEntry(selection[i].value);
+      		if(success) {
+      			deleteLocalPage(selection[i].value);
+      		}
+   		}
+		if (success) {
+			dataStore.close(dataHandler);
+			removeListboxEntries();
+		}
+	} catch(e) {
+		logMsg("Exception occurred in handleDeleteEntry: " + e);
 	}
 	return success;
 }
