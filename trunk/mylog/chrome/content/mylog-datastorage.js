@@ -175,9 +175,23 @@ function XmlDataStore() {
 
 		// use 0x02 | 0x10 to open file for appending.
 		foStream.init(file, 0x02 | 0x08 | 0x20, 0664, 0); // write, create, truncate
+		/*
 		foStream.write(data, data.length);
 		//serializer.serializeToStream(doc, foStream, "");
 		foStream.close();
+		* */
+		
+		var charset = "UTF-8"; // Can be any character encoding name that Mozilla supports
+
+		var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+		                   .createInstance(Components.interfaces.nsIConverterOutputStream);
+		
+		// This assumes that fos is the nsIOutputStream you want to write to
+		os.init(foStream, charset, 4096, "?".charCodeAt(0));
+		
+		os.writeString(data);
+		
+		os.close();
 	}
 	
 	function saveXML(doc,dir,fileName) {
@@ -260,12 +274,12 @@ function XmlDataHandler() {
 		logEntry.setId(id);
 		var counter = id + 1;
 		_doc.getElementsByTagName("entries")[0].setAttribute("counter", counter.toString());
-		if(doc.length != 0){
+		if(typeof(doc) != "undefined"){
 			var file = savePage(doc, id);
 			logEntry.setFilePath(file.path);
 		}
 		var entryElem = _createDomNode(logEntry);
-		_doc.getElementsByTagName("entries")[0].appendChild(entryElem); 
+		_doc.getElementsByTagName("entries")[0].appendChild(entryElem);
 		return id;
 	}
 	
@@ -331,31 +345,35 @@ function XmlDataHandler() {
 
 	// Modified by Vinayak Viswanathan and Thomas Park on December 7.
     function findEntries(keyword,searchType) {
-        var doSearch = true;
-		var xpathStr = "";
-
-		if(searchType == "tag") {
-			xpathStr = "/mylog/entries/entry[entrytags/entrytag/@name = '"+keyword+"']";
-        } else if(searchType == "comment"){
-			xpathStr = "/mylog/entries/entry[count(comments/comment[contains(.,'" + keyword + "')]) > 0]";  
-        } else if(searchType == "content") {
-        	return _searchContent(keyword);
-        } else {
-			xpathStr = "/mylog/entries/entry[contains(translate("+searchType+", 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), translate('"+keyword+"', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'))]";
-      	}
-        
-		var entryResults = new Array();
-		if(doSearch == true) {
-			var xpathRetriever = new XpathRetriever(_doc, xpathStr);
-			var thisNode = xpathRetriever.getNext();
-			while (thisNode) {
-				var logEntry = new LogEntry();
-				logEntry.setFromDomNode(thisNode);
-				entryResults.push(logEntry);
-				thisNode = xpathRetriever.getNext();
+    	try {
+	        var doSearch = true;
+			var xpathStr = "";
+	
+			if(searchType == "tag") {
+				xpathStr = "/mylog/entries/entry[entrytags/entrytag/@name = '"+keyword+"']";
+	        } else if(searchType == "comment"){
+				xpathStr = "/mylog/entries/entry[count(comments/comment[contains(.,'" + keyword + "')]) > 0]";  
+	        } else if(searchType == "content") {
+	        	return _searchContent(keyword);
+	        } else {
+				xpathStr = "/mylog/entries/entry[contains(translate("+searchType+", 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), translate('"+keyword+"', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'))]";
+	      	}
+	        
+			var entryResults = new Array();
+			if(doSearch == true) {
+				var xpathRetriever = new XpathRetriever(_doc, xpathStr);
+				var thisNode = xpathRetriever.getNext();
+				while (thisNode) {
+					var logEntry = new LogEntry();
+					logEntry.setFromDomNode(thisNode);
+					entryResults.push(logEntry);
+					thisNode = xpathRetriever.getNext();
+				}
 			}
-		}
-		return entryResults;
+			return entryResults;
+    	} catch (e) {
+    		logMsg("Exception caught in findEntries(): " + e);
+    	}
 	}
 
 	// Created by Brian Cho and Soumi Sinha on December 9, 2006.
@@ -400,7 +418,6 @@ function XmlDataHandler() {
 		var urlElemText = _doc.createTextNode(url);
 		var filepathElemText = _doc.createTextNode(filepath);
 		var previewFilePathElemText = _doc.createTextNode(previewFilePath);
-
 
 		titleElem.appendChild(titleElemText);
 		entryElem.appendChild(titleElem);

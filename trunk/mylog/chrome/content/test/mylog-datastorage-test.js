@@ -46,13 +46,13 @@
                    uOfI.addTag(tags[i]);
                 for (var i = 0; i < comments.length; i++) 
                    uOfI.addComment(comments[i]);
-                				
+                   
 				dataHandler.addEntry(uOfI);
 				dataStore.close(dataHandler);
-
+				
 				var secondDataHandler = dataStore.open();
 				var entries = secondDataHandler.findEntries("school","comment");
-
+				
 				this.assertEquals(entries.length, 1);
 				this.assertEquals(uOfI.getUrl(), entries[0].getUrl());
 				this.assertEquals(uOfI.getTitle(), entries[0].getTitle());

@@ -17,6 +17,7 @@
 	     	openUILinkIn("chrome://mylog/content/test/mylog-UnitTest-index.html", "current");
 	    }
 	</script>
+	<!--
 	<popup id="contentAreaContextMenu">
 		<menuitem id="mylog-contextmenu-create" label="Log Content"
 		              oncommand="handleLogContentRequest()" />
@@ -24,11 +25,14 @@
 		              oncommand="handleExportRequest()" />
 		<menuitem id="mylog-contextmenu-create" label="Search MyLog"
 		              oncommand="handleSearchLogRequest()" />
-		<menuitem id="mylog-unittest-index" label="MyLog Unit Tests"
-		             oncommand="showUnitTests()" />
-
 		<menuitem id="mylog-content-search" label="Search By Content"
 	              oncommand="handleSearchContentRequest()" />
-
 	</popup>
+	-->
+	<!--
+	<popup id="contentAreaContextMenu">
+		<menuitem id="mylog-unittest-index" label="MyLog Unit Tests"
+		             oncommand="showUnitTests()" />
+	</popup>
+	-->
 </overlay>
