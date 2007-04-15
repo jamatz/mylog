@@ -5,12 +5,13 @@ function fileToString(fileObject) {
 	var data = "";
 	try {
 		// Read file to string (data)
-	
+
 		var fstream = Components.classes["@mozilla.org/network/file-input-stream;1"]
 								.createInstance(Components.interfaces.nsIFileInputStream);
+		fstream.init(fileObject, -1, 0, 0);
+		/*
 		var sstream = Components.classes["@mozilla.org/scriptableinputstream;1"]
 								.createInstance(Components.interfaces.nsIScriptableInputStream);
-		fstream.init(fileObject, -1, 0, 0);
 		sstream.init(fstream); 
 	
 		var str = sstream.read(4096);
@@ -21,6 +22,19 @@ function fileToString(fileObject) {
 	
 		sstream.close();
 		fstream.close();
+		*/
+		
+		var charset =  "UTF-8";
+		const replacementChar = Components.interfaces.nsIConverterInputStream.DEFAULT_REPLACEMENT_CHARACTER;
+		var is = Components.classes["@mozilla.org/intl/converter-input-stream;1"]
+		                   .createInstance(Components.interfaces.nsIConverterInputStream);
+		is.init(fstream, charset, 1024, replacementChar);
+		
+		var str = {};
+		while (is.readString(4096, str) != 0) {
+		  data += str.value;
+		}
+		
 		return data;
 	}	catch(e) {
 		logMsg("Exception caught in fileToString(): " + e);
