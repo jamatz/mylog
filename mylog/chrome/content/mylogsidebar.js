@@ -131,6 +131,7 @@ function handleResultClicked(aEvent) {
 	titleTBox.value = logEntry.getTitle();
 	
 	// Load tags
+	tagsTBox.value = "";
 	var tags = logEntry.getTags();
 	if(tags.length > 0) {
 		tagsTBox.value = tags[0];
