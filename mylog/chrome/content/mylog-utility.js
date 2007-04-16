@@ -1,3 +1,4 @@
+// *** bearly, thpark2: 04-15-2007: Changed fileToString to support Unicode.
 // *** bearly, vviswana: 03-07-2007: Initial creation. Added fileToString, stringToFile, logMsg, and createDirectory.
 
 // fileObject is an nsIFile
