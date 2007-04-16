@@ -3,7 +3,7 @@
 // *** groupmeeting: 02-12-2007: refactored Comment object to use the javascript Date object
 
 // Created by Brian Cho and Soumi Sinha on December 1, 2006.
-function handleLogContentRequest() {
+/*function handleLogContentRequest() {
 
 	//	var user = logIn();
 
@@ -19,7 +19,28 @@ function handleLogContentRequest() {
 		"chrome",window.content.document);
 
 	//	handleLogContentSubmission(url);
+}*/
+
+function handleLogContentRequest() {
+	var id = handleLogContentSubmission(content.document.URL, content.document.title, new Array(), "", content.document);
+	dataHandler = dataStore.open();
+	populateListbox();
+	searchboxCallback(document.getElementById("SearchBox").value);
+	var theListbox = document.getElementById("results-listbox");
+	var currentEntry;
+	for (var i = 0; i < theListbox.childNodes.length; i++) {
+		currentEntry = theListbox.childNodes[i];
+		
+		if (currentEntry.value == id) {
+			theListbox.scrollToIndex(i);
+			theListbox.selectItem(currentEntry);
+			handleResultClicked();
+			break;
+		}
+	}
+	
 }
+
 
 function handleSearchLogRequest() {
 	var dataStore = new XmlDataStore();
@@ -61,6 +82,7 @@ function handleLogContentSubmission(url, title, tags, comment, doc) {
 	var dataHandler = dataStore.open();
 	var id = dataHandler.addEntry(le, doc);
 	dataStore.close(dataHandler);
+	return id;
 }
 
 //	Created by Josh Matz and Eric Bluhm on December 6, 2006.
