@@ -1,0 +1,78 @@
+<!-- // *** ebowden2, jamatz: 02-26-2007: Created Test Case to ensure the function splitSearchString finds search terms in the proper order-->
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>ECMAUnit Tests</title>
+    <script language="JavaScript" type="text/javascript" src="chrome://mylog/content/mylog.js"></script>
+    <script language="JavaScript" type="text/javascript" src="chrome://mylog/content/mylog-datastorage.js"></script>
+    <script language="JavaScript" type="text/javascript" src="chrome://mylog/content/mylog-exportwindow.js"></script>
+    <script type="text/javascript" src="chrome://mylog/content/test/ecmaunit.js"> </script>
+    <script language="JavaScript" type="text/javascript" src="chrome://mylog/content/mylog-utility.js"></script>
+    <script type="text/javascript">
+//<![CDATA[
+       
+        function TestUpdateFileReferences() {
+            this.name = 'TestUpdateFileReferences';
+            
+            this.setUp = function() { };
+            
+            this.testUpdateFileReferences1 = function() {
+            	
+            	var dataString = 'garbage 1/dumb.gif trash 1/stupid.jpg junk 1/dumb.gif text 1/stupid.jpg stuff';
+            	var oldId = 1;
+            	var newId = 0;
+            	var files = [];
+            	files.push("stupid.jpg");
+            	files.push("dumb.gif");
+            	
+            	var results = updateFileReferences(dataString, oldId, newId, files);
+            	var correct_results = 'garbage 0/dumb.gif trash 0/stupid.jpg junk 0/dumb.gif text 0/stupid.jpg stuff'
+            	this.assertEquals(results, correct_results);
+			};
+			
+		    this.testUpdateFileReferences2 = function() {
+            	
+            	var dataString = '1garbage1 1/dumb.gif 1trash1 1/stupid.jpg 1junk1 1/dumb.gif 1text1 1/stupid.jpg dumb.gif 1/stuff';
+            	var oldId = 1;
+            	var newId = 8;
+            	var files = [];
+            	files.push("stupid.jpg");
+            	files.push("dumb.gif");
+            	
+            	var results = updateFileReferences(dataString, oldId, newId, files);
+            	var correct_results = '1garbage1 8/dumb.gif 1trash1 8/stupid.jpg 1junk1 8/dumb.gif 1text1 8/stupid.jpg dumb.gif 1/stuff'
+            	this.assertEquals(results, correct_results);
+			};
+
+		    this.testUpdateFileReferences3 = function() {
+            	
+            	var dataString = null;
+            	var oldId = null;
+            	var newId = null;
+            	var files = null;
+            	
+            	var results = updateFileReferences(dataString, oldId, newId, files);
+            	var correct_results = null;
+            	this.assertEquals(results, correct_results);
+			};
+
+			this.tearDown = function() { };
+        };
+        
+        TestUpdateFileReferences.prototype = new TestCase;
+
+        function runTests() {
+            placeholder = document.getElementById('placeholder');
+            var testsuite = new TestSuite(new HTMLReporter(placeholder));
+            testsuite.registerTest(TestUpdateFileReferences);
+            testsuite.runSuite();
+        }
+//]]>
+</script>
+</head>
+
+<body onload="runTests()">
+<h3>EcmaUnit tests for Updating File References</h3>
+<div id="placeholder"> </div>
+</body>
+</html>
