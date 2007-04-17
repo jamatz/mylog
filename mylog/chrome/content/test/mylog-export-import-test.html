@@ -1,0 +1,56 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>ECMAUnit Tests</title>
+    <script language="JavaScript" type="text/javascript" src="chrome://mylog/content/mylog.js"></script>
+    <script language="JavaScript" type="text/javascript" src="chrome://mylog/content/mylog-datastorage.js"></script>
+    <script language="JavaScript" type="text/javascript" src="chrome://mylog/content/mylog-exportwindow.js"></script>
+    <script type="text/javascript" src="chrome://mylog/content/test/ecmaunit.js"> </script>
+    <script type="text/javascript">
+//<![CDATA[
+       
+        function TestExportImport() {
+            this.name = 'TestExportImport';
+            var dataStore;
+			var dataHandler;
+         
+            this.setUp = function() {
+	
+            };
+
+            this.testExportImport1 = function() { 
+            	var profileDirectory = getProfileDirectory();
+            	var files = getAllFilesInDirectory(profileDirectory + "\\test");
+         		var debug = "";
+         		for(var i = 0; i < files.length; i++){
+         			debug = debug + files[i] + "\n";
+         		}
+         		alert(debug);
+            };
+
+            this.testExportImport2 = function() { 
+	            var profileDir = getProfileDirectory();	
+				var directory = profileDir + "\\extensions\\mylog\\18\\";
+				//recursiveCopyAllFiles("C:\\0", directory)
+             };
+
+            this.tearDown = function() {
+            };
+        };
+        TestExportImport.prototype = new TestCase;
+
+        function runTests() {
+            placeholder = document.getElementById('placeholder');
+            var testsuite = new TestSuite(new HTMLReporter(placeholder));
+            testsuite.registerTest(TestExportImport);
+            testsuite.runSuite();
+        }
+//]]>
+</script>
+</head>
+
+<body onload="runTests()">
+<h3>EcmaUnit tests for MyLog Add Tag</h3>
+<div id="placeholder"> </div>
+</body>
+</html>
