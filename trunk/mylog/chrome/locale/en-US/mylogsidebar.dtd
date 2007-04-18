@@ -14,6 +14,8 @@
 <!ENTITY mylogsidebar.toolbarHideDetails "Hide Details">
 <!ENTITY mylogsidebar.toolbarSave "Save Changes">
 <!ENTITY mylogsidebar.toolbarSearchContent "Search By Content">
+<!ENTITY mylogsidebar.detailsShowAddTag "Show/Hide Add Tag Menu">
+<!ENTITY mylogsidebar.detailsDeleteTag "Delete Selected Tag">
 
 
 

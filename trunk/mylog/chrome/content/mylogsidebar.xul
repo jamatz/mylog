@@ -50,9 +50,9 @@
 		</box>
   	</box>
   	<box id="searchContentDiv" orient="vertical">
-		<textbox id="searchContentBox" label="Search:" onkeypress="if(event.keyCode == 13){handleSearchContentRequest();}"></textbox>
+		<textbox  id="searchContentBox" label="Search:" onkeypress="if(event.keyCode == 13){handleSearchContentRequest();}"></textbox>
 		<box orient="horizontal">
-		<button label="Search Content" oncommand="handleSearchContentRequest()"></button>
+			<button label="Search Content" oncommand="handleSearchContentRequest()"></button>
 		</box>
 	</box>
 
@@ -61,7 +61,8 @@
    <toolbox id="mylog-toolbox">
 	  <toolbar align="right" id="mylog-toolbar">
 	    <toolbarbutton id="toolbarSave" 
-	    			   image="chrome://mylog/skin/filesave.png"
+	    			   image="chrome://mylog/skin/filesave.png" 
+	    			   hidden="true"
 	    			   tooltiptext="&mylogsidebar.toolbarSave;"
 	    			   oncommand="handleSaveLogEntryDetails();"
 	    			   persist="hidden"/>
@@ -101,12 +102,40 @@
 	      <label value="Title"/>
 	      <textbox id="logEntry-title"></textbox>
 	    </row>
-	    <row>
-	      <label value="Tags"/>
-	      <textbox id="logEntry-tags" multiline="true"></textbox>
+	    
+	    <row >
+	      	<vbox>
+  				<label value="Tags"/>
+  				<hbox >
+  				   <!--<image src="chrome://mylog/skin/add.png" width='16' height='16'/>
+  				   <image src ="chrome://mylog/skin/button_cancel.png" width='16' height='16'/> -->
+		  		   <button 
+		  		        id="add_tag" 
+		  		        image="chrome://mylog/skin/add.png"
+		  		        oncommand="showOrHideAddTag()"
+		  		        style="width: 25px;"
+		  		        tooltiptext="&mylogsidebar.detailsShowAddTag;"
+		  		    />
+		  		   <button 
+		  		   		id="delete_tag" 
+		  		   		image="chrome://mylog/skin/button_cancel.png"
+		  		   		oncommand="removeTagsFromEntry()"
+		  		   		tooltiptext="&mylogsidebar.detailsDeleteTag;"
+		  		   	/>
+		    	</hbox>
+		    </vbox>
+		    <listbox id="logEntry-tags"  rows="2">
+		    </listbox >
+  			<!--<textbox id="logEntry-tags" multiline="true"></textbox>-->
 	    </row>
-
-
+    	<hbox id="logEntry-tags-add" hidden="true">
+			<menulist label="Select to Add a Tag" id="mylog-tags">
+				<menupopup id="logEntry-tags-popup">
+					<menuItem label="Create New Tag" value="new tag" id="mylog-createTag" />
+				</menupopup>
+			</menulist>
+    	</hbox>
+	  
 	  </rows>
 	</grid>
 	<vbox id="comments-box" style="height:100px;overflow:auto;"></vbox>
@@ -117,8 +146,9 @@
 	<vbox id="add-comment-container">
 		<textbox id="add-comment-box" multiline="true" flex="1"></textbox>
 		<button label="Add Comment" oncommand="handleAddComment();"/>
-	</vbox>		
+	</vbox>	
   </html:div>
+
   <listbox id="results-listbox"
   		   onclick="handleResultClicked(event);"
            ondblclick="handleResultDblClicked(event);"
