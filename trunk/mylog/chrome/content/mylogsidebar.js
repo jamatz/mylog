@@ -17,13 +17,13 @@ var dataHandler;
 var showingSearchByContent = false;
 
 function initializeGUI() {
-	install_handlers(); // From accjax.  Who knows why?
 	dataStore = new XmlDataStore();
 	dataHandler = dataStore.open();
 	populateTagsPopupMenu();
 	populateListbox();
-	clearCommentsGrid();
+	clearComments();
 	hideSearchByContent();
+	document.getElementById("add-comment-container").hidden = true;
 }
 
 // Populates the listbox with the entries passed in via the array
@@ -50,38 +50,57 @@ function populateListbox(entryList, sortOrder) {
 	}
 }
 
-// Fills in comments in the comments grid.
-function populateCommentsGrid(theEntry) {
-	clearCommentsGrid();
+function populateComments(theEntry) {
+	clearComments();
 	
-	var commentDates = document.getElementById("commentGridDates");
-	var commentComments = document.getElementById("commentGridComments");
+	var commentsBox = document.getElementById("comments-box");
 	
-	var tempNode;
-	var tempNode2;
+	var dateNode;
+	var commentNode;
+	
 	var commentArray = theEntry.getComments();
 	for (var i = 0; i < commentArray.length; i++) {
-		tempNode = document.createElement("label");
-		tempNode.setAttribute("x2:role", "wairole:gridcell");
-		tempNode.setAttribute("value", commentArray[i].getDateString());
-		tempNode.setAttribute("flex", "1");
-		tempNode.setAttribute("id", "comdate-" + theEntry.getId() + "-" + i);
-		commentDates.appendChild(tempNode);
-		tempNode2 = document.createElement("label");
-		tempNode2.setAttribute("x2:role", "wairole:gridcell");
-		tempNode2.setAttribute("value", commentArray[i].getContent());
-		tempNode2.setAttribute("flex", "1");
-		tempNode2.setAttribute("id", "comcom-" + theEntry.getId() + "-" + i);
-		commentComments.appendChild(tempNode2);
+		dateNode = document.createElement("description");
+		dateNode.setAttribute("id", "comdate-" + theEntry.getId() + "-" + i);
+		dateNode.appendChild(document.createTextNode(commentArray[i].getDateString()));
+		commentsBox.appendChild(dateNode);
+
+		commentNode = document.createElement("description");
+		commentNode.setAttribute("id", "comcom-" + theEntry.getId() + "-" + i);
+		commentNode.appendChild(document.createTextNode(commentArray[i].getContent()));
+		commentsBox.appendChild(commentNode);
 	}
 }
 
-function clearCommentsGrid() {
-	var commentDates = document.getElementById("commentGridDates");
-	var commentComments = document.getElementById("commentGridComments");
-	while (commentDates.childNodes.length > 1) {
-		commentDates.removeChild(commentDates.childNodes[1]);
-		commentComments.removeChild(commentComments.childNodes[1]);
+function clearComments() {
+	var commentsBox = document.getElementById("comments-box");
+	while (commentsBox.childNodes.length > 0) {
+		commentsBox.removeChild(commentsBox.childNodes[0]);
+	}
+}
+
+function handleShowAddComment() {
+	document.getElementById("add-comment-container").hidden = false;
+	document.getElementById("add-comment-button").hidden = true;
+}
+
+function handleAddComment() {
+	try {
+		// Set necessary data
+		var id = document.getElementById('results-listbox').selectedItem.value;
+		var logEntry = dataHandler.getEntry(id);
+		var newComment = document.getElementById("add-comment-box").value;
+		logEntry.addComment(newComment);
+		dataHandler.replaceEntry(logEntry);
+		populateComments(logEntry);
+		
+		document.getElementById("add-comment-box").value = "";
+		document.getElementById("add-comment-container").hidden = true;
+		document.getElementById("add-comment-button").hidden = false;
+		
+	}
+	catch(e) {
+		logMsg("Exception occurred in handleAddComment()" + e);
 	}
 }
 
@@ -141,7 +160,7 @@ function handleResultClicked(aEvent) {
 	}
 	
 	// Load comments
-	populateCommentsGrid(logEntry);
+	populateComments(logEntry);
 	
 }
 
@@ -232,7 +251,7 @@ function handleDetails() {
 			button.image = "chrome://mylog/skin/2uparrow.png";
 		} else {
 			div.style.display ="none";
-			saveButton.hidden = "true";
+			saveButton.hidden = true;
 			button.tooltiptext = "&mylogsidebar.toolbarShowDetails;";
 			button.image = "chrome://mylog/skin/2downarrow.png";
 		}

@@ -19,7 +19,6 @@
     xmlns:wairole="http://www.w3.org/2005/01/wai-rdf/GUIRoleTaxonomy#"
     xmlns:waistate="http://www.w3.org/2005/01/wai-rdf/GUIStateTaxonomy#">
     
-  <script type="application/x-javascript" src="chrome://mylog/content/accjax.js"/>
   <script type="application/x-javascript" src="chrome://mylog/content/mylogsidebar.js"/>
   <script type="application/x-javascript" src="chrome://mylog/content/mylog.js"/>
  
@@ -62,15 +61,16 @@
    <toolbox id="mylog-toolbox">
 	  <toolbar align="right" id="mylog-toolbar">
 	    <toolbarbutton id="toolbarSave" 
-	    			   image="chrome://mylog/skin/filesave.png" 
-	    			   hidden="true"
+	    			   image="chrome://mylog/skin/filesave.png"
 	    			   tooltiptext="&mylogsidebar.toolbarSave;"
-	    			   oncommand="handleSaveLogEntryDetails();"/>
+	    			   oncommand="handleSaveLogEntryDetails();"
+	    			   persist="hidden"/>
 	    <toolbarbutton id="toolbarDetails" 
 	    			   image="chrome://mylog/skin/2downarrow.png"
 	    			   tooltiptext="&mylogsidebar.toolbarShowDetails;"
 	    			   type="checkbox"
-	    			   oncommand="handleDetails();"/>
+	    			   oncommand="handleDetails();"
+	    			   persist="checked image"/>
 	    <toolbarseparator style="color: #000000;"/>
 	    <toolbarbutton id="toolbarFind" 
 	    			   image="chrome://mylog/skin/find.png"
@@ -102,32 +102,23 @@
 	      <textbox id="logEntry-title"></textbox>
 	    </row>
 	    <row>
-	      <label value="Comments"/>
-	     
-
-	      <box orient="vertical" flex="1"><hbox flex="1">
-			<grid x2:role="wairole:spreadsheet" class="spreadsheet" id="accjaxspreadsheet" flex="1">
-			  <rows flex="1"></rows>
-			  <columns flex="1">
-			    <column id="commentGridDates">
-			      <description x2:role="wairole:columnheader" value="Date"/>
-			    </column>
-			    <column flex="1" id="commentGridComments">
-			      <description x2:role="wairole:columnheader" value="Comment"/>
-			    </column>
-			  </columns>
-			</grid>
-			</hbox></box>
-	    </row>
-	    <row>
 	      <label value="Tags"/>
 	      <textbox id="logEntry-tags" multiline="true"></textbox>
 	    </row>
+
+
 	  </rows>
 	</grid>
-
+	<vbox id="comments-box" style="height:100px;overflow:auto;"></vbox>
+	<description id="add-comment-button" style="color: green;">
+		Add Comment 
+		<image width='16' height='16' src="chrome://mylog/skin/add.png" onclick="handleShowAddComment();"/>
+	</description>
+	<vbox id="add-comment-container">
+		<textbox id="add-comment-box" multiline="true" flex="1"></textbox>
+		<button label="Add Comment" oncommand="handleAddComment();"/>
+	</vbox>		
   </html:div>
-
   <listbox id="results-listbox"
   		   onclick="handleResultClicked(event);"
            ondblclick="handleResultDblClicked(event);"
