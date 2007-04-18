@@ -1,3 +1,4 @@
+// *** vviswana, bcho2: 04-17-2007: Modified the editing of tags and function removeTagFromEntry()
 // *** bearly, jamatz: 04-01-2007: Fixed search() and processTagSelection()
 // *** ebowden2, vviswana: 04-01-2007: Added uniqueTags and trimString as helper functions
 // *** ebowden2, vviswana: 03-15-2007: Added handler functions for displaying logEntry details and saving to file.
@@ -146,18 +147,28 @@ function handleResultClicked(aEvent) {
 	
 	var logEntry = dataHandler.getEntry(id);
 	var titleTBox = document.getElementById('logEntry-title');
-	var tagsTBox = document.getElementById('logEntry-tags');
+	//var tagsTBox = document.getElementById('logEntry-tags');
+	var tagsBox =  document.getElementById('logEntry-tags');
+	//var tagsPopup = document.getElementById('logEntry-tags-popup');
 	titleTBox.value = logEntry.getTitle();
 	
 	// Load tags
-	tagsTBox.value = "";
+	while(tagsBox.getRowCount() > 0) {
+		tagsBox.removeItemAt(0);
+	}
+	
+	//tagsTBox.value = "";
 	var tags = logEntry.getTags();
 	if(tags.length > 0) {
-		tagsTBox.value = tags[0];
-		for(var i=1;i<tags.length;i++) {
-			tagsTBox.value += ", " + tags[i];
+		//tagsTBox.value = tags[0];
+		for(var i=0;i<tags.length;i++) {
+			//tagsTBox.value += ", " + tags[i];
+			tagsBox.appendItem(tags[i],tags[i]);
 		}
+		
+		
 	}
+	
 	
 	// Load comments
 	populateComments(logEntry);
@@ -203,12 +214,15 @@ function handleSaveLogEntryDetails() {
 		var logEntry = dataHandler.getEntry(id);
 		var titleTBox = document.getElementById('logEntry-title');
 		var tagsTBox = document.getElementById('logEntry-tags');
+		var tags = new Array();
+		
 		logEntry.setTitle(titleTBox.value);
 	
 		// Right now we're removing all current tags first, then adding whatever is in
 		// the textbox, this may be inefficient so feel free to change it
 		logEntry.removeTags();
-		var tagsString= tagsTBox.value;
+		
+		/*var tagsString= tagsTBox.value;
 		var tags = tagsString.split(",");
 		for(var i=0;i<tags.length;i++) {
 			tags[i] = trimString(tags[i]);
@@ -224,12 +238,17 @@ function handleSaveLogEntryDetails() {
 				curTags.push(tags[i]);
 			}
 			logEntry.addTag(tags[i]);
+		}*/
+		for(var i=0;i<tagsTBox.getRowCount();i++) {
+			var item = tagsTBox.getItemAtIndex(i);
+			tags.push(item.value);
+		}
+		tags = uniqueTags(tags);
+		for(var i=0;i<tags.length;i++) {
+			logEntry.addTag(tags[i]);
 		}
 		
 		// Need to deal with comments later
-		
-		
-		
 		dataHandler.replaceEntry(logEntry);
 		dataStore.close(dataHandler);
 		dataHandler = dataStore.open();
@@ -260,6 +279,21 @@ function handleDetails() {
 		logMsg("Exception occurred in hideDetails()" + e);
 	}
 
+}
+
+function removeTagsFromEntry() {
+	var tagsBox =  document.getElementById('logEntry-tags');
+	var selection = tagsBox.selectedItems;
+	while(selection.length > 0) {
+		var index = tagsBox.getIndexOfItem(selection[0]);
+		tagsBox.removeItemAt(index);
+	}
+}
+
+
+function showOrHideAddTag() {
+	var addTagBox =  document.getElementById("logEntry-tags-add");
+	addTagBox.hidden = !(addTagBox.hidden);
 }
 
 // Code from:  http://www.developersdex.com/gurus/articles/276.asp?Page=3
@@ -472,7 +506,15 @@ function splitSearchString(searchString) {
 function populateTagsPopupMenu() {
 	var tagNameArr = dataHandler.getAllTags();
 	var tagsPopupMenu = document.getElementById("tags-popup");
-
+	var logEntryTagsPopup = document.getElementById("logEntry-tags-popup");
+	
+	// Append "Create new tag" item
+	var menuItem = document.createElement("menuitem");
+	menuItem.setAttribute( "label" , "Create New Tag");
+	menuItem.setAttribute( "value" , "new tag");
+	menuItem.setAttribute("oncommand", "processLogEntryTagSelection(this.value);");
+	logEntryTagsPopup.appendChild(menuItem);
+	
 	for (var i = 0; i < tagNameArr.length; i++)
 	{
 		//alert("Loop entered! and tag name is: " + tagNameArr[i]);
@@ -482,6 +524,8 @@ function populateTagsPopupMenu() {
 		menuItem.setAttribute( "id" , "mylog-tag-" + tagNameArr[i]);
 		menuItem.setAttribute("oncommand", "processTagSelection(this.value);");
 		tagsPopupMenu.appendChild(menuItem);
+		menuItem.setAttribute("oncommand","processLogEntryTagSelection(this.value);");
+		logEntryTagsPopup.appendChild(menuItem);
 	}	
 }
 
@@ -499,9 +543,49 @@ function processTagSelection(tag) {
 	tagsPopupMenu.selectedIndex = 0;
 	tagsCheckbox.checked = true;
 	searchBox.setSelectionRange(searchBox.value.length - tag.length - 2, searchBox.value.length);
-	
+ 
 }
 
+function processLogEntryTagSelection(tag) {
+	//var entryTagList = document.getElementById("logEntry-tags");
+	//alert(tag);
+	//entryTagList.appendItem(tag,tag);
+	
+		var tag = document.getElementById("mylog-tags").value
+	if (tag == "new tag")
+	{
+		tag = createTag();
+		if (tag == null) {
+			return;
+		}
+		
+		var logEntryTagsPopup = document.getElementById("logEntry-tags-popup");
+		var menuItem = document.createElement("menuitem");
+		menuItem.setAttribute( "label" , tag);
+		menuItem.setAttribute( "value" , tag);
+		menuItem.setAttribute( "id" , "mylog-tag-" + tag);
+		menuItem.setAttribute("oncommand","processLogEntryTagSelection(this.value);");
+		
+		// Put into current tags
+		logEntryTagsPopup.appendChild(menuItem);
+	}
+	else {
+		var entryTagList = document.getElementById("logEntry-tags");
+		entryTagList.appendItem(tag,tag);
+	}
+		
+}
+
+function createTag() {
+	var tag = prompt("Enter new tag name:", "");
+	if (tag == null) {
+		return null;
+	}
+	var ret = handleAddTag(tag);
+	if (ret) {
+		return tag;
+	}
+}
 
 function createThumbnail(doc, id) {
   
