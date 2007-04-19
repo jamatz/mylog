@@ -62,7 +62,6 @@
 	  <toolbar align="right" id="mylog-toolbar">
 	    <toolbarbutton id="toolbarSave" 
 	    			   image="chrome://mylog/skin/filesave.png" 
-	    			   hidden="true"
 	    			   tooltiptext="&mylogsidebar.toolbarSave;"
 	    			   oncommand="handleSaveLogEntryDetails();"
 	    			   persist="hidden"/>
