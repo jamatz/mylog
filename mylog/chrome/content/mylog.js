@@ -87,12 +87,16 @@ function handleLogContentSubmission(url, title, tags, comment, doc) {
 
 //	Created by Josh Matz and Eric Bluhm on December 6, 2006.
 function handleAddTag(tag) {
-
-	var dataStore = new XmlDataStore();
-	var dataHandler = dataStore.open();
-	var wasAdded = dataHandler.addTag(tag);
-	dataStore.close(dataHandler);
-
+	var wasAdded = false;
+	try {
+		var dataStore = new XmlDataStore();
+		var dataHandler = dataStore.open();
+		wasAdded = dataHandler.addTag(tag);
+		dataStore.close(dataHandler);
+	} catch(e) {
+		logMsg("Exception in handleAddTag(): " + e);
+	}
+	
 	return wasAdded;
 }
 

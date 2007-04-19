@@ -504,29 +504,40 @@ function splitSearchString(searchString) {
 }
 
 function populateTagsPopupMenu() {
-	var tagNameArr = dataHandler.getAllTags();
-	var tagsPopupMenu = document.getElementById("tags-popup");
-	var logEntryTagsPopup = document.getElementById("logEntry-tags-popup");
-	
-	// Append "Create new tag" item
-	var menuItem = document.createElement("menuitem");
-	menuItem.setAttribute( "label" , "Create New Tag");
-	menuItem.setAttribute( "value" , "new tag");
-	menuItem.setAttribute("oncommand", "processLogEntryTagSelection(this.value);");
-	logEntryTagsPopup.appendChild(menuItem);
-	
-	for (var i = 0; i < tagNameArr.length; i++)
-	{
-		//alert("Loop entered! and tag name is: " + tagNameArr[i]);
-		var menuItem = document.createElement("menuitem");
-		menuItem.setAttribute( "label" , tagNameArr[i]);
-		menuItem.setAttribute( "value" , tagNameArr[i]);
-		menuItem.setAttribute( "id" , "mylog-tag-" + tagNameArr[i]);
-		menuItem.setAttribute("oncommand", "processTagSelection(this.value);");
-		tagsPopupMenu.appendChild(menuItem);
-		menuItem.setAttribute("oncommand","processLogEntryTagSelection(this.value);");
-		logEntryTagsPopup.appendChild(menuItem);
-	}	
+	try {
+		var tagNameArr = dataHandler.getAllTags();
+		var tagsPopupMenu = document.getElementById("tags-popup");
+		var logEntryTagsPopup = document.getElementById("logEntry-tags-popup");
+		
+		// Append Create New Tag item to the LogEntry tags popup in the details section
+		var menuItem2 = document.createElement("menuitem");
+		var menuItem;
+		menuItem2.setAttribute( "label" , "Create New Tag");
+		menuItem2.setAttribute( "value" , "new tag");
+		menuItem2.setAttribute("oncommand", "processLogEntryTagSelection(this.value);");
+		logEntryTagsPopup.appendChild(menuItem2);
+		
+		for (var i = 0; i < tagNameArr.length; i++)
+		{
+			//alert("Loop entered! and tag name is: " + tagNameArr[i]);
+			menuItem = document.createElement("menuitem");
+			menuItem2 = document.createElement("menuitem");
+			menuItem.setAttribute( "label" , tagNameArr[i]);
+			menuItem.setAttribute( "value" , tagNameArr[i]);
+			menuItem.setAttribute( "id" , "mylog-tag-" + tagNameArr[i]);
+			menuItem.setAttribute("oncommand", "processTagSelection(this.value);");
+			
+			menuItem2.setAttribute( "label" , tagNameArr[i]);
+			menuItem2.setAttribute( "value" , tagNameArr[i]);
+			menuItem2.setAttribute( "id" , "mylog-tag-details" + tagNameArr[i]);
+			menuItem2.setAttribute("oncommand", "processLogEntryTagSelection(this.value);");
+			
+			tagsPopupMenu.appendChild(menuItem);
+			logEntryTagsPopup.appendChild(menuItem2);
+		}	
+	} catch(e) {
+		logMsg("Exception in populateTagsPopup(): " + e);
+	}
 }
 
 function processTagSelection(tag) {	
@@ -547,11 +558,7 @@ function processTagSelection(tag) {
 }
 
 function processLogEntryTagSelection(tag) {
-	//var entryTagList = document.getElementById("logEntry-tags");
-	//alert(tag);
-	//entryTagList.appendItem(tag,tag);
-	
-		var tag = document.getElementById("mylog-tags").value
+	var tag = document.getElementById("mylog-tags").value
 	if (tag == "new tag")
 	{
 		tag = createTag();
@@ -560,14 +567,22 @@ function processLogEntryTagSelection(tag) {
 		}
 		
 		var logEntryTagsPopup = document.getElementById("logEntry-tags-popup");
+		var tagsPopupMenu = document.getElementById("tags-popup");
 		var menuItem = document.createElement("menuitem");
+		var menuItem2 = document.createElement("menuitem");
 		menuItem.setAttribute( "label" , tag);
 		menuItem.setAttribute( "value" , tag);
-		menuItem.setAttribute( "id" , "mylog-tag-" + tag);
+		menuItem.setAttribute( "id" , "mylog-tag-details-" + tag);
 		menuItem.setAttribute("oncommand","processLogEntryTagSelection(this.value);");
+		
+		menuItem2.setAttribute( "label" , tag);
+		menuItem2.setAttribute( "value" , tag);
+		menuItem2.setAttribute( "id" , "mylog-tag-" + tag);
+		menuItem2.setAttribute("oncommand","processTagSelection(this.value);");
 		
 		// Put into current tags
 		logEntryTagsPopup.appendChild(menuItem);
+		tagsPopupMenu.appendChild(menuItem2);
 	}
 	else {
 		var entryTagList = document.getElementById("logEntry-tags");
@@ -577,11 +592,20 @@ function processLogEntryTagSelection(tag) {
 }
 
 function createTag() {
-	var tag = prompt("Enter new tag name:", "");
-	if (tag == null) {
-		return null;
+	var ret = false;
+	var tag = "";
+	try{
+		tag = prompt("Enter new tag name:", "");
+		if (tag == null) {
+			return null;
+		}
+		ret = dataHandler.addTag(tag);
+		dataStore.close(dataHandler);
+		dataHandler = dataStore.open();
+	} catch(e) {
+		logMsg("Exception in createTag():" + e);	
 	}
-	var ret = handleAddTag(tag);
+	
 	if (ret) {
 		return tag;
 	}
