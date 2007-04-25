@@ -23,6 +23,7 @@
 
 function handleLogContentRequest() {
 	var id = handleLogContentSubmission(content.document.URL, content.document.title, new Array(), "", content.document);
+	createThumbnail(content.document, id);
 	dataHandler = dataStore.open();
 	populateListbox();
 	searchboxCallback(document.getElementById("SearchBox").value);

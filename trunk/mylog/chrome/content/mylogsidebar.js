@@ -173,6 +173,8 @@ function handleResultClicked(aEvent) {
 	// Load comments
 	populateComments(logEntry);
 	
+	loadThumbnail(id);
+	
 }
 
 function handleResultDblClicked(aEvent) {
@@ -612,10 +614,8 @@ function createTag() {
 }
 
 function createThumbnail(doc, id) {
-  
   var widthToCapture = content.innerWidth + content.scrollMaxX;
   var heightToCapture = Math.round(widthToCapture * 0.75);
-  
   var scaleFactor = 400.0 / widthToCapture;
   
   var heightOfPreview = Math.round(heightToCapture * scaleFactor);
@@ -688,6 +688,22 @@ function handleSearchContentRequest() {
 	var dataHandler = dataStore.open();
 	dataHandler.findEntries(keyword,"content");
 	showResultsPage();
+}
+
+function loadThumbnail(id) {
+	var ctx = document.getElementById('preview-canvas').getContext('2d');
+	
+    var img = new Image();
+    img.onload = function(){
+    	ctx.drawImage(img,0,0,180,135);
+    }
+	var file = Components.classes["@mozilla.org/file/directory_service;1"]
+                     .getService(Components.interfaces.nsIProperties)
+                     .get("ProfD", Components.interfaces.nsIFile);
+  	file.append("extensions");
+	file.append("mylog");
+	file.append(id + "-preview.png");
+    img.src = "file:///" + file.path;
 }
 
 function handleCommentsTreeSelection() {

@@ -566,6 +566,14 @@ function deleteLocalPage(id) {
         file.append(id + ".html");
         file.remove(false);
         
+        var file2 = Components.classes["@mozilla.org/file/directory_service;1"]
+                     .getService(Components.interfaces.nsIProperties)
+                     .get("ProfD", Components.interfaces.nsIFile);
+        file2.append("extensions");
+        file2.append("mylog");
+        file2.append(id + "-preview.png");
+        file2.remove(false);
+        
         var dir = Components.classes["@mozilla.org/file/directory_service;1"]
              .getService(Components.interfaces.nsIProperties)
              .get("ProfD", Components.interfaces.nsIFile);
