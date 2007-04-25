@@ -59,7 +59,7 @@
 <!--<html:canvas id="preview-canvas" name="" width="180" height="135" alt="" style="background-color: #000099" />
 <html:canvas id="create-thumbnail-canvas" width="400" height="300" style="display: none;" />-->
    <toolbox id="mylog-toolbox">
-	  <toolbar align="right" id="mylog-toolbar">
+	  <toolbar align="left" id="mylog-toolbar">
 	    <toolbarbutton id="toolbarSave" 
 	    			   image="chrome://mylog/skin/filesave.png" 
 	    			   tooltiptext="&mylogsidebar.toolbarSave;"
@@ -87,6 +87,10 @@
 	                   image="chrome://mylog/skin/bookmark_add.png"
 	                   tooltiptext="&mylogsidebar.toolbarAdd;"
 	                   oncommand ="handleLogContentRequest();"/>
+	    <toolbarbutton id="toolbarImportExport" 
+	                   image="chrome://mylog/skin/package.png"
+	                   tooltiptext="&mylogsidebar.toolbarImportExport;"
+	                   oncommand ="handleExportRequest();"/>
 	  </toolbar>
 	</toolbox>	   
   <html:div id="logEntry-details" persist="style">
@@ -108,7 +112,7 @@
   				<hbox >
   				   <!--<image src="chrome://mylog/skin/add.png" width='16' height='16'/>
   				   <image src ="chrome://mylog/skin/button_cancel.png" width='16' height='16'/> -->
-		  		   <button 
+		  	<!--	<button 
 		  		        id="add_tag" 
 		  		        image="chrome://mylog/skin/add.png"
 		  		        oncommand="showOrHideAddTag()"
@@ -120,7 +124,26 @@
 		  		   		image="chrome://mylog/skin/button_cancel.png"
 		  		   		oncommand="removeTagsFromEntry()"
 		  		   		tooltiptext="&mylogsidebar.detailsDeleteTag;"
-		  		   	/>
+		  		   	/> -->
+		  		   	<toolbox id="mylog-tags-toolbox">
+	  					<toolbar align="left" id="mylog-tags-toolbar">
+	    					<toolbarbutton id="add_tag" 
+			    			   image="chrome://mylog/skin/add.png"
+			    			   oncommand="showOrHideAddTag()"
+				  		       style="width: 25px;"
+				  		       tooltiptext="&mylogsidebar.detailsShowAddTag;"
+			    			   />
+			    			   
+		    			   <toolbarbutton id="delete_tag" 
+			    			   image="chrome://mylog/skin/button_cancel.png"
+			    			   oncommand="removeTagsFromEntry()"
+		  		   			   tooltiptext="&mylogsidebar.detailsDeleteTag;"
+				  		       style="width: 25px;"
+			    			   />
+		  		   	
+		  		   		</toolbar>
+		  		   	</toolbox>
+		  		   	
 		    	</hbox>
 		    </vbox>
 		    <listbox id="logEntry-tags"  rows="2">
