@@ -40,13 +40,8 @@ function exportContent(){
 		createDir(folderPath, "MyLog_Exported_Content")
 		folderPath = folderPath + "\\MyLog_Exported_Content"; 
 		saveExportXML(folderPath, items); 
-<<<<<<< .mine
 		alert("Saved XML");
 		copyExportedContent(folderPath, items);	
-=======
-		copyExportedContent(folderPath, items);
-		alert("Successfully exported " + selectedItems.length + " items.");	
->>>>>>> .r153
 		alert("Copied Content");
 		alert("Successfully copied " + selectedItems.length + " item(s).");
 	}
@@ -75,12 +70,7 @@ function importContent(){
 	copyImportedContent(folderPath, oldIDs,newIDs);
 	dataStore.close(dataHandler);
 	dataHandler = dataStore.open();
-<<<<<<< .mine
-=======
-	copyImportedContent(folderPath, oldIDs, newIDs);
->>>>>>> .r153
 	var entryList = dataHandler.getAllEntries();
-	alert("Successfully imported " + entries.length + " items.");	
 	if(entryList.length > 0) {
 		displayResults(entryList);
 	}
@@ -120,7 +110,6 @@ function copyImportedContent(folderPath, oldIDs, newIDs){
 	var profileDir = getProfileDirectory();	
 	var myLogDir = profileDir + "\\extensions\\mylog\\";
 	for(var i = 0; i < oldIDs.length; i++){
-<<<<<<< .mine
 		alert("Copying items of ID " + oldIDs[i]);
 		alert(folderPath + "\\" + oldIDs[i] + ".html");
 		var data = readFile(folderPath + "\\" + oldIDs[i] + ".html");
@@ -129,23 +118,10 @@ function copyImportedContent(folderPath, oldIDs, newIDs){
 		writeBinaryFile(data, myLogDir + newIDs[i] + ".html");
 		var directory = folderPath + "\\" + oldIDs[i] + "\\";
 		recursiveCopyAllFiles(myLogDir + "\\" + newIDs[i], directory);		
-=======
-		var data = readFile(folderPath + "\\" + + i + ".html");
-		writeBinaryFile(data,profileDir + "\\extensions\\mylog\\" + newIDs[i] + ".html");
-		var files = getAllFilesInDir(folderPath + "\\" + i,"local");		
-		if(files){
-			for(var j = 0; j < files.length; j++){
-				data = readFile(files[j].path);
-				writeBinaryFileInProfile(data,newIDs[i],files[j].leafName);	
-			}
-		}
->>>>>>> .r153
 	}
 }
 
-<<<<<<< .mine
 function updateFileReferences(dataString, oldID, newID, files) {
-	alert(dataString);
 	if (files != null) {
 		for (var i=0; i < files.length; i++) {
 			var oldString = oldID + files[i];
@@ -153,25 +129,10 @@ function updateFileReferences(dataString, oldID, newID, files) {
 			var parsedString = null;
 			while (dataString != parsedString){
 				parsedString = dataString;
-				alert("old string " + oldString);
-				alert("new string " + newString);
 				dataString = dataString.replace(oldString, newString);
 			}
-=======
-function copyExportedContent(folderPath, exportItems){
-	for(var i = 0; i < exportItems.length; i++){
-		var data = readPage(exportItems[i] + ".html");
-		saveFile(folderPath,i + ".html",data);
-		var files = getAllFilesInDir(exportItems[i],"profile");
-		if(files.length != 0){		
-			for(var j = 0; j < files.length; j++){
-				data = readFile(files[j].path);
-				writeBinaryFile(data,folderPath + "\\" + i + "\\" + files[j].leafName);
-			}
->>>>>>> .r153
 		}
 	}
-	alert(dataString);	
 	return dataString;
 }
 
@@ -234,7 +195,6 @@ function recursiveCopyAllFiles(targetFolder, sourceFolder){
 		createDir(targetFolder, dirs[j]);
 		recursiveCopyAllFiles(targetFolder + "\\" + dirs[j], sourceFolder + "\\" + dirs[j]);
 	}
-<<<<<<< .mine
 	var files = getAllFilesInDir(sourceFolder);		
 	for(var j = 0; j < files.length; j++){
 		data = readFile(files[j].path);
@@ -255,18 +215,6 @@ function getAllFilesInDir(path){
 	  entry.QueryInterface(Components.interfaces.nsIFile);
 	  if(!entry.isDirectory())
 		  array.push(entry);
-=======
-	if(dir.exists()){
-		var entries = dir.directoryEntries;
-		var array = [];
-		while(entries.hasMoreElements()){
-		  var entry = entries.getNext();
-		  entry.QueryInterface(Components.interfaces.nsIFile);
-		  array.push(entry);
-		}
-	} else {
-		array = false;
->>>>>>> .r153
 	}
 	return array;
 	
