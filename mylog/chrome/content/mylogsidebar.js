@@ -250,9 +250,10 @@ function handleSaveLogEntryDetails() {
 		}
 		tags = uniqueTags(tags);
 		for(var i=0;i<tags.length;i++) {
-			logEntry.addTag(tags[i]);
+			if (typeof(tags[i]) != "undefined") {
+				logEntry.addTag(tags[i]);
+			}
 		}
-		
 		// Need to deal with comments later
 		dataHandler.replaceEntry(logEntry);
 		dataStore.close(dataHandler);

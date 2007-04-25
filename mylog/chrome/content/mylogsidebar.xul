@@ -60,11 +60,7 @@
 <html:canvas id="create-thumbnail-canvas" width="400" height="300" style="display: none;" />
    <toolbox id="mylog-toolbox">
 	  <toolbar align="left" id="mylog-toolbar">
-	    <toolbarbutton id="toolbarSave" 
-	    			   image="chrome://mylog/skin/filesave.png" 
-	    			   tooltiptext="&mylogsidebar.toolbarSave;"
-	    			   oncommand="handleSaveLogEntryDetails();"
-	    			   persist="hidden"/>
+	   
 	    <toolbarbutton id="toolbarDetails" 
 	    			   image="chrome://mylog/skin/2downarrow.png"
 	    			   tooltiptext="&mylogsidebar.toolbarShowDetails;"
@@ -91,6 +87,12 @@
 	                   image="chrome://mylog/skin/package.png"
 	                   tooltiptext="&mylogsidebar.toolbarImportExport;"
 	                   oncommand ="handleExportRequest();"/>
+	      <toolbarbutton id="toolbarSave" 
+	    			   image="chrome://mylog/skin/filesave.png" 
+	    			   tooltiptext="&mylogsidebar.toolbarSave;"
+	    			   oncommand="handleSaveLogEntryDetails();"
+	    			   persist="hidden"/>              
+	                   
 	  </toolbar>
 	</toolbox><html:div align="center">
 	<html:table width="160" height="120">
@@ -170,7 +172,8 @@
 	<description id="add-comment-button" style="color: green;">
 		Add Comment 
 		<image width='16' height='16' src="chrome://mylog/skin/add.png" onclick="handleShowAddComment();"/>
-	</description>
+	</description> 
+	
 	<vbox id="add-comment-container">
 		<textbox id="add-comment-box" multiline="true" flex="1"></textbox>
 		<button label="Add Comment" oncommand="handleAddComment();"/>
