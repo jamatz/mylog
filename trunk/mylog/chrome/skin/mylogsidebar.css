@@ -15,6 +15,15 @@
 	border: 0px;
 }
 
+#mylog-tags-toolbox {
+	background-color:#ffffff;
+	border: 0px;
+}
+
+#mylog-tags-toolbar {
+	border: 0px;
+}
+
 toolbarbutton#toolbarSave {
 	list-style-image: url("chrome://mylog/skin/filesave.png");
 }

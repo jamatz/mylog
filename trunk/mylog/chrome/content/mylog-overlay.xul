@@ -34,10 +34,10 @@
 		<menuitem id="mylog-unittest-index" label="MyLog Unit Tests"
 		             oncommand="showUnitTests()" />
 	</popup>
-	-->
 	<popup id="contentAreaContextMenu">
 		<menuitem id="mylog-contextmenu-create" label="Export/Import MyLog Content"
 			              oncommand="handleExportRequest()" />
 	</popup>
+	-->
 	
 </overlay>
