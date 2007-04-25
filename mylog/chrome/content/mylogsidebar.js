@@ -202,6 +202,9 @@ function handleDeleteEntry() {
 		if (success) {
 			dataStore.close(dataHandler);
 			removeListboxEntries();
+			var ctx = document.getElementById('preview-canvas').getContext('2d');
+			ctx.clearRect(0,0,160,120);
+			document.getElementById('logEntry-title').value = "";
 		}
 	} catch(e) {
 		logMsg("Exception occurred in handleDeleteEntry: " + e);

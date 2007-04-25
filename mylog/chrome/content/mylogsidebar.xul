@@ -92,8 +92,13 @@
 	                   tooltiptext="&mylogsidebar.toolbarImportExport;"
 	                   oncommand ="handleExportRequest();"/>
 	  </toolbar>
-	</toolbox>
-	<html:canvas id="preview-canvas" name="" width="10" height="10" alt="" />
+	</toolbox><html:div align="center">
+	<html:table width="160" height="120">
+	<html:tr><html:td align="center">
+	<html:canvas id="preview-canvas" name="" width="160" height="120" alt="" />
+	</html:td>
+	</html:tr>
+	</html:table></html:div>
   <html:div id="logEntry-details" persist="style">
 	  <grid>
 	  <columns>
