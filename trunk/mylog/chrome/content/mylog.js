@@ -22,6 +22,9 @@
 }*/
 
 function handleLogContentRequest() {
+	if (content.document.URL == 'about:blank') {
+		return 0;
+	}
 	var id = handleLogContentSubmission(content.document.URL, content.document.title, new Array(), "", content.document);
 	createThumbnail(content.document, id);
 	dataHandler = dataStore.open();
