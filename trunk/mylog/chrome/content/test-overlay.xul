@@ -29,10 +29,10 @@
 		<command id="Tools:TestMyLog" oncommand="runTests();"/>
 	</commandset>
 
-	
+	<!--
     <menupopup id="menu_ToolsPopup">
 		<menuitem id="menu_test-mylog" label="Test MyLog"
                           command="Tools:TestMyLog" insertbefore="javascriptConsole"/>
-    </menupopup>
+    </menupopup> -->
 
 </overlay>
