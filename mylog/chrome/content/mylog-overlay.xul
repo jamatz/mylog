@@ -35,4 +35,9 @@
 		             oncommand="showUnitTests()" />
 	</popup>
 	-->
+	<popup id="contentAreaContextMenu">
+		<menuitem id="mylog-contextmenu-create" label="Export/Import MyLog Content"
+			              oncommand="handleExportRequest()" />
+	</popup>
+	
 </overlay>
