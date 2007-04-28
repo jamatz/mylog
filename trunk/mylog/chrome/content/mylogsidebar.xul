@@ -35,7 +35,8 @@
   <script type="application/x-javascript" src="chrome://browser/content/utilityOverlay.js"/>
   
   <!-- BEGIN SEARCH BOX -->
-  <box orient="vertical" hidden="true">
+  <box orient="vertical" hidden="false" id="searchPage-box">
+    <button id="logPage-button" label="Log Page" oncommand = "showLogEntryPage();"/>
   	<box id="searchDiv" orient="vertical">
   		<textbox id="SearchBox" label="Search:" type="timed" timeout="100" oncommand="searchboxCallback(this.value);"></textbox>
   		<box orient="horizontal" style="margin-left: 5px;">
@@ -102,7 +103,7 @@
 	</html:td>
 	</html:tr>
 	</html:table></html:div>
-    <html:div id="logEntry-details" persist="style">
+    <!-- <html:div id="logEntry-details" persist="style">
 		  <grid>
 		  <columns>
 		    <column/>
@@ -119,9 +120,8 @@
 		      	<vbox>
 	  				<label value="Tags"/>
 	  				<hbox >
-	  				   <!--<image src="chrome://mylog/skin/add.png" width='16' height='16'/>
-	  				   <image src ="chrome://mylog/skin/button_cancel.png" width='16' height='16'/> -->
-			  	<!--	<button 
+	  			
+			  		<button 
 			  		        id="add_tag" 
 			  		        image="chrome://mylog/skin/add.png"
 			  		        oncommand="showOrHideAddTag()"
@@ -133,7 +133,7 @@
 			  		   		image="chrome://mylog/skin/button_cancel.png"
 			  		   		oncommand="removeTagsFromEntry()"
 			  		   		tooltiptext="&mylogsidebar.detailsDeleteTag;"
-			  		   	/> -->
+			  		   	/> 
 			  		   	<toolbox id="mylog-tags-toolbox">
 		  					<toolbar align="left" id="mylog-tags-toolbar">
 		    					<toolbarbutton id="add_tag" 
@@ -159,15 +159,15 @@
 			    </vbox>
 			    <listbox id="logEntry-tags"  rows="2">
 			    </listbox >
-	  			<!--<textbox id="logEntry-tags" multiline="true"></textbox>-->
+	  			<textbox id="logEntry-tags" multiline="true"></textbox>
 		    </row>
-	    	<!--<hbox id="logEntry-tags-add" hidden="true">
+	    	<hbox id="logEntry-tags-add" hidden="true">
 				<menulist label="Select to Add a Tag" id="mylog-tags">
 					<menupopup id="logEntry-tags-popup">
 						<menuItem label="Create New Tag" value="new tag" id="mylog-createTag" />
 					</menupopup>
 				</menulist>
-	    	</hbox> -->
+	    	</hbox> 
 		  
 		  </rows>
 		</grid>
@@ -182,7 +182,7 @@
 			<button label="Add Comment" oncommand="handleAddComment();"/>
 		</vbox>	
   
-  </html:div>
+  </html:div> -->
 
   <listbox id="results-listbox"
   		   onclick="handleResultClicked(event);"
@@ -198,8 +198,7 @@
 
 <!-- BEGIN LOG BOX -->
 
- <box orient="vertical" hidden="false" flex="1">
-
+ <box orient="vertical" hidden="true" id="logPage-box">
 	<html:canvas id="create-thumbnail-canvas" width="400" height="300" style="display: none;" />
    	<html:div align="center">
 	<html:table width="160" height="120">
@@ -276,24 +275,29 @@
 	  			<!--<textbox id="logEntry-tags" multiline="true"></textbox>-->
 		    </row>
 	    	
-	    	<listbox id="logEntry-tags"  rows="2">
-			</listbox >
+	    	<listbox id="logEntry-tags"  rows="3"></listbox >
 	    	<spacer height="20" />
 		  	<label>Comments</label>
-		  	<vbox id="add-comment-container">
-			<textbox id="add-comment-box" multiline="true" flex="1"></textbox>
-			<button label="Add Comment" oncommand="handleAddComment();"/> 
+		  	<vbox id="add-comment-container2">
+				<textbox id="add-comment-box" multiline="true"></textbox>
+				<button label="Add Comment" oncommand="handleAddComment();"/> 
 			</vbox>	
 			
 			<vbox id="comments-box" style="height:100px;overflow:auto;"></vbox>
-		  	
+		  	<hbox>
+		  		<button id="logEntry-Add" label="Save"  image="chrome://mylog/skin/bookmark_add.png" oncommand="handleSaveLogEntryDetails();"/>
+		  		<button id="logEntry-Cancel" label="Cancel" oncommand="showSearchEntryPage();" />  	
+		  	</hbox>
 		  </rows>
+		  
+		  
 		</grid>
 		<!--<description id="add-comment-button" style="color: green;">
 			Add Comment 
 			<image width='16' height='16' src="chrome://mylog/skin/add.png" onclick="handleShowAddComment();"/>
 		</description> -->
 		
+			
   </html:div>
 </box>
 

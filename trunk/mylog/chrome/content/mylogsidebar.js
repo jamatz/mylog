@@ -27,6 +27,28 @@ function initializeGUI() {
 	document.getElementById("add-comment-container").hidden = true;
 }
 
+function showLogEntryPage(id) {
+	if (content.document.URL != 'about:blank') {
+		document.getElementById("searchPage-box").hidden = true;
+		document.getElementById("logPage-box").hidden = false;
+	
+		populateNewEntry(id);
+	}
+}
+
+function populateNewEntry (id) {
+	// Obtain the current url
+	var title  = content.document.title;
+	document.getElementById("logEntry-title").value = title;
+}
+
+
+function showSearchEntryPage() {
+	document.getElementById("searchPage-box").hidden = false;
+	document.getElementById("logPage-box").hidden = true;
+
+}
+
 // Populates the listbox with the entries passed in via the array
 // entryList.  If no array is given, we just assume all entries
 // are wanted.  sortOrder is optional and currently defaults to
@@ -88,16 +110,30 @@ function handleShowAddComment() {
 function handleAddComment() {
 	try {
 		// Set necessary data
-		var id = document.getElementById('results-listbox').selectedItem.value;
+		/*var id = document.getElementById('results-listbox').selectedItem.value;
 		var logEntry = dataHandler.getEntry(id);
 		var newComment = document.getElementById("add-comment-box").value;
 		logEntry.addComment(newComment);
-		dataHandler.replaceEntry(logEntry);
-		populateComments(logEntry);
+		dataHandler.replaceEntry(logEntry); 
+		populateComments(logEntry); */
 		
-		document.getElementById("add-comment-box").value = "";
+		var dateVar = new Date();
+		var newComment = new Comment(document.getElementById("add-comment-box").value,dateVar);
+		
+		var commentsBox = document.getElementById("comments-box");
+		var dateNode = document.createElement("description");
+		dateNode.setAttribute("id", "comdate-0");
+		dateNode.appendChild(document.createTextNode(newComment.getDateString()));
+		commentsBox.appendChild(dateNode);
+
+		var commentNode = document.createElement("description");
+		commentNode.setAttribute("id", "comcom-0");
+		commentNode.appendChild(document.createTextNode(newComment.getContent()));
+		commentsBox.appendChild(commentNode);
+		
+		/*document.getElementById("add-comment-box").value = "";
 		document.getElementById("add-comment-container").hidden = true;
-		document.getElementById("add-comment-button").hidden = false;
+		document.getElementById("add-comment-button").hidden = false; */
 		
 	}
 	catch(e) {
@@ -164,11 +200,8 @@ function handleResultClicked(aEvent) {
 		for(var i=0;i<tags.length;i++) {
 			//tagsTBox.value += ", " + tags[i];
 			tagsBox.appendItem(tags[i],tags[i]);
-		}
-		
-		
+		}	
 	}
-	
 	
 	// Load comments
 	populateComments(logEntry);
@@ -212,11 +245,18 @@ function handleDeleteEntry() {
 	return success;
 }
 
-function handleSaveLogEntryDetails() {
+function handleSaveLogEntryDetails(id) {
 	try {
 		// Set necessary data
-		var id = document.getElementById('results-listbox').selectedItem.value;
-		var logEntry = dataHandler.getEntry(id);
+		//var id = document.getElementById('results-listbox').selectedItem.value;
+		var logEntry;
+		if(typeof(id) == "undefined") {
+			logEntry = new LogEntry();
+		}
+		else {
+			logEntry = dataHandler.getEntry(id);
+		}
+		
 		var titleTBox = document.getElementById('logEntry-title');
 		var tagsTBox = document.getElementById('logEntry-tags');
 		var tags = new Array();
@@ -227,23 +267,6 @@ function handleSaveLogEntryDetails() {
 		// the textbox, this may be inefficient so feel free to change it
 		logEntry.removeTags();
 		
-		/*var tagsString= tagsTBox.value;
-		var tags = tagsString.split(",");
-		for(var i=0;i<tags.length;i++) {
-			tags[i] = trimString(tags[i]);
-		}
-		tags = uniqueTags(tags);
-		var curTags = dataHandler.getAllTags();
-		
-		var index;
-		for(var i=0;i<tags.length;i++) {
-			index = curTags.indexOf(tags[i]);
-			if(index == -1) {
-				dataHandler.addTag(tags[i]);
-				curTags.push(tags[i]);
-			}
-			logEntry.addTag(tags[i]);
-		}*/
 		for(var i=0;i<tagsTBox.getRowCount();i++) {
 			var item = tagsTBox.getItemAtIndex(i);
 			tags.push(item.value);
@@ -254,8 +277,16 @@ function handleSaveLogEntryDetails() {
 				logEntry.addTag(tags[i]);
 			}
 		}
+		
 		// Need to deal with comments later
-		dataHandler.replaceEntry(logEntry);
+		
+		
+		if(typeof(id) == "undefined") {
+			dataHandler.addEntry(logEntry,content.document);
+		}
+		else {
+			dataHandler.replaceEntry(logEntry);
+		}
 		dataStore.close(dataHandler);
 		dataHandler = dataStore.open();
 	}
