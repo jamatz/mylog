@@ -590,11 +590,9 @@ function processLogEntryTagSelection(tag) {
 		logEntryTagsPopup.appendChild(menuItem);
 		tagsPopupMenu.appendChild(menuItem2);
 	}
-	else {
-		var entryTagList = document.getElementById("logEntry-tags");
-		entryTagList.appendItem(tag,tag);
-	}
-		
+	
+	var entryTagList = document.getElementById("logEntry-tags");
+	entryTagList.appendItem(tag,tag);
 }
 
 function createTag() {
