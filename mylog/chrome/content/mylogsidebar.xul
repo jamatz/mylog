@@ -33,7 +33,9 @@
   <script type="text/javascript" src="mylogsidebar.js"></script>
   <script src="mylog-utility.js" />
   <script type="application/x-javascript" src="chrome://browser/content/utilityOverlay.js"/>
-<box orient="vertical">
+  
+  <!-- BEGIN SEARCH BOX -->
+  <box orient="vertical" hidden="true">
   	<box id="searchDiv" orient="vertical">
   		<textbox id="SearchBox" label="Search:" type="timed" timeout="100" oncommand="searchboxCallback(this.value);"></textbox>
   		<box orient="horizontal" style="margin-left: 5px;">
@@ -55,7 +57,6 @@
 			<button label="Search Content" oncommand="handleSearchContentRequest()"></button>
 		</box>
 	</box>
-
 
 <html:canvas id="create-thumbnail-canvas" width="400" height="300" style="display: none;" />
    <toolbox id="mylog-toolbox">
@@ -101,83 +102,86 @@
 	</html:td>
 	</html:tr>
 	</html:table></html:div>
-  <html:div id="logEntry-details" persist="style">
-	  <grid>
-	  <columns>
-	    <column/>
-	    <column/>
-	  </columns>
-	
-	  <rows>
-	    <row>
-	      <label value="Title"/>
-	      <textbox id="logEntry-title"></textbox>
-	    </row>
-	    
-	    <row >
-	      	<vbox>
-  				<label value="Tags"/>
-  				<hbox >
-  				   <!--<image src="chrome://mylog/skin/add.png" width='16' height='16'/>
-  				   <image src ="chrome://mylog/skin/button_cancel.png" width='16' height='16'/> -->
-		  	<!--	<button 
-		  		        id="add_tag" 
-		  		        image="chrome://mylog/skin/add.png"
-		  		        oncommand="showOrHideAddTag()"
-		  		        style="width: 25px;"
-		  		        tooltiptext="&mylogsidebar.detailsShowAddTag;"
-		  		    />
-		  		   <button 
-		  		   		id="delete_tag" 
-		  		   		image="chrome://mylog/skin/button_cancel.png"
-		  		   		oncommand="removeTagsFromEntry()"
-		  		   		tooltiptext="&mylogsidebar.detailsDeleteTag;"
-		  		   	/> -->
-		  		   	<toolbox id="mylog-tags-toolbox">
-	  					<toolbar align="left" id="mylog-tags-toolbar">
-	    					<toolbarbutton id="add_tag" 
-			    			   image="chrome://mylog/skin/add.png"
-			    			   oncommand="showOrHideAddTag()"
-				  		       style="width: 25px;"
-				  		       tooltiptext="&mylogsidebar.detailsShowAddTag;"
-			    			   />
-			    			   
-		    			   <toolbarbutton id="delete_tag" 
-			    			   image="chrome://mylog/skin/button_cancel.png"
-			    			   oncommand="removeTagsFromEntry()"
-		  		   			   tooltiptext="&mylogsidebar.detailsDeleteTag;"
-				  		       style="width: 25px;"
-			    			   />
-		  		   	
-		  		   		</toolbar>
-		  		   	</toolbox>
-		  		   	
-		    	</hbox>
-		    </vbox>
-		    <listbox id="logEntry-tags"  rows="2">
-		    </listbox >
-  			<!--<textbox id="logEntry-tags" multiline="true"></textbox>-->
-	    </row>
-    	<hbox id="logEntry-tags-add" hidden="true">
-			<menulist label="Select to Add a Tag" id="mylog-tags">
-				<menupopup id="logEntry-tags-popup">
-					<menuItem label="Create New Tag" value="new tag" id="mylog-createTag" />
-				</menupopup>
-			</menulist>
-    	</hbox>
-	  
-	  </rows>
-	</grid>
-	<vbox id="comments-box" style="height:100px;overflow:auto;"></vbox>
-	<description id="add-comment-button" style="color: green;">
-		Add Comment 
-		<image width='16' height='16' src="chrome://mylog/skin/add.png" onclick="handleShowAddComment();"/>
-	</description> 
-	
-	<vbox id="add-comment-container">
-		<textbox id="add-comment-box" multiline="true" flex="1"></textbox>
-		<button label="Add Comment" oncommand="handleAddComment();"/>
-	</vbox>	
+    <html:div id="logEntry-details" persist="style">
+		  <grid>
+		  <columns>
+		    <column/>
+		    <column/>
+		  </columns>
+		
+		  <rows>
+		    <row>
+		      <label value="Title"/>
+		      <textbox id="logEntry-title"></textbox>
+		    </row>
+		    
+		    <row >
+		      	<vbox>
+	  				<label value="Tags"/>
+	  				<hbox >
+	  				   <!--<image src="chrome://mylog/skin/add.png" width='16' height='16'/>
+	  				   <image src ="chrome://mylog/skin/button_cancel.png" width='16' height='16'/> -->
+			  	<!--	<button 
+			  		        id="add_tag" 
+			  		        image="chrome://mylog/skin/add.png"
+			  		        oncommand="showOrHideAddTag()"
+			  		        style="width: 25px;"
+			  		        tooltiptext="&mylogsidebar.detailsShowAddTag;"
+			  		    />
+			  		   <button 
+			  		   		id="delete_tag" 
+			  		   		image="chrome://mylog/skin/button_cancel.png"
+			  		   		oncommand="removeTagsFromEntry()"
+			  		   		tooltiptext="&mylogsidebar.detailsDeleteTag;"
+			  		   	/> -->
+			  		   	<toolbox id="mylog-tags-toolbox">
+		  					<toolbar align="left" id="mylog-tags-toolbar">
+		    					<toolbarbutton id="add_tag" 
+		    					   value="Add"
+				    			   image="chrome://mylog/skin/add.png"
+				    			   oncommand="showOrHideAddTag()"
+					  		       style="width: 25px;"
+					  		       tooltiptext="&mylogsidebar.detailsShowAddTag;"
+				    			   />
+				    			   
+			    			   <toolbarbutton id="delete_tag"
+			    			   	   value="Remove" 
+				    			   image="chrome://mylog/skin/button_cancel.png"
+				    			   oncommand="removeTagsFromEntry()"
+			  		   			   tooltiptext="&mylogsidebar.detailsDeleteTag;"
+					  		       style="width: 25px;"
+				    		   />
+			  		   	
+			  		   		</toolbar>
+			  		   	</toolbox>
+			  		   	
+			    	</hbox>
+			    </vbox>
+			    <listbox id="logEntry-tags"  rows="2">
+			    </listbox >
+	  			<!--<textbox id="logEntry-tags" multiline="true"></textbox>-->
+		    </row>
+	    	<!--<hbox id="logEntry-tags-add" hidden="true">
+				<menulist label="Select to Add a Tag" id="mylog-tags">
+					<menupopup id="logEntry-tags-popup">
+						<menuItem label="Create New Tag" value="new tag" id="mylog-createTag" />
+					</menupopup>
+				</menulist>
+	    	</hbox> -->
+		  
+		  </rows>
+		</grid>
+		<vbox id="comments-box" style="height:100px;overflow:auto;"></vbox>
+		<description id="add-comment-button" style="color: green;">
+			Add Comment 
+			<image width='16' height='16' src="chrome://mylog/skin/add.png" onclick="handleShowAddComment();"/>
+		</description> 
+		
+		<vbox id="add-comment-container">
+			<textbox id="add-comment-box" multiline="true" flex="1"></textbox>
+			<button label="Add Comment" oncommand="handleAddComment();"/>
+		</vbox>	
+  
   </html:div>
 
   <listbox id="results-listbox"
@@ -189,5 +193,111 @@
  </listbox>
 
 </box>
+
+<!-- END SEARCH BOX -->
+
+<!-- BEGIN LOG BOX -->
+
+ <box orient="vertical" hidden="false" flex="1">
+
+	<html:canvas id="create-thumbnail-canvas" width="400" height="300" style="display: none;" />
+   	<html:div align="center">
+	<html:table width="160" height="120">
+	<html:tr><html:td align="center">
+	<html:canvas id="preview-canvas" name="" width="160" height="120" alt="" />
+	</html:td>
+	</html:tr>
+	</html:table></html:div>
+    <html:div id="logEntry-details" persist="style">
+		  <grid>
+		  <columns>
+		    <column/>
+		    <column/>
+		  </columns>
+		
+		  <rows>
+		    <row>
+		      <label value="Title"/>
+		      <textbox id="logEntry-title"></textbox>
+		    </row>
+		    
+		    <space height="20" />
+		    
+		    <row >
+		      	<vbox valign="middle">
+	  				<label value="Tags"/>
+	  				<hbox >
+	  				   <!--<image src="chrome://mylog/skin/add.png" width='16' height='16'/>
+	  				   <image src ="chrome://mylog/skin/button_cancel.png" width='16' height='16'/> -->
+			  	<!--	<button 
+			  		        id="add_tag" 
+			  		        image="chrome://mylog/skin/add.png"
+			  		        oncommand="showOrHideAddTag()"
+			  		        style="width: 25px;"
+			  		        tooltiptext="&mylogsidebar.detailsShowAddTag;"
+			  		    />
+			  		   <button 
+			  		   		id="delete_tag" 
+			  		   		image="chrome://mylog/skin/button_cancel.png"
+			  		   		oncommand="removeTagsFromEntry()"
+			  		   		tooltiptext="&mylogsidebar.detailsDeleteTag;"
+			  		   	/> -->
+			  		   <!--	<toolbox id="mylog-tags-toolbox">
+		  					<toolbar align="left" id="mylog-tags-toolbar">
+		    					<toolbarbutton id="add_tag" 
+		    					   value="Add"
+				    			   image="chrome://mylog/skin/add.png"
+				    			   oncommand="showOrHideAddTag()"
+					  		       style="width: 25px;"
+					  		       tooltiptext="&mylogsidebar.detailsShowAddTag;"
+				    			   />
+				    			   
+			    			   <toolbarbutton id="delete_tag"
+			    			   	   value="Remove" 
+				    			   image="chrome://mylog/skin/button_cancel.png"
+				    			   oncommand="removeTagsFromEntry()"
+			  		   			   tooltiptext="&mylogsidebar.detailsDeleteTag;"
+					  		       style="width: 25px;"
+				    		   />
+			  		   	
+			  		   		</toolbar>
+			  		   	</toolbox>-->
+			  		   	
+			    	</hbox>
+			    </vbox>
+			    <hbox id="logEntry-tags-add" hidden="false">
+					<menulist label="Select to Add a Tag" id="mylog-tags">
+						<menupopup id="logEntry-tags-popup">
+							<menuItem label="Create New Tag" value="new tag" id="mylog-createTag" />
+						</menupopup>
+					</menulist>
+	    	    </hbox>
+			    
+	  			<!--<textbox id="logEntry-tags" multiline="true"></textbox>-->
+		    </row>
+	    	
+	    	<listbox id="logEntry-tags"  rows="2">
+			</listbox >
+	    	<spacer height="20" />
+		  	<label>Comments</label>
+		  	<vbox id="add-comment-container">
+			<textbox id="add-comment-box" multiline="true" flex="1"></textbox>
+			<button label="Add Comment" oncommand="handleAddComment();"/> 
+			</vbox>	
+			
+			<vbox id="comments-box" style="height:100px;overflow:auto;"></vbox>
+		  	
+		  </rows>
+		</grid>
+		<!--<description id="add-comment-button" style="color: green;">
+			Add Comment 
+			<image width='16' height='16' src="chrome://mylog/skin/add.png" onclick="handleShowAddComment();"/>
+		</description> -->
+		
+  </html:div>
+</box>
+
+<!-- END LOG BOX -->
+
 </page>
 </window>
