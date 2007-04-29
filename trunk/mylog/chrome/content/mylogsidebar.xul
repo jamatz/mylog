@@ -23,6 +23,7 @@
   <script type="application/x-javascript" src="chrome://mylog/content/mylog.js"/>
  
   <popup id="sidebarEntriesContextMenu">
+    <menuitem id="sidebar_delete" oncommand="handleEditEntry();" label="&mylogsidebar.edit-entry;"/>
     <menuitem id="sidebar_delete" oncommand="handleDeleteEntry();" label="&mylogsidebar.delete-entry;"/>
   </popup>
 
@@ -34,7 +35,7 @@
   <script src="mylog-utility.js" />
   <script type="application/x-javascript" src="chrome://browser/content/utilityOverlay.js"/>
   
-  <!-- BEGIN SEARCH BOX -->
+<!-- BEGIN SEARCH BOX -->
   <box orient="vertical" hidden="false" id="searchPage-box">
   	<toolbox id="mylog-toolbox">
 	  <toolbar align="left" id="mylog-toolbar">
@@ -67,7 +68,17 @@
 		</box>
   	</box>
 
-<html:canvas id="create-thumbnail-canvas" width="400" height="300" style="display: none;" />
+
+
+  <listbox id="results-listbox"
+  		   onselect="handleResultClicked(event);"
+           ondblclick="handleResultDblClicked(event);"
+           onkeypress="if (event.keyCode == 46) handleDeleteEntry();" 
+           context="sidebarEntriesContextMenu"
+           seltype="multiple">
+ </listbox>
+ 
+ <html:canvas id="create-thumbnail-canvas" width="400" height="300" style="display: none;" />
     <html:div align="center">
 	<html:table width="160" height="120">
 	<html:tr><html:td align="center">
@@ -75,7 +86,12 @@
 	</html:td>
 	</html:tr>
 	</html:table></html:div>
-    <!-- <html:div id="logEntry-details" persist="style">
+
+    <vbox id="logEntry-search-details" hidden="true">
+    		<description style="align: center;">
+		    	<span onclick="handleEditEntry();">Edit</span> |
+		    	<span onclick="handleViewLocalCopy();">View Local Copy</span>
+		    </description>
 		  <grid>
 		  <columns>
 		    <column/>
@@ -83,86 +99,23 @@
 		  </columns>
 		
 		  <rows>
+		  	<row>
+		    	<label value="Title"/>
+		    	<textbox id="logEntry-details-title" class="plain" readonly="true"></textbox>
+		    </row>
 		    <row>
-		      <label value="Title"/>
-		      <textbox id="logEntry-title"></textbox>
+		    	<label value="Url"/>
+		    	<textbox id="logEntry-details-url" class="plain" readonly="true"></textbox>
 		    </row>
-		    
-		    <row >
-		      	<vbox>
-	  				<label value="Tags"/>
-	  				<hbox >
-	  			
-			  		<button 
-			  		        id="add_tag" 
-			  		        image="chrome://mylog/skin/add.png"
-			  		        oncommand="showOrHideAddTag()"
-			  		        style="width: 25px;"
-			  		        tooltiptext="&mylogsidebar.detailsShowAddTag;"
-			  		    />
-			  		   <button 
-			  		   		id="delete_tag" 
-			  		   		image="chrome://mylog/skin/button_cancel.png"
-			  		   		oncommand="removeTagsFromEntry()"
-			  		   		tooltiptext="&mylogsidebar.detailsDeleteTag;"
-			  		   	/> 
-			  		   	<toolbox id="mylog-tags-toolbox">
-		  					<toolbar align="left" id="mylog-tags-toolbar">
-		    					<toolbarbutton id="add_tag" 
-		    					   value="Add"
-				    			   image="chrome://mylog/skin/add.png"
-				    			   oncommand="showOrHideAddTag()"
-					  		       style="width: 25px;"
-					  		       tooltiptext="&mylogsidebar.detailsShowAddTag;"
-				    			   />
-				    			   
-			    			   <toolbarbutton id="delete_tag"
-			    			   	   value="Remove" 
-				    			   image="chrome://mylog/skin/button_cancel.png"
-				    			   oncommand="removeTagsFromEntry()"
-			  		   			   tooltiptext="&mylogsidebar.detailsDeleteTag;"
-					  		       style="width: 25px;"
-				    		   />
-			  		   	
-			  		   		</toolbar>
-			  		   	</toolbox>
-			  		   	
-			    	</hbox>
-			    </vbox>
-			    <listbox id="logEntry-tags"  rows="2">
+		    <row>
+	  			<label value="Tags"/>
+			    <listbox id="logEntry-details-tags"  rows="2">
 			    </listbox >
-	  			<textbox id="logEntry-tags" multiline="true"></textbox>
 		    </row>
-	    	<hbox id="logEntry-tags-add" hidden="true">
-				<menulist label="Select to Add a Tag" id="mylog-tags">
-					<menupopup id="logEntry-tags-popup">
-						<menuItem label="Create New Tag" value="new tag" id="mylog-createTag" />
-					</menupopup>
-				</menulist>
-	    	</hbox> 
-		  
 		  </rows>
 		</grid>
-		<vbox id="comments-box" style="height:100px;overflow:auto;"></vbox>
-		<description id="add-comment-button" style="color: green;">
-			Add Comment 
-			<image width='16' height='16' src="chrome://mylog/skin/add.png" onclick="handleShowAddComment();"/>
-		</description> 
-		
-		<vbox id="add-comment-container">
-			<textbox id="add-comment-box" multiline="true" flex="1"></textbox>
-			<button label="Add Comment" oncommand="handleAddComment();"/>
-		</vbox>	
-  
-  </html:div> -->
-
-  <listbox id="results-listbox"
-  		   onclick="handleResultClicked(event);"
-           ondblclick="handleResultDblClicked(event);"
-           onkeypress="if (event.keyCode == 46) handleDeleteEntry();" 
-           context="sidebarEntriesContextMenu"
-           seltype="multiple">
- </listbox>
+		<vbox id="comments-details-box" style="height:100px;overflow:auto;"></vbox>
+  </vbox> 
 
 </box>
 
@@ -205,6 +158,10 @@
 		    <row>
 		      <label value="Title"/>
 		      <textbox id="logEntry-title"></textbox>
+		    </row>
+		    <row>
+		      <label value="Url"/>
+		      <textbox id="logEntry-url"></textbox>
 		    </row>
 		    
 		    <space height="20" />
