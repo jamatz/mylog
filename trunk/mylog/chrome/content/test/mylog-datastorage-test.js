@@ -26,10 +26,14 @@
                         le.addComment(comments[i]);
                 }
 
-                var doc = document.implementation.createDocument("", "", null);
-                var entriesElem = doc.createElement("entries");
-                entriesElem.setAttribute("counter", "0");
-                doc.appendChild(entriesElem);
+//                var doc = document.implementation.createDocument("", "", null);
+//                var entriesElem = doc.createElement("entries");
+//                entriesElem.setAttribute("counter", "0");
+//                doc.appendChild(entriesElem);
+                
+//                var dataHandler = dataStore.open();
+//                dataHandler.addEntry(le);
+//                dataStore.close(dataHandler);
             }
 
             this.testFindEntry = function() {
@@ -62,6 +66,9 @@
 
            this.testGetEntry = function() {
 				var dataHandler = dataStore.open();
+                dataHandler.addEntry(le);
+                dataStore.close(dataHandler);
+                
 				this.assertFalse(dataHandler.getEntry(1));
 				
 				var entry = dataHandler.getEntry(0);
@@ -83,6 +90,7 @@
 				var newUrl = "http://newurl.com/";
 				entries[0].setUrl(newUrl);
 				secondDataHandler.replaceEntry(entries[0]);
+				dataStore.close(secondDataHandler);
 				
 				var thirdDataHandler = dataStore.open();
 				entries = thirdDataHandler.getAllEntries();
@@ -98,11 +106,16 @@
             this.testRemoveEntry = function() {
 				var dataHandler = dataStore.open();
 				dataHandler.addEntry(le);
+				dataStore.close(dataHandler);
 
 				var secondDataHandler = dataStore.open();
 				var entries = secondDataHandler.getAllEntries();
 				var id = entries[0].getId();
 
+				entries = secondDataHandler.getAllEntries();
+				this.assertEquals(entries.length, 1);
+				
+				secondDataHandler.removeEntry(id);
 				entries = secondDataHandler.getAllEntries();
 				this.assertEquals(entries.length, 0);
 				
@@ -113,7 +126,7 @@
             }
             
             this.tearDown = function() {
-            	dataStore.setXmlFilepath("mylog-tag-test2.xml");
+            	// dataStore.setXmlFilepath("mylog-tag-test2.xml");
 				dataStore.close(blankDataHandler); // So we can start from scratch again.
             }
         }
