@@ -20,6 +20,9 @@ var showingSearchByContent = false;
 var previousQuery = "";
 var editingId;
 
+var currComments = new Array();
+var newComments = new Array();
+
 function initializeGUI() {
 	dataStore = new XmlDataStore();
 	dataHandler = dataStore.open();
@@ -32,7 +35,7 @@ function showLogEntryPage(id) {
 	if ((typeof(id) == "undefined") && (content.document.URL == 'about:blank')) {
 		return 0;
 	}
-	
+
 	document.getElementById("searchPage-box").hidden = true;
 	document.getElementById("logPage-box").hidden = false;
 
@@ -40,19 +43,24 @@ function showLogEntryPage(id) {
 }
 
 function populateNewEntry (id) {
-	editingId = id;
-	logBoxClearTags();
-	if (typeof(id) == "undefined") { // New Entry
-		var title  = content.document.title;
-		document.getElementById("logEntry-title").value = title;
-		var url = content.document.location;
-		document.getElementById("logEntry-url").value = url;
-	} else {
-		var logEntry = dataHandler.getEntry(id);
-		document.getElementById("logEntry-title").value = logEntry.getTitle();
-		document.getElementById("logEntry-url").value = logEntry.getUrl();
-		logBoxPopulateTags(logEntry);
-		logBoxPopulateComments(logEntry);
+	try {
+		editingId = id;
+		logBoxClearTags();
+		clearComments(document.getElementById("comments-box"));
+		if (typeof(id) == "undefined") { // New Entry
+			var title  = content.document.title;
+			document.getElementById("logEntry-title").value = title;
+			var url = content.document.location;
+			document.getElementById("logEntry-url").value = url;
+		} else {
+			var logEntry = dataHandler.getEntry(id);
+			document.getElementById("logEntry-title").value = logEntry.getTitle();
+			document.getElementById("logEntry-url").value = logEntry.getUrl();
+			logBoxPopulateTags(logEntry);
+			logBoxPopulateComments(logEntry);
+		}
+	} catch(e) {
+		logMsg("Exception in populateNewEntry():" + e);
 	}
 }
 
@@ -74,7 +82,42 @@ function logBoxPopulateTags(logEntry) {
 }
 
 function logBoxPopulateComments(logEntry) {
+	try {
+		delete newComments;
+		delete curComments;
+		
+		newComments = new Array();
+		curComments = new Array();
 	
+		var commentsBox = document.getElementById("comments-box");
+		curComments = logEntry.getComments();
+		populateCommentsBox(commentsBox,logEntry);
+	}catch(e) {
+		logMsg("Exception in logBoxPopulateComments():" + e);
+	}
+
+}
+
+function populateCommentsBox(commentsBox,theEntry) {
+	try {
+		clearComments(commentsBox);
+		
+		var dateNode;
+		var commentNode;
+		var commentArray = theEntry.getComments();
+		for (var i = 0; i < commentArray.length; i++) {
+			dateNode = document.createElement("description");
+			dateNode.setAttribute("id", "comdate-" + theEntry.getId() + "-" + i);
+			dateNode.appendChild(document.createTextNode(commentArray[i].getDateString()));
+			commentsBox.appendChild(dateNode);
+			commentNode = document.createElement("description");
+			commentNode.setAttribute("id", "comcom-" + theEntry.getId() + "-" + i);
+			commentNode.appendChild(document.createTextNode(commentArray[i].getContent()));
+			commentsBox.appendChild(commentNode);
+		}
+	} catch(e) {
+		logMsg("Exception in populateCommentsBox():" + e);
+	}
 }
 
 function showSearchEntryPage(id) {
@@ -113,31 +156,21 @@ function populateListbox(entryList, sortOrder) {
 }
 
 function populateComments(theEntry) {
-	clearComments();
-	
-	var commentsBox = document.getElementById("comments-details-box");
-	
-	var dateNode;
-	var commentNode;
-	
-	var commentArray = theEntry.getComments();
-	for (var i = 0; i < commentArray.length; i++) {
-		dateNode = document.createElement("description");
-		dateNode.setAttribute("id", "comdate-" + theEntry.getId() + "-" + i);
-		dateNode.appendChild(document.createTextNode(commentArray[i].getDateString()));
-		commentsBox.appendChild(dateNode);
-
-		commentNode = document.createElement("description");
-		commentNode.setAttribute("id", "comcom-" + theEntry.getId() + "-" + i);
-		commentNode.appendChild(document.createTextNode(commentArray[i].getContent()));
-		commentsBox.appendChild(commentNode);
+	try {
+		var commentsBox = document.getElementById("comments-details-box");
+		populateCommentsBox(commentsBox,theEntry);
+	}catch(e) {
+		logMsg("Exception in populateComments():" + e);
 	}
 }
 
-function clearComments() {
-	var commentsBox = document.getElementById("comments-details-box");
-	while (commentsBox.childNodes.length > 0) {
-		commentsBox.removeChild(commentsBox.childNodes[0]);
+function clearComments(commentsBox) {
+	try {
+		while (commentsBox.childNodes.length > 0) {
+			commentsBox.removeChild(commentsBox.childNodes[0]);
+		}
+	} catch(e) {
+		logMsg("Exception in clearComments():" + e);
 	}
 }
 
@@ -158,6 +191,7 @@ function handleAddComment() {
 		
 		var dateVar = new Date();
 		var newComment = new Comment(document.getElementById("add-comment-box").value,dateVar);
+		newComments.push(newComment);
 		
 		var commentsBox = document.getElementById("comments-box");
 		var dateNode = document.createElement("description");
@@ -214,39 +248,43 @@ function removeListboxEntries() {
 }
 
 function handleResultClicked(aEvent) {
-	var id = document.getElementById('results-listbox').selectedItem.value;
-	
-	var div = document.getElementById("logEntry-search-details");
-	
-	var logEntry = dataHandler.getEntry(id);
-	
-    var titleTBox = document.getElementById('logEntry-details-title');
-    var urlTBox = document.getElementById('logEntry-details-url');
-	var tagsBox =  document.getElementById('logEntry-details-tags');
-	titleTBox.value = logEntry.getTitle();
-	urlTBox.value = logEntry.getUrl();
-	
-	// Load tags
-	while(tagsBox.getRowCount() > 0) {
-		tagsBox.removeItemAt(0);
+	try {
+		var id = document.getElementById('results-listbox').selectedItem.value;
+		
+		var div = document.getElementById("logEntry-search-details");
+		
+		var logEntry = dataHandler.getEntry(id);
+		
+	    var titleTBox = document.getElementById('logEntry-details-title');
+	    var urlTBox = document.getElementById('logEntry-details-url');
+		var tagsBox =  document.getElementById('logEntry-details-tags');
+		titleTBox.value = logEntry.getTitle();
+		urlTBox.value = logEntry.getUrl();
+		
+		// Load tags
+		while(tagsBox.getRowCount() > 0) {
+			tagsBox.removeItemAt(0);
+		}
+		
+		//tagsTBox.value = "";
+		var tags = logEntry.getTags();
+		if(tags.length > 0) {
+			//tagsTBox.value = tags[0];
+			for(var i=0;i<tags.length;i++) {
+				//tagsTBox.value += ", " + tags[i];
+				tagsBox.appendItem(tags[i],tags[i]);
+			}	
+		}
+		
+		// Load comments
+		populateComments(logEntry);
+		
+		loadThumbnail(id);
+		
+		div.hidden = false;
+	}catch(e) {
+		logMsg("Exception found in handleResultClicked():" + e);
 	}
-	
-	//tagsTBox.value = "";
-	var tags = logEntry.getTags();
-	if(tags.length > 0) {
-		//tagsTBox.value = tags[0];
-		for(var i=0;i<tags.length;i++) {
-			//tagsTBox.value += ", " + tags[i];
-			tagsBox.appendItem(tags[i],tags[i]);
-		}	
-	}
-	
-	// Load comments
-	populateComments(logEntry);
-	
-	loadThumbnail(id);
-	
-	div.hidden = false;
 }
 
 function handleResultDblClicked(aEvent) {
@@ -327,12 +365,8 @@ function handleSaveLogEntryDetails() {
 			}
 		}
 		
-		// Need to deal with comments later
-		logEntry.removeComments();
-		var commentsBox = document.getElementById("comments-box");
-		for(var i=0;i<commentsBox.childNodes.length;i+=2) {
-			var commentStr = commentsBox.childNodes.item(i+1).childNodes.item(0).nodeValue;
-			logEntry.addComment(commentStr);
+		for(var i=0;i<newComments.length;i++) {
+			logEntry.addCommentObject(newComments[i]);
 		}
 		
 		if(typeof(id) == "undefined") {
