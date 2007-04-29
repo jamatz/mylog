@@ -275,7 +275,7 @@
 	  			<!--<textbox id="logEntry-tags" multiline="true"></textbox>-->
 		    </row>
 	    	
-	    	<listbox id="logEntry-tags"  rows="3"></listbox >
+	    	<listbox id="logEntry-tags" rows="3" onkeypress="if (event.keyCode == 46) removeTagsFromEntry();" ></listbox >
 	    	<spacer height="20" />
 		  	<label>Comments</label>
 		  	<vbox id="add-comment-container2">
