@@ -19,19 +19,26 @@ var dataHandler;
             
             this.setUp = function() {
             	dataStore = new XmlDataStore();
+            	dataStore.setXmlFilepath("mylog-title-search-test.xml");
 				dataHandler = dataStore.open();
             };
             
             this.testCompares1 = function() {
             // Tests the title compare function (the only one implemented so far).
-            	handleLogContentSubmission("http://fakeurl/for/testing", "Fake Entry", new Array('nothing'), "This is a fake entry for testing.", window.content.document);
+            	/*handleLogContentSubmission("http://fakeurl/for/testing", "Fake Entry", new Array('nothing'), "This is a fake entry for testing.", window.content.document);
 				handleLogContentSubmission("http://fakeurl/for/testing", "Second Fake Entry", new Array('nothing'), "This is a fake entry for testing.", window.content.document);
+				*/
 				var allEntries = dataHandler.getAllEntries();
 				var theResult = compareTitles(allEntries[allEntries.length - 1], allEntries[allEntries.length - 2]);
-				this.assertEquals(theResult, 1);
+				this.assertEquals(theResult, -1);
             };
-
-			
+            
+            this.testCompare2 = function() {
+            	var allEntries = dataHandler.getAllEntries();
+            	var theResult = compareTitles(allEntries[1], allEntries[0]);
+            	this.assertEquals(theResult, 1);
+            }
+	
 			this.tearDown = function() {
             	dataStore.close(dataHandler);
             };
