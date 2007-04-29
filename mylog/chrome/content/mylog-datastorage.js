@@ -591,7 +591,7 @@ function deleteLocalPage(id) {
 
 function saveResultsPage(keyword,entries,snippets) {
 	try {
-		var htmlStr = "<html><head><meta http-equiv='content-type' content='text/html; charset=UTF-8'><title>" + keyword + " - MyLog Search</title></head><body>";
+		var htmlStr = "<html><head><meta http-equiv='content-type' content='text/html; charset=ISO-8859-1'><title>" + keyword + " - MyLog Search</title></head><body>";
 		htmlStr += "<img src='chrome://mylog/skin/MyLog-Logo.jpg' width='160' height='160' />";
 		htmlStr += "<table width='100%'>";
 		htmlStr += "<tr><td bgcolor='#e5ecf9'><h3>Results For " + keyword + "</h3></td></tr>";

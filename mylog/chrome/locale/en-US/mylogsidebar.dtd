@@ -8,12 +8,13 @@
 <!ENTITY mylogsidebar.comments-checkbox "Comments">
 <!ENTITY mylogsidebar.tags-checkbox "Tags:">
 <!ENTITY mylogsidebar.delete-entry "Delete Entry">
-<!ENTITY mylogsidebar.toolbarAdd "Log Current Page">
+<!ENTITY mylogsidebar.toolbarAdd "Log Page">
 <!ENTITY mylogsidebar.toolbarDelete "Delete Entry">
 <!ENTITY mylogsidebar.toolbarShowDetails "Show Details">
 <!ENTITY mylogsidebar.toolbarHideDetails "Hide Details">
-<!ENTITY mylogsidebar.toolbarSave "Save Changes">
-<!ENTITY mylogsidebar.toolbarSearchContent "Search By Content">
+<!ENTITY mylogsidebar.toolbarSave "Save">
+<!ENTITY mylogsidebar.toolbarCancel "Cancel">
+<!ENTITY mylogsidebar.toolbarSearchContent "Search by Content">
 <!ENTITY mylogsidebar.toolbarImportExport "Import/Export">
 <!ENTITY mylogsidebar.detailsShowAddTag "Show/Hide Add Tag Menu">
 <!ENTITY mylogsidebar.detailsDeleteTag "Delete Selected Tag">

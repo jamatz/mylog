@@ -62,13 +62,13 @@ function handleExportRequest() {
 }
 
 
-function handleSearchContentRequest() {
-	var dataStore = new XmlDataStore();
-	var dataHandler = dataStore.open();
-	var keyword=prompt("Please enter your search keyword","");
-	dataHandler.findEntries(keyword,"content");
-	showResultsPage();
-}
+//function handleSearchContentRequest() {
+//	var dataStore = new XmlDataStore();
+//	var dataHandler = dataStore.open();
+//	var keyword=prompt("Please enter your search keyword","");
+//	dataHandler.findEntries(keyword,"content");
+//	showResultsPage();
+//}
 
 
 // Created by Brian Cho and Soumi Sinha on December 1, 2006.
