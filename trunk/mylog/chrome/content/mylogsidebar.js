@@ -126,8 +126,6 @@ function showSearchEntryPage(id) {
 	searchboxCallback(document.getElementById("SearchBox").value);
 	
 	document.getElementById("logEntry-search-details").hidden = "true";
-	
-	
 }
 
 function handleDeleteLogEntryTag() {
@@ -148,7 +146,6 @@ function populateListbox(entryList, sortOrder) {
 		entryList = dataHandler.getAllEntries();
 	if (typeof(sortOrder) == "undefined")
 		sortOrder = "title";
-	
 	
 	clearListbox();
 	if (sortOrder == "title") {
@@ -330,6 +327,8 @@ function handleDeleteEntry() {
 	} catch(e) {
 		logMsg("Exception occurred in handleDeleteEntry: " + e);
 	}
+	
+	document.getElementById("logEntry-search-details").hidden = "true";
 	return success;
 }
 
