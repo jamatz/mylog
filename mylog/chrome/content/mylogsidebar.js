@@ -18,6 +18,7 @@ var dataHandler;
 var showingSearchByContent = false;
 
 var previousQuery = "";
+var editingId;
 
 function initializeGUI() {
 	dataStore = new XmlDataStore();
@@ -28,26 +29,55 @@ function initializeGUI() {
 }
 
 function showLogEntryPage(id) {
-	if (content.document.URL != 'about:blank') {
-		document.getElementById("searchPage-box").hidden = true;
-		document.getElementById("logPage-box").hidden = false;
-	
-		populateNewEntry(id);
+	if ((typeof(id) == "undefined") && (content.document.URL == 'about:blank')) {
+		return 0;
 	}
+	
+	document.getElementById("searchPage-box").hidden = true;
+	document.getElementById("logPage-box").hidden = false;
+
+	populateNewEntry(id);
 }
 
 function populateNewEntry (id) {
-	// Obtain the current url
-	var title  = content.document.title;
-	document.getElementById("logEntry-title").value = title;
-	
+	editingId = id;
+	logBoxClearTags();
+	if (typeof(id) == "undefined") { // New Entry
+		var title  = content.document.title;
+		document.getElementById("logEntry-title").value = title;
+		var url = content.document.location;
+		document.getElementById("logEntry-url").value = url;
+	} else {
+		var logEntry = dataHandler.getEntry(id);
+		document.getElementById("logEntry-title").value = logEntry.getTitle();
+		document.getElementById("logEntry-url").value = logEntry.getUrl();
+		logBoxPopulateTags(logEntry);
+		logBoxPopulateComments(logEntry);
+	}
+}
+
+function logBoxClearTags() {
 	while (document.getElementById('logEntry-tags').getRowCount() > 0) {
 		document.getElementById('logEntry-tags').removeItemAt(0);
 	}
 }
 
+function logBoxPopulateTags(logEntry) {
+	var tagsBox =  document.getElementById('logEntry-tags');
+	
+	var tags = logEntry.getTags();
+	if(tags.length > 0) {
+		for(var i=0;i<tags.length;i++) {
+			tagsBox.appendItem(tags[i],tags[i]);
+		}	
+	}
+}
 
-function showSearchEntryPage() {
+function logBoxPopulateComments(logEntry) {
+	
+}
+
+function showSearchEntryPage(id) {
 	document.getElementById("searchPage-box").hidden = false;
 	document.getElementById("logPage-box").hidden = true;
 	searchboxCallback(document.getElementById("SearchBox").value);
@@ -85,7 +115,7 @@ function populateListbox(entryList, sortOrder) {
 function populateComments(theEntry) {
 	clearComments();
 	
-	var commentsBox = document.getElementById("comments-box");
+	var commentsBox = document.getElementById("comments-details-box");
 	
 	var dateNode;
 	var commentNode;
@@ -105,7 +135,7 @@ function populateComments(theEntry) {
 }
 
 function clearComments() {
-	var commentsBox = document.getElementById("comments-box");
+	var commentsBox = document.getElementById("comments-details-box");
 	while (commentsBox.childNodes.length > 0) {
 		commentsBox.removeChild(commentsBox.childNodes[0]);
 	}
@@ -186,14 +216,15 @@ function removeListboxEntries() {
 function handleResultClicked(aEvent) {
 	var id = document.getElementById('results-listbox').selectedItem.value;
 	
-	var div = document.getElementById("logEntry-details");
+	var div = document.getElementById("logEntry-search-details");
 	
 	var logEntry = dataHandler.getEntry(id);
-	var titleTBox = document.getElementById('logEntry-title');
-	//var tagsTBox = document.getElementById('logEntry-tags');
-	var tagsBox =  document.getElementById('logEntry-tags');
-	//var tagsPopup = document.getElementById('logEntry-tags-popup');
+	
+    var titleTBox = document.getElementById('logEntry-details-title');
+    var urlTBox = document.getElementById('logEntry-details-url');
+	var tagsBox =  document.getElementById('logEntry-details-tags');
 	titleTBox.value = logEntry.getTitle();
+	urlTBox.value = logEntry.getUrl();
 	
 	// Load tags
 	while(tagsBox.getRowCount() > 0) {
@@ -215,16 +246,25 @@ function handleResultClicked(aEvent) {
 	
 	loadThumbnail(id);
 	
+	div.hidden = false;
 }
 
 function handleResultDblClicked(aEvent) {
+	if (aEvent.button == 0) { // left click
+		handleViewLocalCopy();
+	}
+}
+
+function handleEditEntry() {
+	var id = document.getElementById('results-listbox').selectedItem.value;
+	
+	showLogEntryPage(id);
+}
+
+function handleViewLocalCopy() {
 	var id = document.getElementById('results-listbox').selectedItem.value;
 	var logEntry = dataHandler.getEntry(id);
-	if (aEvent.button == 0) { // left click
-	//	window.openDialog("chrome://mylog/content/mylog-logEditor.xul","Log Entry Editor",
-	//		"chrome",logEntry, dataStore, dataHandler);
-		openTopWin(logEntry.getFilePath());
-	}
+	openTopWin(logEntry.getFilePath());
 }
 
 function handleDeleteEntry() {
@@ -250,8 +290,9 @@ function handleDeleteEntry() {
 	return success;
 }
 
-function handleSaveLogEntryDetails(id) {
+function handleSaveLogEntryDetails() {
 	try {
+		var id = editingId;
 		// Set necessary data
 		//var id = document.getElementById('results-listbox').selectedItem.value;
 		var logEntry;
@@ -264,10 +305,12 @@ function handleSaveLogEntryDetails(id) {
 		}
 		
 		var titleTBox = document.getElementById('logEntry-title');
+		var urlTBox = document.getElementById('logEntry-url');
 		var tagsTBox = document.getElementById('logEntry-tags');
 		var tags = new Array();
 		
 		logEntry.setTitle(titleTBox.value);
+		logEntry.setUrl(urlTBox.value);
 	
 		// Right now we're removing all current tags first, then adding whatever is in
 		// the textbox, this may be inefficient so feel free to change it
@@ -288,9 +331,8 @@ function handleSaveLogEntryDetails(id) {
 		logEntry.removeComments();
 		var commentsBox = document.getElementById("comments-box");
 		for(var i=0;i<commentsBox.childNodes.length;i+=2) {
-			//var dateObj = convertToDate(commentsBox.childNodes.item(i).childNodes.item(0).nodeValue);
-			//var commentStr = commentsBox.childNodes.item(i+1).childNodes.item(0).nodeValue;
-			//logEntry.addComment(commentStr,date);
+			var commentStr = commentsBox.childNodes.item(i+1).childNodes.item(0).nodeValue;
+			logEntry.addComment(commentStr);
 		}
 		
 		if(typeof(id) == "undefined") {
@@ -306,7 +348,7 @@ function handleSaveLogEntryDetails(id) {
 		id = logEntry.getId();
 		// Return to search page if this was a new entry
 		// I THINK WE RETURN REGARDLESS
-		showSearchEntryPage();
+		showSearchEntryPage(id);
 	}
 	catch(e) {
 		logMsg("Exception occurred in handleSaveLogEntryDetails()" + e);

@@ -3,7 +3,6 @@
 #sbMyLogSidebar {
 	background-color:#ffffff;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
-	margin: 0px;
 }
 
 #mylog-toolbox {
@@ -21,6 +20,10 @@
 
 #mylog-tags-toolbar {
 	border: 0px;
+}
+
+textbox.plain {
+	background-color:#ffffff;
 }
 
 toolbarbutton#toolbarSave {

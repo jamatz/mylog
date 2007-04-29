@@ -8,6 +8,7 @@
 <!ENTITY mylogsidebar.comments-checkbox "Comments">
 <!ENTITY mylogsidebar.tags-checkbox "Tags:">
 <!ENTITY mylogsidebar.delete-entry "Delete Entry">
+<!ENTITY mylogsidebar.edit-entry "Edit Entry">
 <!ENTITY mylogsidebar.toolbarAdd "Log Page">
 <!ENTITY mylogsidebar.toolbarDelete "Delete Entry">
 <!ENTITY mylogsidebar.toolbarShowDetails "Show Details">
