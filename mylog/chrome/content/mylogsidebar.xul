@@ -112,11 +112,15 @@
 		    </row>
 		    <row>
 	  			<label value="Tags"/>
-			    <listbox id="logEntry-details-tags"  rows="2">
+			    <listbox id="logEntry-details-tags"  rows="3">
 			    </listbox >
+		    </row>
+		    <row>
+		    	<label value="Comments" />
 		    </row>
 		  </rows>
 		</grid>
+		<spacer height="10" />
 		<vbox id="comments-details-box" style="height:100px;overflow:auto;"></vbox>
   </vbox> 
 

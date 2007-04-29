@@ -46,6 +46,12 @@ function populateNewEntry (id) {
 	try {
 		editingId = id;
 		logBoxClearTags();
+		
+		delete newComments;
+		delete curComments;
+		newComments = new Array();
+		curComments = new Array();
+		
 		clearComments(document.getElementById("comments-box"));
 		if (typeof(id) == "undefined") { // New Entry
 			var title  = content.document.title;
@@ -83,12 +89,6 @@ function logBoxPopulateTags(logEntry) {
 
 function logBoxPopulateComments(logEntry) {
 	try {
-		delete newComments;
-		delete curComments;
-		
-		newComments = new Array();
-		curComments = new Array();
-	
 		var commentsBox = document.getElementById("comments-box");
 		curComments = logEntry.getComments();
 		populateCommentsBox(commentsBox,logEntry);
