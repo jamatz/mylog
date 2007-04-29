@@ -19,19 +19,17 @@ var dataHandler;
             
             this.setUp = function() {
             	dataStore = new XmlDataStore();
+            	dataStore.setXmlFilepath("mylog-title-search-test.xml");
 				dataHandler = dataStore.open();
             };
             
             this.testCaseSensitivity1 = function() {
             // Tests the XPath translation function and case-insensitive sorting in mylog-datastorage.js
-            	handleLogContentSubmission("http://fakeurl/for/testing", "fAkE enTRY", new Array('nothing'), "This is a fake entry for testing.", window.content.document);
-				handleLogContentSubmission("http://fakeurl/for/testing", "fake entry", new Array('nothing'), "This is a fake entry for testing.", window.content.document);
-				var foundEntries = dataHandler.findEntries("FAKE", "title");
+				var foundEntries = dataHandler.findEntries("cnn", "title");
 				this.assertTrue(foundEntries != null);
 				this.assertEquals(foundEntries.length, 2);
             };
 
-			
 			this.tearDown = function() {
             	dataStore.close(dataHandler);
             };
