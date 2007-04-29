@@ -208,6 +208,7 @@ function handleAddComment() {
 		document.getElementById("add-comment-container").hidden = true;
 		document.getElementById("add-comment-button").hidden = false; */
 		
+		document.getElementById("add-comment-box").value = "";
 	}
 	catch(e) {
 		logMsg("Exception occurred in handleAddComment()" + e);
