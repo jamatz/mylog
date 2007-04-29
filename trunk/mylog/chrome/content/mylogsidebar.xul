@@ -77,7 +77,9 @@
            context="sidebarEntriesContextMenu"
            seltype="multiple">
  </listbox>
- 
+
+
+		    
  <html:canvas id="create-thumbnail-canvas" width="400" height="300" style="display: none;" />
     <html:div align="center">
 	<html:table width="160" height="120">
@@ -88,14 +90,15 @@
 	</html:table></html:div>
 
     <vbox id="logEntry-search-details" hidden="true">
-    		<description style="align: center;">
-		    	<span onclick="handleEditEntry();">Edit</span> |
-		    	<span onclick="handleViewLocalCopy();">View Local Copy</span>
-		    </description>
+	 <html:center>
+		<span onclick="handleEditEntry();" class="link">Edit</span> |
+		<span onclick="handleViewLocalCopy();" class="link">View Local Copy</span>
+	 </html:center>
+	 <spacer height="5" />
 		  <grid>
 		  <columns>
 		    <column/>
-		    <column/>
+		    <column flex="1"/>
 		  </columns>
 		
 		  <rows>
@@ -226,7 +229,11 @@
 				<textbox id="add-comment-box" multiline="true"></textbox>
 				<button label="Add Comment" oncommand="handleAddComment();"/> 
 			</vbox>	
+			
+			
 		  </rows>
+		  
+		  
 		</grid>
 		<vbox id="comments-box" style="height:100px;overflow:auto;"></vbox>
 		<!--<description id="add-comment-button" style="color: green;">

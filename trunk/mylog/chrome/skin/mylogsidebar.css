@@ -26,6 +26,11 @@ textbox.plain {
 	background-color:#ffffff;
 }
 
+span.link {
+	text-decoration: underline;
+	color: blue;
+}
+
 toolbarbutton#toolbarSave {
 	list-style-image: url("chrome://mylog/skin/filesave.png");
 }
