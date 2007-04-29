@@ -40,12 +40,21 @@ function populateNewEntry (id) {
 	// Obtain the current url
 	var title  = content.document.title;
 	document.getElementById("logEntry-title").value = title;
+	
+	while (document.getElementById('logEntry-tags').getRowCount() > 0) {
+		document.getElementById('logEntry-tags').removeItemAt(0);
+	}
 }
 
 
 function showSearchEntryPage() {
 	document.getElementById("searchPage-box").hidden = false;
 	document.getElementById("logPage-box").hidden = true;
+
+}
+
+function handleDeleteLogEntryTag() {
+	alert("");
 
 }
 
@@ -250,6 +259,7 @@ function handleSaveLogEntryDetails(id) {
 		// Set necessary data
 		//var id = document.getElementById('results-listbox').selectedItem.value;
 		var logEntry;
+	
 		if(typeof(id) == "undefined") {
 			logEntry = new LogEntry();
 		}
@@ -279,16 +289,28 @@ function handleSaveLogEntryDetails(id) {
 		}
 		
 		// Need to deal with comments later
-		
+		logEntry.removeComments();
+		var commentsBox = document.getElementById("comments-box");
+		for(var i=0;i<commentsBox.childNodes.length;i+=2) {
+			//var dateObj = convertToDate(commentsBox.childNodes.item(i).childNodes.item(0).nodeValue);
+			//var commentStr = commentsBox.childNodes.item(i+1).childNodes.item(0).nodeValue;
+			//logEntry.addComment(commentStr,date);
+		}
 		
 		if(typeof(id) == "undefined") {
 			dataHandler.addEntry(logEntry,content.document);
+			createThumbnail(content.document, logEntry.getId());
 		}
 		else {
 			dataHandler.replaceEntry(logEntry);
 		}
 		dataStore.close(dataHandler);
 		dataHandler = dataStore.open();
+		
+		// Return to search page if this was a new entry
+		if(typeof(id) == "undefined") {
+			showSearchEntryPage();
+		}
 	}
 	catch(e) {
 		logMsg("Exception occurred in handleSaveLogEntryDetails()" + e);
