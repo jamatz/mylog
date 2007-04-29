@@ -28,18 +28,28 @@ function initializeGUI() {
 	dataHandler = dataStore.open();
 	populateTagsPopupMenu();
 	populateListbox();
-	clearComments();
+	
+	clearComments(document.getElementById("comments-details-box"));
+}
+
+function toggleAndLogEntry() {
+	toggleSidebar('viewMyLogSidebar');
+	showLogEntryPage();
 }
 
 function showLogEntryPage(id) {
-	if ((typeof(id) == "undefined") && (content.document.URL == 'about:blank')) {
-		return 0;
+	try {
+		if ((typeof(id) == "undefined") && (content.document.URL == 'about:blank')) {
+			return 0;
+		}
+	
+		document.getElementById("searchPage-box").hidden = true;
+		document.getElementById("logPage-box").hidden = false;
+	
+		populateNewEntry(id);
+	}catch(e) {
+		logMsg("Exception in showLogEntryPage():" + e);
 	}
-
-	document.getElementById("searchPage-box").hidden = true;
-	document.getElementById("logPage-box").hidden = false;
-
-	populateNewEntry(id);
 }
 
 function populateNewEntry (id) {
@@ -146,6 +156,7 @@ function populateListbox(entryList, sortOrder) {
 		entryList = dataHandler.getAllEntries();
 	if (typeof(sortOrder) == "undefined")
 		sortOrder = "title";
+	
 	
 	clearListbox();
 	if (sortOrder == "title") {
@@ -309,24 +320,28 @@ function handleViewLocalCopy() {
 
 function handleDeleteEntry() {
 	var success = false;
-	try {
-		var selection = document.getElementById('results-listbox').selectedItems;
-		for (var i = 0;i<selection.length;i++) {
-      		success = dataHandler.removeEntry(selection[i].value);
-      		if(success) {
-      			deleteLocalPage(selection[i].value);
-      		}
-   		}
-		if (success) {
-			dataStore.close(dataHandler);
-			removeListboxEntries();
-			var ctx = document.getElementById('preview-canvas').getContext('2d');
-			ctx.clearRect(0,0,160,120);
-			document.getElementById('logEntry-title').value = "";
+	var answer = confirm("Are you sure you want to delete this entry?");
+	if (answer){
+		try {
+			var selection = document.getElementById('results-listbox').selectedItems;
+			for (var i = 0;i<selection.length;i++) {
+	      		success = dataHandler.removeEntry(selection[i].value);
+	      		if(success) {
+	      			deleteLocalPage(selection[i].value);
+	      		}
+	   		}
+			if (success) {
+				dataStore.close(dataHandler);
+				removeListboxEntries();
+				var ctx = document.getElementById('preview-canvas').getContext('2d');
+				ctx.clearRect(0,0,160,120);
+				document.getElementById('logEntry-title').value = "";
+			}
+		} catch(e) {
+			logMsg("Exception occurred in handleDeleteEntry: " + e);
 		}
-	} catch(e) {
-		logMsg("Exception occurred in handleDeleteEntry: " + e);
 	}
+
 	
 	document.getElementById("logEntry-search-details").hidden = "true";
 	return success;
@@ -720,8 +735,20 @@ function processLogEntryTagSelection(tag) {
 		tagsPopupMenu.appendChild(menuItem2);
 	}
 	
+	// Only add if it doesn't already exist
 	var entryTagList = document.getElementById("logEntry-tags");
-	entryTagList.appendItem(tag,tag);
+	var exists = false;
+	var counter = 0;
+	while((counter < entryTagList.getRowCount()) && (exists == false)) {
+		if(entryTagList.getItemAtIndex(counter).value == tag) {
+			exists = true;
+		}
+		counter++;
+	}
+	
+	if(exists == false) {
+		entryTagList.appendItem(tag,tag);
+	}
 }
 
 function createTag() {

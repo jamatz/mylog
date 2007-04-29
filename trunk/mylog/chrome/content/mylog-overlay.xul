@@ -8,7 +8,6 @@
 	<script type="text/javascript" src="mylog.js" />
 	<script type="text/javascript" src="mylog-datastorage.js" />
 	<script type="text/javascript" src="mylogsidebar.js" />
-
 	<script type="text/javascript" src="mylog-utility.js" />
 
 	<script type="text/javascript">
@@ -17,18 +16,20 @@
 	     	openUILinkIn("chrome://mylog/content/test/mylog-UnitTest-index.html", "current");
 	    }
 	</script>
-	<!--
+	
 	<popup id="contentAreaContextMenu">
-		<menuitem id="mylog-contextmenu-create" label="Log Content"
-		              oncommand="handleLogContentRequest()" />
-    <menuitem id="mylog-contextmenu-create" label="Export/Import MyLog Content"
-		              oncommand="handleExportRequest()" />
-		<menuitem id="mylog-contextmenu-create" label="Search MyLog"
-		              oncommand="handleSearchLogRequest()" />
-		<menuitem id="mylog-content-search" label="Search By Content"
-	              oncommand="handleSearchContentRequest()" />
+			<menuitem id="mylog-contextmenu-create" label="MyLog->Log Content"
+		              oncommand="toggleAndLogEntry();" />          
+    	<!-- <menuitem id="mylog-contextmenu-create" label="Export/Import MyLog Content"
+		              oncommand="handleExportRequest()" /> -->
+		              
+		<!-- <menuitem id="mylog-contextmenu-create" label="Search MyLog"
+		              oncommand="handleSearchLogRequest()" /> -->
+		
+		<!-- <menuitem id="mylog-content-search" label="Search By Content"
+	              oncommand="handleSearchContentRequest()" /> -->
 	</popup>
-	-->
+	
 	<!--
 	<popup id="contentAreaContextMenu">
 		<menuitem id="mylog-unittest-index" label="MyLog Unit Tests"
