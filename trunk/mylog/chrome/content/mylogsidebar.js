@@ -25,7 +25,6 @@ function initializeGUI() {
 	populateTagsPopupMenu();
 	populateListbox();
 	clearComments();
-	document.getElementById("add-comment-container").hidden = true;
 }
 
 function showLogEntryPage(id) {
@@ -51,7 +50,7 @@ function populateNewEntry (id) {
 function showSearchEntryPage() {
 	document.getElementById("searchPage-box").hidden = false;
 	document.getElementById("logPage-box").hidden = true;
-
+	searchboxCallback(document.getElementById("SearchBox").value);
 }
 
 function handleDeleteLogEntryTag() {
@@ -231,8 +230,6 @@ function handleResultDblClicked(aEvent) {
 function handleDeleteEntry() {
 	var success = false;
 	try {
-		var button = document.getElementById('toolbarDelete');
-		button.disabled=true;
 		var selection = document.getElementById('results-listbox').selectedItems;
 		for (var i = 0;i<selection.length;i++) {
       		success = dataHandler.removeEntry(selection[i].value);
@@ -306,10 +303,10 @@ function handleSaveLogEntryDetails(id) {
 		dataStore.close(dataHandler);
 		dataHandler = dataStore.open();
 		
+		id = logEntry.getId();
 		// Return to search page if this was a new entry
-		if(typeof(id) == "undefined") {
-			showSearchEntryPage();
-		}
+		// I THINK WE RETURN REGARDLESS
+		showSearchEntryPage();
 	}
 	catch(e) {
 		logMsg("Exception occurred in handleSaveLogEntryDetails()" + e);
