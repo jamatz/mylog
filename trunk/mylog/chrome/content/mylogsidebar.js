@@ -17,13 +17,14 @@ var dataHandler;
 
 var showingSearchByContent = false;
 
+var previousQuery = "";
+
 function initializeGUI() {
 	dataStore = new XmlDataStore();
 	dataHandler = dataStore.open();
 	populateTagsPopupMenu();
 	populateListbox();
 	clearComments();
-	hideSearchByContent();
 	document.getElementById("add-comment-container").hidden = true;
 }
 
@@ -185,8 +186,6 @@ function removeListboxEntries() {
 
 function handleResultClicked(aEvent) {
 	var id = document.getElementById('results-listbox').selectedItem.value;
-	var button = document.getElementById('toolbarDelete');
-	button.disabled=false;
 	
 	var div = document.getElementById("logEntry-details");
 	
@@ -717,31 +716,19 @@ function createThumbnail(doc, id) {
   return file;
 }
 
-function hideSearchByContent() {
-	document.getElementById("searchContentDiv").style.display = "none";
-	document.getElementById("searchDiv").style.display = "";
-}
-
-function displaySearchByContent() {
-	document.getElementById("searchDiv").style.display = "none";
-	document.getElementById("searchContentDiv").style.display = "";
-}
-
 function handleSearchByContentClick() {
-	if (showingSearchByContent) {
-		showingSearchByContent = false;
-		hideSearchByContent();
-	} else {
-		showingSearchByContent = true;
-		displaySearchByContent();
-	}
+	var query = prompt("Search by Content:", previousQuery);
+	if ((query == null) || (query == ""))
+		return;
+	
+	previousQuery = query;
+	handleSearchContentRequest(query);
 }
 
-function handleSearchContentRequest() {
-	var keyword = document.getElementById("searchContentBox").value;
+function handleSearchContentRequest(query) {
 	var dataStore = new XmlDataStore();
 	var dataHandler = dataStore.open();
-	dataHandler.findEntries(keyword,"content");
+	dataHandler.findEntries(query,"content");
 	showResultsPage();
 }
 

@@ -36,7 +36,21 @@
   
   <!-- BEGIN SEARCH BOX -->
   <box orient="vertical" hidden="false" id="searchPage-box">
-    <button id="logPage-button" label="Log Page" oncommand = "showLogEntryPage();"/>
+  	<toolbox id="mylog-toolbox">
+	  <toolbar align="left" id="mylog-toolbar">
+	    <toolbarbutton id="toolbarFind" 
+	    			   image="chrome://mylog/skin/find.png"
+	    			   tooltiptext="&mylogsidebar.toolbarSearchContent;"
+	    			   oncommand="handleSearchByContentClick();"
+	                   label="&mylogsidebar.toolbarSearchContent;"/>
+	    <toolbarseparator />
+	    <toolbarbutton id="toolbarAdd" 
+	                   image="chrome://mylog/skin/bookmark_add.png"
+	                   tooltiptext="&mylogsidebar.toolbarAdd;"
+	                   oncommand ="showLogEntryPage();"
+	                   label="&mylogsidebar.toolbarAdd;"/>
+	  </toolbar>
+	</toolbox>
   	<box id="searchDiv" orient="vertical">
   		<textbox id="SearchBox" label="Search:" type="timed" timeout="100" oncommand="searchboxCallback(this.value);"></textbox>
   		<box orient="horizontal" style="margin-left: 5px;">
@@ -52,51 +66,9 @@
 		    </menulist>
 		</box>
   	</box>
-  	<box id="searchContentDiv" orient="vertical">
-		<textbox  id="searchContentBox" label="Search:" onkeypress="if(event.keyCode == 13){handleSearchContentRequest();}"></textbox>
-		<box orient="horizontal">
-			<button label="Search Content" oncommand="handleSearchContentRequest()"></button>
-		</box>
-	</box>
 
 <html:canvas id="create-thumbnail-canvas" width="400" height="300" style="display: none;" />
-   <toolbox id="mylog-toolbox">
-	  <toolbar align="left" id="mylog-toolbar">
-	   
-	    <toolbarbutton id="toolbarDetails" 
-	    			   image="chrome://mylog/skin/2downarrow.png"
-	    			   tooltiptext="&mylogsidebar.toolbarShowDetails;"
-	    			   type="checkbox"
-	    			   oncommand="handleDetails();"
-	    			   persist="checked image"/>
-	    <toolbarseparator style="color: #000000;"/>
-	    <toolbarbutton id="toolbarFind" 
-	    			   image="chrome://mylog/skin/find.png"
-	    			   tooltiptext="&mylogsidebar.toolbarSearchContent;"
-	    			   type="checkbox"
-	    			   oncommand="handleSearchByContentClick();"/>
-	    <toolbarseparator />
-	    <toolbarbutton id="toolbarDelete"
-	                   tooltiptext="&mylogsidebar.toolbarDelete;"
-	                   oncommand ="handleDeleteEntry();"
-	                   disabled="true"/>
-	    <toolbarseparator />
-	    <toolbarbutton id="toolbarAdd" 
-	                   image="chrome://mylog/skin/bookmark_add.png"
-	                   tooltiptext="&mylogsidebar.toolbarAdd;"
-	                   oncommand ="handleLogContentRequest();"/>
-	    <toolbarbutton id="toolbarImportExport" 
-	                   image="chrome://mylog/skin/package.png"
-	                   tooltiptext="&mylogsidebar.toolbarImportExport;"
-	                   oncommand ="handleExportRequest();"/>
-	      <toolbarbutton id="toolbarSave" 
-	    			   image="chrome://mylog/skin/filesave.png" 
-	    			   tooltiptext="&mylogsidebar.toolbarSave;"
-	    			   oncommand="handleSaveLogEntryDetails();"
-	    			   persist="hidden"/>              
-	                   
-	  </toolbar>
-	</toolbox><html:div align="center">
+    <html:div align="center">
 	<html:table width="160" height="120">
 	<html:tr><html:td align="center">
 	<html:canvas id="preview-canvas" name="" width="160" height="120" alt="" />
@@ -199,6 +171,21 @@
 <!-- BEGIN LOG BOX -->
 
  <box orient="vertical" hidden="true" id="logPage-box">
+   	<toolbox id="mylog-entry-toolbox">
+	  <toolbar align="left" id="mylog-entry-toolbar">
+	    <toolbarbutton id="toolbarSave" 
+	    			   image="chrome://mylog/skin/filesave.png"
+	    			   tooltiptext="&mylogsidebar.toolbarSave;"
+	    			   oncommand="handleSaveLogEntryDetails();"
+	                   label="&mylogsidebar.toolbarSave;"/>
+	    <toolbarseparator />
+	    <toolbarbutton id="toolbarCancel" 
+	                   image="chrome://mylog/skin/button_cancel.png"
+	                   tooltiptext="&mylogsidebar.toolbarCancel;"
+	                   oncommand ="showSearchEntryPage();"
+	                   label="&mylogsidebar.toolbarCancel;"/>
+	  </toolbar>
+	</toolbox>
 	<html:canvas id="create-thumbnail-canvas" width="400" height="300" style="display: none;" />
    	<html:div align="center">
 	<html:table width="160" height="120">
@@ -284,10 +271,6 @@
 			</vbox>	
 			
 			<vbox id="comments-box" style="height:100px;overflow:auto;"></vbox>
-		  	<hbox>
-		  		<button id="logEntry-Add" label="Save"  image="chrome://mylog/skin/bookmark_add.png" oncommand="handleSaveLogEntryDetails();"/>
-		  		<button id="logEntry-Cancel" label="Cancel" oncommand="showSearchEntryPage();" />  	
-		  	</hbox>
 		  </rows>
 		  
 		  
