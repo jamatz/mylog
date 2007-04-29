@@ -124,6 +124,10 @@ function showSearchEntryPage(id) {
 	document.getElementById("searchPage-box").hidden = false;
 	document.getElementById("logPage-box").hidden = true;
 	searchboxCallback(document.getElementById("SearchBox").value);
+	
+	document.getElementById("logEntry-search-details").hidden = "true";
+	
+	
 }
 
 function handleDeleteLogEntryTag() {
