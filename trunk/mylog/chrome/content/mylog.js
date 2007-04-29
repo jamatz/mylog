@@ -138,6 +138,7 @@ function LogEntry() {
 	this.getComments = getComments;
 	this.removeComments = removeComments;
 	this.addComment = addComment;
+	this.addCommentObject = addCommentObject;
 	this.setCommentAt = setCommentAt;
 	this.removeCommentAt = removeCommentAt;
 
@@ -221,6 +222,11 @@ function LogEntry() {
 		_comments.push(c);
 	}
 	
+	function addCommentObject(commentObject) {
+		var c = new Comment(commentObject.getContent(),commentObject.getDate());
+		_comments.push(commentObject);
+	}
+	
 	function setCommentAt(index, comment) {
 		var dateVar = new Date();
 		_comments[index] = new Comment(comment, dateVar);
@@ -292,12 +298,17 @@ function Comment(content, dateObj) {
 	var _dateObj = dateObj;
 
 	this.getContent = getContent;
+	this.getDate = getDate;
 	this.getDateString = getDateString;
 	this.getTimeString = getTimeString;
 	this.getDateParsableString = getDateParsableString;
 
 	function getContent() {
 		return _content;
+	}
+	
+	function getDate() {
+		return _dateObj;
 	}
 	
 	function getDateString() {
