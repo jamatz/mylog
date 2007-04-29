@@ -18,7 +18,7 @@
     xmlns:x2="http://www.w3.org/TR/xhtml2"
     xmlns:wairole="http://www.w3.org/2005/01/wai-rdf/GUIRoleTaxonomy#"
     xmlns:waistate="http://www.w3.org/2005/01/wai-rdf/GUIStateTaxonomy#">
-    
+  
   <script type="application/x-javascript" src="chrome://mylog/content/mylogsidebar.js"/>
   <script type="application/x-javascript" src="chrome://mylog/content/mylog.js"/>
  
@@ -75,30 +75,34 @@
            ondblclick="handleResultDblClicked(event);"
            onkeypress="if (event.keyCode == 46) handleDeleteEntry();" 
            context="sidebarEntriesContextMenu"
-           seltype="multiple">
+           seltype="multiple"
+           persist = "selectedIndex">
  </listbox>
-
-
-		    
- <html:canvas id="create-thumbnail-canvas" width="400" height="300" style="display: none;" />
-    <html:div align="center">
-	<html:table width="160" height="120">
-	<html:tr><html:td align="center">
-	<html:canvas id="preview-canvas" name="" width="160" height="120" alt="" />
-	</html:td>
-	</html:tr>
-	</html:table></html:div>
+ 
+ 	<html:canvas id="create-thumbnail-canvas" width="400" height="300" style="display: none;" />
 
     <vbox id="logEntry-search-details" hidden="true">
-	 <html:center>
-		<span onclick="handleEditEntry();" class="link">Edit</span> |
-		<span onclick="handleViewLocalCopy();" class="link">View Local Copy</span>
-	 </html:center>
-	 <spacer height="5" />
+    		<description style="align: center;">
+		    </description>
+		    
+		    <html:div align="center">
+			<html:table width="160" height="120">
+			<html:tr><html:td align="center">
+			<html:canvas id="preview-canvas" name="" width="160" height="120" alt="" />
+			</html:td>
+			</html:tr>
+			</html:table></html:div>
+			
+		    <html:table><html:tr><html:td>
+    		<button label="Edit" oncommand="handleEditEntry();"/>
+    		</html:td><html:td>
+    		<button label="View Local Copy" oncommand="handleViewLocalCopy();"/>
+    		</html:td></html:tr></html:table>
+   
 		  <grid>
 		  <columns>
 		    <column/>
-		    <column flex="1"/>
+		    <column/>
 		  </columns>
 		
 		  <rows>
@@ -107,20 +111,26 @@
 		    	<textbox id="logEntry-details-title" class="plain" readonly="true"></textbox>
 		    </row>
 		    <row>
+		    	<space height="10" />
+		    </row>
+		    <row>
 		    	<label value="Url"/>
 		    	<textbox id="logEntry-details-url" class="plain" readonly="true"></textbox>
 		    </row>
 		    <row>
+		    	<space height="10" />
+		    </row>
+		    <row>
 	  			<label value="Tags"/>
-			    <listbox id="logEntry-details-tags"  rows="3">
+			    <listbox id="logEntry-details-tags"  rows="2">
 			    </listbox >
 		    </row>
 		    <row>
-		    	<label value="Comments" />
+		    	<space height="10" />
 		    </row>
 		  </rows>
 		</grid>
-		<spacer height="10" />
+		<label value="Comments"/>
 		<vbox id="comments-details-box" style="height:100px;overflow:auto;"></vbox>
   </vbox> 
 
@@ -146,14 +156,14 @@
 	                   label="&mylogsidebar.toolbarCancel;"/>
 	  </toolbar>
 	</toolbox>
-	<html:canvas id="create-thumbnail-canvas" width="400" height="300" style="display: none;" />
+	<!-- <html:canvas id="create-thumbnail-canvas" width="400" height="300" style="display: none;" />
    	<html:div align="center">
 	<html:table width="160" height="120">
 	<html:tr><html:td align="center">
 	<html:canvas id="preview-canvas" name="" width="160" height="120" alt="" />
 	</html:td>
 	</html:tr>
-	</html:table></html:div>
+	</html:table></html:div> -->
     <html:div id="logEntry-details" persist="style">
 		  <grid>
 		  <columns>
@@ -234,12 +244,11 @@
 				<button label="Add Comment" oncommand="handleAddComment();"/> 
 			</vbox>	
 			
-			
+			<vbox id="comments-box" style="height:100px;overflow:auto;"></vbox>
 		  </rows>
 		  
 		  
 		</grid>
-		<vbox id="comments-box" style="height:100px;overflow:auto;"></vbox>
 		<!--<description id="add-comment-button" style="color: green;">
 			Add Comment 
 			<image width='16' height='16' src="chrome://mylog/skin/add.png" onclick="handleShowAddComment();"/>
