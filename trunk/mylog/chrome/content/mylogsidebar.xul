@@ -1,0 +1,274 @@
+<?xml version="1.0"?>
+<!-- // *** jamatz, ebluhm, bearly: 03-30-2007: Removed preview canvas. -->
+<!-- // *** ebowden2, vviswana: 03-15-2007: Added section for logEntry details and made loading of page respond to double not single click. Also added persistence into gui elements -->
+<!-- // *** ebowden2, jamatz: 02-13-2007: Created mylogsidebar.xul -->
+<!-- // *** ebowden2, jamatz: 02-24-2007: Added searchboxCallback to the various checkboxes, so a new search is performed as soon as a box is checked. -->
+<?xml-stylesheet href="chrome://global/skin/" type="text/css" ?>
+<?xml-stylesheet href="chrome://mylog/skin/mylogsidebar.css" type="text/css" ?>
+<?xml-stylesheet href="chrome://mylog/skin/accjax.css" type="text/css" ?>
+<!DOCTYPE page SYSTEM "chrome://mylog/locale/mylogsidebar.dtd">
+
+<window
+    windowtype="global:MyLogSidebar"
+    onload="initializeGUI();"
+    onclick="// createThumbnail();"
+    id="sidebarWindow"
+    xmlns:html="http://www.w3.org/1999/xhtml"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    xmlns:x2="http://www.w3.org/TR/xhtml2"
+    xmlns:wairole="http://www.w3.org/2005/01/wai-rdf/GUIRoleTaxonomy#"
+    xmlns:waistate="http://www.w3.org/2005/01/wai-rdf/GUIStateTaxonomy#">
+  
+  <script type="application/x-javascript" src="chrome://mylog/content/mylogsidebar.js"/>
+  <script type="application/x-javascript" src="chrome://mylog/content/mylog.js"/>
+ 
+  <popup id="sidebarEntriesContextMenu">
+    <menuitem id="sidebar_delete" oncommand="handleEditEntry();" label="&mylogsidebar.edit-entry;"/>
+    <menuitem id="sidebar_delete" oncommand="handleDeleteEntry();" label="&mylogsidebar.delete-entry;"/>
+  </popup>
+
+  <popup id="logEntryTagsContextMenu">
+  	<menuitem id="logEntry-tags-context-delete" oncommand="removeTagsFromEntry();" label="&mylog_logentrytags.delete;"/>
+  </popup>
+
+<page id="sbMyLogSidebar" title="&mylogsidebar.title;"
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" style="overflow: auto;" flex="1">
+  <script type="text/javascript" src="mylog.js"></script>
+  <script type="text/javascript" src="mylog-datastorage.js"></script>
+  <script type="text/javascript" src="mylogsidebar.js"></script>
+  <script src="mylog-utility.js" />
+  <script type="application/x-javascript" src="chrome://browser/content/utilityOverlay.js"/>
+  
+<!-- BEGIN SEARCH BOX -->
+  <box orient="vertical" hidden="false" id="searchPage-box">
+  	<toolbox id="mylog-toolbox">
+	  <toolbar align="left" id="mylog-toolbar">
+	    <toolbarbutton id="toolbarFind" 
+	    			   image="chrome://mylog/skin/find.png"
+	    			   tooltiptext="&mylogsidebar.toolbarSearchContent;"
+	    			   oncommand="handleSearchByContentClick();"
+	                   label="&mylogsidebar.toolbarSearchContent;"/>
+	    <toolbarseparator />
+	    <toolbarbutton id="toolbarAdd" 
+	                   image="chrome://mylog/skin/bookmark_add.png"
+	                   tooltiptext="&mylogsidebar.toolbarAdd;"
+	                   oncommand ="showLogEntryPage();"
+	                   label="&mylogsidebar.toolbarAdd;"/>
+	  </toolbar>
+	</toolbox>
+  	<box id="searchDiv" orient="vertical">
+  		<textbox id="SearchBox" label="Search:" type="timed" timeout="100" oncommand="searchboxCallback(this.value);"></textbox>
+  		<box orient="horizontal" style="margin-left: 5px;">
+  			<checkbox id="title-checkbox" label="&mylogsidebar.title-checkbox;" oncommand="searchboxCallback(document.getElementById('SearchBox').value);" persist="checked"/>
+		    <checkbox id="comments-checkbox" label="&mylogsidebar.comments-checkbox;" oncommand="searchboxCallback(document.getElementById('SearchBox').value);" persist="checked"/>
+		</box>
+  		<box orient="horizontal" style="margin-left: 5px;">
+			<checkbox id="tags-checkbox" label="&mylogsidebar.tags-checkbox;" oncommand="searchboxCallback(document.getElementById('SearchBox').value);" persist="checked"/>
+		  	<menulist id="tags-menu">
+		    	<menupopup id="tags-popup">
+		        	<menuitem label="Select a tag..."/>
+		        </menupopup>
+		    </menulist>
+		</box>
+  	</box>
+
+
+
+  <listbox id="results-listbox"
+  		   onselect="handleResultClicked(event);"
+           ondblclick="handleResultDblClicked(event);"
+           onkeypress="if (event.keyCode == 46) handleDeleteEntry();" 
+           context="sidebarEntriesContextMenu"
+           seltype="multiple"
+           persist = "selectedIndex">
+ </listbox>
+ 
+ 	<html:canvas id="create-thumbnail-canvas" width="400" height="300" style="display: none;" />
+
+    <vbox id="logEntry-search-details" hidden="true">
+    		<description style="align: center;">
+		    </description>
+		    
+		    <html:div align="center">
+			<html:table width="160" height="120">
+			<html:tr><html:td align="center">
+			<html:canvas id="preview-canvas" name="" width="160" height="120" alt="" />
+			</html:td>
+			</html:tr>
+			</html:table></html:div>
+			
+		    <html:table><html:tr><html:td>
+    		<button label="Edit" oncommand="handleEditEntry();"/>
+    		</html:td><html:td>
+    		<button label="View Local Copy" oncommand="handleViewLocalCopy();"/>
+    		</html:td></html:tr></html:table>
+   
+		  <grid>
+		  <columns>
+		    <column/>
+		    <column/>
+		  </columns>
+		
+		  <rows>
+		  	<row>
+		    	<label value="Title"/>
+		    	<textbox id="logEntry-details-title" class="plain" readonly="true"></textbox>
+		    </row>
+		    <row>
+		    	<space height="10" />
+		    </row>
+		    <row>
+		    	<label value="Url"/>
+		    	<textbox id="logEntry-details-url" class="plain" readonly="true"></textbox>
+		    </row>
+		    <row>
+		    	<space height="10" />
+		    </row>
+		    <row>
+	  			<label value="Tags"/>
+			    <listbox id="logEntry-details-tags"  rows="2">
+			    </listbox >
+		    </row>
+		    <row>
+		    	<space height="10" />
+		    </row>
+		  </rows>
+		</grid>
+		<label value="Comments"/>
+		<vbox id="comments-details-box" style="height:100px;overflow:auto;"></vbox>
+  </vbox> 
+
+</box>
+
+<!-- END SEARCH BOX -->
+
+<!-- BEGIN LOG BOX -->
+
+ <box orient="vertical" hidden="true" id="logPage-box">
+   	<toolbox id="mylog-entry-toolbox">
+	  <toolbar align="left" id="mylog-entry-toolbar">
+	    <toolbarbutton id="toolbarSave" 
+	    			   image="chrome://mylog/skin/filesave.png"
+	    			   tooltiptext="&mylogsidebar.toolbarSave;"
+	    			   oncommand="handleSaveLogEntryDetails();"
+	                   label="&mylogsidebar.toolbarSave;"/>
+	    <toolbarseparator />
+	    <toolbarbutton id="toolbarCancel" 
+	                   image="chrome://mylog/skin/button_cancel.png"
+	                   tooltiptext="&mylogsidebar.toolbarCancel;"
+	                   oncommand ="showSearchEntryPage();"
+	                   label="&mylogsidebar.toolbarCancel;"/>
+	  </toolbar>
+	</toolbox>
+	<!-- <html:canvas id="create-thumbnail-canvas" width="400" height="300" style="display: none;" />
+   	<html:div align="center">
+	<html:table width="160" height="120">
+	<html:tr><html:td align="center">
+	<html:canvas id="preview-canvas" name="" width="160" height="120" alt="" />
+	</html:td>
+	</html:tr>
+	</html:table></html:div> -->
+    <html:div id="logEntry-details" persist="style">
+		  <grid>
+		  <columns>
+		    <column/>
+		    <column/>
+		  </columns>
+		
+		  <rows>
+		    <row>
+		      <label value="Title"/>
+		      <textbox id="logEntry-title"></textbox>
+		    </row>
+		    <row>
+		      <label value="Url"/>
+		      <textbox id="logEntry-url"></textbox>
+		    </row>
+		    
+		    <space height="20" />
+		    
+		    <row >
+		      	<vbox valign="middle">
+	  				<label value="Tags"/>
+	  				<hbox >
+	  				   <!--<image src="chrome://mylog/skin/add.png" width='16' height='16'/>
+	  				   <image src ="chrome://mylog/skin/button_cancel.png" width='16' height='16'/> -->
+			  	<!--	<button 
+			  		        id="add_tag" 
+			  		        image="chrome://mylog/skin/add.png"
+			  		        oncommand="showOrHideAddTag()"
+			  		        style="width: 25px;"
+			  		        tooltiptext="&mylogsidebar.detailsShowAddTag;"
+			  		    />
+			  		   <button 
+			  		   		id="delete_tag" 
+			  		   		image="chrome://mylog/skin/button_cancel.png"
+			  		   		oncommand="removeTagsFromEntry()"
+			  		   		tooltiptext="&mylogsidebar.detailsDeleteTag;"
+			  		   	/> -->
+			  		   <!--	<toolbox id="mylog-tags-toolbox">
+		  					<toolbar align="left" id="mylog-tags-toolbar">
+		    					<toolbarbutton id="add_tag" 
+		    					   value="Add"
+				    			   image="chrome://mylog/skin/add.png"
+				    			   oncommand="showOrHideAddTag()"
+					  		       style="width: 25px;"
+					  		       tooltiptext="&mylogsidebar.detailsShowAddTag;"
+				    			   />
+				    			   
+			    			   <toolbarbutton id="delete_tag"
+			    			   	   value="Remove" 
+				    			   image="chrome://mylog/skin/button_cancel.png"
+				    			   oncommand="removeTagsFromEntry()"
+			  		   			   tooltiptext="&mylogsidebar.detailsDeleteTag;"
+					  		       style="width: 25px;"
+				    		   />
+			  		   	
+			  		   		</toolbar>
+			  		   	</toolbox>-->
+			  		   	
+			    	</hbox>
+			    </vbox>
+			    <hbox id="logEntry-tags-add" hidden="false">
+					<menulist label="Select to Add a Tag" id="mylog-tags">
+						<menupopup id="logEntry-tags-popup">
+							<menuItem label="Create New Tag" value="new tag" id="mylog-createTag" />
+						</menupopup>
+					</menulist>
+	    	    </hbox>
+			    
+	  			<!--<textbox id="logEntry-tags" multiline="true"></textbox>-->
+		    </row>
+	    	
+	    	<listbox 
+	    		id="logEntry-tags" 
+	    		rows="3" 
+	    		onkeypress="if (event.keyCode == 46) removeTagsFromEntry();" 
+	    		context="logEntryTagsContextMenu"
+	    		seltype="multiple">
+	    	</listbox >
+	    	<spacer height="20" />
+		  	<label>Comments</label>
+		  	<vbox id="add-comment-container2">
+				<textbox id="add-comment-box" multiline="true"></textbox>
+				<button label="Add Comment" oncommand="handleAddComment();"/> 
+			</vbox>	
+			
+			<vbox id="comments-box" style="height:100px;overflow:auto;"></vbox>
+		  </rows>
+		  
+		  
+		</grid>
+		<!--<description id="add-comment-button" style="color: green;">
+			Add Comment 
+			<image width='16' height='16' src="chrome://mylog/skin/add.png" onclick="handleShowAddComment();"/>
+		</description> -->
+		
+			
+  </html:div>
+</box>
+
+<!-- END LOG BOX -->
+
+</page>
+</window>
