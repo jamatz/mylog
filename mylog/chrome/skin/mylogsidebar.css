@@ -1,7 +1,8 @@
 /* // *** ebowden2, jamatz: 02-14-2007: Created mylogsidebar.css */
 
 #sbMyLogSidebar {
-	background-color:#bedead;
+	/* background-color:#bedead; */
+	background-color: white;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 }
 
@@ -14,17 +15,17 @@
 }
 
 #mylog-tags-toolbox {
-	background-color:#ffffff;
+	background-color: white;
 	border: 0px;
 }
 
 #comments-box {
-	background-color:#FFFFFF;
+	background-color: white;
 	border: 0px;
 }
 
 #comments-details-box {
-	background-color:#FFFFFF;
+	background-color: white;
 	border: 0px;
 }
 
@@ -33,7 +34,7 @@
 }
 
 textbox.plain {
-	background-color:#ffffff;
+	background-color: white;
 }
 
 span.link {

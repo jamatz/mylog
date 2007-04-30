@@ -19,6 +19,9 @@
 <!ENTITY mylogsidebar.toolbarImportExport "Import/Export">
 <!ENTITY mylogsidebar.detailsShowAddTag "Show/Hide Add Tag Menu">
 <!ENTITY mylogsidebar.detailsDeleteTag "Delete Selected Tag">
-<!ENTITY mylog_logentrytags.delete "Delete Tag">
+<!ENTITY mylog_logentrytags.delete "Remove Tag">
+
+
+
 
 
