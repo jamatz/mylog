@@ -243,12 +243,11 @@
 				<textbox id="add-comment-box" multiline="true"></textbox>
 				<button label="Add Comment" oncommand="handleAddComment();"/> 
 			</vbox>	
-			
-			<vbox id="comments-box" style="height:100px;overflow:auto;"></vbox>
 		  </rows>
 		  
 		  
 		</grid>
+		<vbox id="comments-box" style="height:100px;overflow:auto;"></vbox>
 		<!--<description id="add-comment-button" style="color: green;">
 			Add Comment 
 			<image width='16' height='16' src="chrome://mylog/skin/add.png" onclick="handleShowAddComment();"/>
