@@ -27,6 +27,10 @@
     <menuitem id="sidebar_delete" oncommand="handleDeleteEntry();" label="&mylogsidebar.delete-entry;"/>
   </popup>
 
+  <popup id="logEntryTagsContextMenu">
+    <menuitem id="logEntryTagsContextDelete" oncommand="removeTagsFromEntry();" label="&mylog_logentrytags.delete;"/>
+  </popup>
+
 <page id="sbMyLogSidebar" title="&mylogsidebar.title;"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" style="overflow: auto;" flex="1">
   <script type="text/javascript" src="mylog.js"></script>
@@ -114,8 +118,10 @@
 		    	<space height="10" />
 		    </row>
 		    <row>
-		    	<label value="Url"/>
+		    	<!--<html:a id="logEntry-details-url-link" href="">Url</html:a> -->
+		    	<label value="Url" />
 		    	<textbox id="logEntry-details-url" class="plain" readonly="true"></textbox>
+		    	<!--<html:a href="www.google.com">Bah</html:a> -->
 		    </row>
 		    <row>
 		    	<space height="10" />
@@ -152,7 +158,7 @@
 	    <toolbarbutton id="toolbarCancel" 
 	                   image="chrome://mylog/skin/button_cancel.png"
 	                   tooltiptext="&mylogsidebar.toolbarCancel;"
-	                   oncommand ="showSearchEntryPage();"
+	                   oncommand ="handleCancelLogPage();"
 	                   label="&mylogsidebar.toolbarCancel;"/>
 	  </toolbar>
 	</toolbox>
@@ -236,7 +242,13 @@
 	  			<!--<textbox id="logEntry-tags" multiline="true"></textbox>-->
 		    </row>
 	    	
-	    	<listbox id="logEntry-tags" rows="3" onkeypress="if (event.keyCode == 46) removeTagsFromEntry();" ></listbox >
+	    	<listbox 
+	    		id="logEntry-tags" 
+	    		rows="3" 
+	    		onkeypress="if (event.keyCode == 46) removeTagsFromEntry();" 
+	    		context="logEntryTagsContextMenu"
+	    		seltype="multiple" >
+	    	</listbox >
 	    	<spacer height="20" />
 		  	<label>Comments</label>
 		  	<vbox id="add-comment-container2">

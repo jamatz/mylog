@@ -19,6 +19,7 @@ var showingSearchByContent = false;
 
 var previousQuery = "";
 var editingId;
+var resultIndex;
 
 var currComments = new Array();
 var newComments = new Array();
@@ -80,12 +81,6 @@ function populateNewEntry (id) {
 	}
 }
 
-function logBoxClearTags() {
-	while (document.getElementById('logEntry-tags').getRowCount() > 0) {
-		document.getElementById('logEntry-tags').removeItemAt(0);
-	}
-}
-
 function logBoxPopulateTags(logEntry) {
 	var tagsBox =  document.getElementById('logEntry-tags');
 	
@@ -97,6 +92,31 @@ function logBoxPopulateTags(logEntry) {
 	}
 }
 
+function searchBoxPopulateTags(logEntry) {
+	var tagsBox =  document.getElementById('logEntry-details-tags');
+	
+	var tags = logEntry.getTags();
+	if(tags.length > 0) {
+		for(var i=0;i<tags.length;i++) {
+			tagsBox.appendItem(tags[i],tags[i]);
+		}	
+	}
+}
+
+function logBoxClearTags() {
+	clearTagsBox(document.getElementById('logEntry-tags'));
+}
+
+function searchBoxClearTags() {
+	clearTagsBox(document.getElementById('logEntry-details-tags'));
+}
+
+function clearTagsBox(tagsBox) {
+	while (tagsBox.getRowCount() > 0) {
+		tagsBox.removeItemAt(0);
+	}
+
+}
 function logBoxPopulateComments(logEntry) {
 	try {
 		var commentsBox = document.getElementById("comments-box");
@@ -106,6 +126,27 @@ function logBoxPopulateComments(logEntry) {
 		logMsg("Exception in logBoxPopulateComments():" + e);
 	}
 
+}
+
+function searchBoxPopulateComments(theEntry) {
+	try {
+		var commentsBox = document.getElementById("comments-details-box");
+		populateCommentsBox(commentsBox,theEntry);
+	}catch(e) {
+		logMsg("Exception in searchBoxPopulateComments():" + e);
+	}
+}
+
+
+
+function clearComments(commentsBox) {
+	try {
+		while (commentsBox.childNodes.length > 0) {
+			commentsBox.removeChild(commentsBox.childNodes[0]);
+		}
+	} catch(e) {
+		logMsg("Exception in clearComments():" + e);
+	}
 }
 
 function populateCommentsBox(commentsBox,theEntry) {
@@ -131,12 +172,42 @@ function populateCommentsBox(commentsBox,theEntry) {
 }
 
 function showSearchEntryPage(id) {
-	document.getElementById("searchPage-box").hidden = false;
-	document.getElementById("logPage-box").hidden = true;
-	searchboxCallback(document.getElementById("SearchBox").value);
+	try {
+		document.getElementById("searchPage-box").hidden = false;
+		document.getElementById("logPage-box").hidden = true;
+		searchboxCallback(document.getElementById("SearchBox").value);
 	
-	document.getElementById("logEntry-search-details").hidden = "true";
+		searchBoxClearTags();
+		document.getElementById("logEntry-search-details").hidden = "true";
+		var foundEntry = false;
+		var counter = 0;
+		var resultsBox = document.getElementById('results-listbox');
+		/*while((counter < resultsBox.getRowCount()) && (foundEntry == false)) {
+			//alert("id: " + id + ",current: " + resultsBox.getItemAtIndex(counter).value);
+			if(resultsBox.getItemAtIndex(counter).value == id) {
+				foundEntry = true;
+			}
+			counter++;
+		}
+		
+		//alert("Found: " + foundEntry);
+		if(foundEntry == true) {
+			//alert("selecting");
+			resultsBox.timedSelect(resultsBox.getItemAtIndex(counter - 1),10);
+		}
+		
+		if(typeof(resultIndex != "undefined")) {
+			//resultsBox.selectItemRange(resultsBox.getItemAtIndex(resultIndex),resultsBox.getItemAtIndex(resultIndex));
+			resultsBox.selectAll();
+		}*/
+		
+		
+		
+	} catch(e) {
+		logMsg("Exception in showSearchEntryPage():" + e);
+	}
 }
+
 
 function handleDeleteLogEntryTag() {
 	alert("");
@@ -167,25 +238,6 @@ function populateListbox(entryList, sortOrder) {
 	}
 }
 
-function populateComments(theEntry) {
-	try {
-		var commentsBox = document.getElementById("comments-details-box");
-		populateCommentsBox(commentsBox,theEntry);
-	}catch(e) {
-		logMsg("Exception in populateComments():" + e);
-	}
-}
-
-function clearComments(commentsBox) {
-	try {
-		while (commentsBox.childNodes.length > 0) {
-			commentsBox.removeChild(commentsBox.childNodes[0]);
-		}
-	} catch(e) {
-		logMsg("Exception in clearComments():" + e);
-	}
-}
-
 function handleShowAddComment() {
 	document.getElementById("add-comment-container").hidden = false;
 	document.getElementById("add-comment-button").hidden = true;
@@ -199,7 +251,7 @@ function handleAddComment() {
 		var newComment = document.getElementById("add-comment-box").value;
 		logEntry.addComment(newComment);
 		dataHandler.replaceEntry(logEntry); 
-		populateComments(logEntry); */
+		searchBoxPopulateComments(logEntry); */
 		
 		var dateVar = new Date();
 		var newComment = new Comment(document.getElementById("add-comment-box").value,dateVar);
@@ -270,27 +322,16 @@ function handleResultClicked(aEvent) {
 		
 	    var titleTBox = document.getElementById('logEntry-details-title');
 	    var urlTBox = document.getElementById('logEntry-details-url');
-		var tagsBox =  document.getElementById('logEntry-details-tags');
+	  	var urlLabel = document.getElementById('logEntry-details-url-link');
 		titleTBox.value = logEntry.getTitle();
+	
 		urlTBox.value = logEntry.getUrl();
 		
 		// Load tags
-		while(tagsBox.getRowCount() > 0) {
-			tagsBox.removeItemAt(0);
-		}
-		
-		//tagsTBox.value = "";
-		var tags = logEntry.getTags();
-		if(tags.length > 0) {
-			//tagsTBox.value = tags[0];
-			for(var i=0;i<tags.length;i++) {
-				//tagsTBox.value += ", " + tags[i];
-				tagsBox.appendItem(tags[i],tags[i]);
-			}	
-		}
+		searchBoxPopulateTags(logEntry);
 		
 		// Load comments
-		populateComments(logEntry);
+		searchBoxPopulateComments(logEntry);
 		
 		loadThumbnail(id);
 		
@@ -302,14 +343,22 @@ function handleResultClicked(aEvent) {
 
 function handleResultDblClicked(aEvent) {
 	if (aEvent.button == 0) { // left click
-		handleViewLocalCopy();
+		//handleViewLocalCopy();
+		handleViewWebPage();
 	}
 }
 
 function handleEditEntry() {
 	var id = document.getElementById('results-listbox').selectedItem.value;
+	resultIndex = document.getElementById('results-listbox').selectedIndex;
 	
 	showLogEntryPage(id);
+}
+
+function handleViewWebPage() {
+	var id = document.getElementById('results-listbox').selectedItem.value;
+	var logEntry = dataHandler.getEntry(id);
+	openTopWin(logEntry.getUrl());
 }
 
 function handleViewLocalCopy() {
@@ -406,6 +455,10 @@ function handleSaveLogEntryDetails() {
 	catch(e) {
 		logMsg("Exception occurred in handleSaveLogEntryDetails()" + e);
 	}
+}
+
+function handleCancelLogPage() {
+	showSearchEntryPage(editingId);
 }
 
 function handleDetails() {
