@@ -328,6 +328,7 @@ function handleResultClicked(aEvent) {
 		urlTBox.value = logEntry.getUrl();
 		
 		// Load tags
+		searchBoxClearTags();
 		searchBoxPopulateTags(logEntry);
 		
 		// Load comments
