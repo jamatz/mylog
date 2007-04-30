@@ -43,6 +43,14 @@
             this.assertEquals(returnList.length, 0);
         };
     
+       this.testSearch5 = function() { //case doesnt matter
+            var title = "cnn";
+            var searchType = "title"
+         
+            var returnList = handler.findEntries(title,searchType);
+            this.assertEquals(returnList.length, 2);
+        };
+    
         this.tearDown = function() {
             /* not in use here, didn't have to define it but this might be
         used as a reference

@@ -124,6 +124,47 @@
 				this.assertEquals(entries.length, 0);
 
             }
+
+            this.testRemoveEntry2 = function() {
+				var dataHandler = dataStore.open();
+				dataHandler.addEntry(le);
+
+				uOfI = new LogEntry();
+                uOfI.setUrl("http://www.uiuc.edu");
+                uOfI.setTitle("U of I");
+                
+                tags = new Array("U","of","I");
+                comments = new Array("school");
+                
+                for (var i = 0; i < tags.length; i++) 
+                   uOfI.addTag(tags[i]);
+                for (var i = 0; i < comments.length; i++) 
+                   uOfI.addComment(comments[i]);
+                   
+				var secondEntry = dataHandler.addEntry(uOfI);
+				dataStore.close(dataHandler);
+
+				var secondDataHandler = dataStore.open();
+				var entries = secondDataHandler.getAllEntries();
+				var id = entries[0].getId();
+
+				entries = secondDataHandler.getAllEntries();
+				this.assertEquals(entries.length, 2);
+				
+				secondDataHandler.removeEntry(id);
+				entries = secondDataHandler.getAllEntries();
+				this.assertEquals(entries.length, 1);
+				
+				secondDataHandler.removeEntry(id); // Try removing again: should not crash
+				entries = secondDataHandler.getAllEntries();
+				this.assertEquals(entries.length, 1);
+
+				secondDataHandler.removeEntry(secondEntry); // Try removing again: should not crash
+				entries = secondDataHandler.getAllEntries();
+				this.assertEquals(entries.length, 0);
+
+            }
+
             
             this.tearDown = function() {
             	// dataStore.setXmlFilepath("mylog-tag-test2.xml");

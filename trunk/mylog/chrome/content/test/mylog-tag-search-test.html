@@ -49,6 +49,22 @@ body {font-family: Arial}
             var returnList = handler.findEntries(title,searchType);
             this.assertEquals(returnList.length, 0);
         };
+
+         this.testSearch4 = function() {
+            var title = "blah";
+            var searchType = "tag"
+         
+            var returnList = handler.findEntries(title,searchType);
+            this.assertEquals(returnList.length, 1);
+        };
+
+         this.testSearch5 = function() { //case matters, exact matches only since they are unique
+            var title = "BLAH";
+            var searchType = "tag"
+         
+            var returnList = handler.findEntries(title,searchType);
+            this.assertEquals(returnList.length, 0);
+        };
     
         this.tearDown = function() {
             /* not in use here, didn't have to define it but this might be
