@@ -9,9 +9,9 @@
   </menupopup>
   
   <keyset id="mainKeyset">
-    <key id="key_openMyLogSidebar" command="viewMyLogSidebar"
+         <key id="key_openMyLogSidebar" command="viewMyLogSidebar"
          key="&openMyLogSidebar.commandkey;" 
-         modifiers="&openMyLogSidebar.modifierskey;" />
+         modifiers="&openMyLogSidebar.modifierskey;" /> 
   </keyset>
   
   <broadcasterset id="mainBroadcasterSet"> 

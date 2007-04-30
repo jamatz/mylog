@@ -1,8 +1,8 @@
 <!-- // *** ebowden2, jamatz: 02-14-2007: Created mylogsidebar.dtd -->
-<!ENTITY mylogsidebar.title "MyLog Sidebar">
+<!ENTITY mylogsidebar.title "MyLog">
 <!ENTITY mylogsidebar.SearchBoxLabel "Search:">
 <!ENTITY openMyLogSidebar.commandkey "M">
-<!ENTITY openMyLogSidebar.modifierskey "accel">
+<!ENTITY openMyLogSidebar.modifierskey "accel shift">
 <!ENTITY mylogsidebar.also-include "Search by:">
 <!ENTITY mylogsidebar.title-checkbox "Title">
 <!ENTITY mylogsidebar.comments-checkbox "Comments">
