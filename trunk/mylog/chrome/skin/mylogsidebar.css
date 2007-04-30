@@ -40,6 +40,7 @@ textbox.plain {
 span.link {
 	text-decoration: underline;
 	color: blue;
+	cursor: pointer;
 }
 
 toolbarbutton#toolbarSave {
