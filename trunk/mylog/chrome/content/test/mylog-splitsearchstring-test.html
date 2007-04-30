@@ -16,13 +16,10 @@
             
             this.setUp = function() { };
             
-            this.testSplitSearchString1 = function() {
-            	var counter = 0;
-            	var testString = 'keyword1 "quoted keyword 1" keyword2';
-            	var results = splitSearchString(testString);
-            	var correct_results = new Array('keyword1', 'quoted keyword 1', 'keyword2');
+            this.checkOrderedResults = function(correct_results, results) {
+            	alert("ran");
             	this.assertEquals(results.length, correct_results.length);
-            	for (var i = 0; i < correct_results.length; i++) {
+       			for (var i = 0; i < correct_results.length; i++) {
 					counter = 0;
 					this.assertTrue(results != null);
 					if (results != null) {
@@ -34,6 +31,14 @@
 					}
 					this.assertEquals(counter, 1);
 				}
+            };
+            
+            this.testSplitSearchString1 = function() {
+            	var counter = 0;
+            	var testString = 'keyword1 "quoted keyword 1" keyword2';
+            	var results = splitSearchString(testString);
+            	var correct_results = new Array('keyword1', 'quoted keyword 1', 'keyword2');
+            	this.checkOrderedResults(correct_results, results);
 			};
 			
 			this.testSplitSearchString2 = function() {
@@ -41,19 +46,7 @@
             	var testString = 'keyword1 keyword2 keyword3';
             	var results = splitSearchString(testString);
             	var correct_results = new Array('keyword1', 'keyword2', 'keyword3');
-            	this.assertEquals(results.length, correct_results.length);
-            	for (var i = 0; i < correct_results.length; i++) {
-					counter = 0;
-					this.assertTrue(results != null);
-					if (results != null) {
-						for (var j = 0; j<results.length; j++) {
-							if (results[j] == correct_results[i]) {
-								counter++ ;
-							}
-						}
-					}
-					this.assertEquals(counter, 1);
-				}
+            	this.checkOrderedResults(correct_results, results);
 			};
 
 
@@ -76,19 +69,7 @@
             	var testString = '"quoted keyword 1" "quoted keyword 2" "quotedkeyword 3"';
             	var results = splitSearchString(testString);
             	var correct_results = new Array("quoted keyword 1", "quoted keyword 2", "quotedkeyword 3");
-            	this.assertEquals(results.length, correct_results.length);
-            	for (var i = 0; i < correct_results.length; i++) {
-					counter = 0;
-					this.assertTrue(results != null);
-					if (results != null) {
-						for (var j = 0; j<results.length; j++) {
-							if (results[j] == correct_results[i]) {
-								counter++ ;
-							}
-						}
-					}
-					this.assertEquals(counter, 1);
-				}
+            	this.checkOrderedResults(correct_results, results);
 			};			
 			
 			this.testSplitSearchString6 = function() {
@@ -96,19 +77,7 @@
             	var testString = 'cheese -"cheese and crackers"';
             	var results = splitSearchString(testString);
             	var correct_results = new Array("cheese", "-cheese and crackers");
-            	this.assertEquals(results.length, correct_results.length);
-            	for (var i = 0; i < correct_results.length; i++) {
-					counter = 0;
-					this.assertTrue(results != null);
-					if (results != null) {
-						for (var j = 0; j<results.length; j++) {
-							if (results[j] == correct_results[i]) {
-								counter++ ;
-							}
-						}
-					}
-					this.assertEquals(counter, 1);
-				}
+            	this.checkOrderedResults(correct_results, results);
 			};
 			
 			this.testSplitSearchString7 = function() {
@@ -116,19 +85,7 @@
             	var testString = 'ham +"bacon and eggs"';
             	var results = splitSearchString(testString);
             	var correct_results = new Array("ham", "bacon and eggs");
-            	this.assertEquals(results.length, correct_results.length);
-            	for (var i = 0; i < correct_results.length; i++) {
-					counter = 0;
-					this.assertTrue(results != null);
-					if (results != null) {
-						for (var j = 0; j<results.length; j++) {
-							if (results[j] == correct_results[i]) {
-								counter++ ;
-							}
-						}
-					}
-					this.assertEquals(counter, 1);
-				}
+            	this.checkOrderedResults(correct_results, results);
 			};
 			
 			this.testSplitSearchString8 = function() {
@@ -143,19 +100,7 @@
             	var testString = '   spaces before and after search terms';
             	var results = splitSearchString(testString);
             	var correct_results = new Array("spaces", "before", "and", "after", "search", "terms");
-            	this.assertEquals(results.length, correct_results.length);
-            	for (var i = 0; i < correct_results.length; i++) {
-					counter = 0;
-					this.assertTrue(results != null);
-					if (results != null) {
-						for (var j = 0; j<results.length; j++) {
-							if (results[j] == correct_results[i]) {
-								counter++ ;
-							}
-						}
-					}
-					this.assertEquals(counter, 1);
-				}
+            	this.checkOrderedResults(correct_results, results);
 			};
 			
 			this.testSplitSearchString10 = function() {
@@ -175,19 +120,7 @@
            	var testString = 'cheese -------------"cheese and crackers"';
            	var results = splitSearchString(testString);
            	var correct_results = new Array("cheese", "-cheese and crackers");
-           	this.assertEquals(results.length, correct_results.length);
-           	for (var i = 0; i < correct_results.length; i++) {
-				counter = 0;
-				this.assertTrue(results != null);
-				if (results != null) {
-					for (var j = 0; j<results.length; j++) {
-						if (results[j] == correct_results[i]) {
-							counter++ ;
-						}
-					}
-				}
-				this.assertEquals(counter, 1);
-			}
+           	this.checkOrderedResults(correct_results, results);
 		};
        
         
