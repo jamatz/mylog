@@ -40,9 +40,7 @@ function exportContent(){
 		createDir(folderPath, "MyLog_Exported_Content")
 		folderPath = folderPath + "\\MyLog_Exported_Content"; 
 		saveExportXML(folderPath, items); 
-		alert("Saved XML");
 		copyExportedContent(folderPath, items);	
-		alert("Copied Content");
 		alert("Successfully copied " + selectedItems.length + " item(s).");
 	}
 	else
@@ -67,7 +65,7 @@ function importContent(){
 	}
 	//alert("Grabbed " + entries.length + " items.");
 	copyImportedContent(folderPath, oldIDs,newIDs);
-	alert("Copied");
+	//alert("Copied");
 	dataStore.close(dataHandler);
 	dataHandler = dataStore.open();
 	var entryList = dataHandler.getAllEntries();
@@ -113,21 +111,13 @@ function copyImportedContent(folderPath, oldIDs, newIDs){
 	var profileDir = getProfileDirectory();	
 	var myLogDir = profileDir + "\\extensions\\mylog\\";
 	for(var i = 0; i < oldIDs.length; i++){
-		alert("Copying items of ID " + oldIDs[i]);
-		alert(folderPath + "\\" + oldIDs[i] + ".html");
 		var data = readFile(folderPath + "\\" + oldIDs[i] + ".html");
-		alert(data);
 		var files = getAllFilesInDirectory(folderPath + "\\" + oldIDs[i] + "\\");
-		alert(files);
 		data = updateFileReferences(data, oldIDs[i], newIDs[i], files);
-		alert(data);
 		writeBinaryFile(data, myLogDir + newIDs[i] + ".html");
 		var directory = folderPath + "\\" + oldIDs[i] + "\\";
-		alert("here");
 		recursiveCopyAllFiles(myLogDir + "\\" + newIDs[i], directory);		
-		alert("here");
 		var pngData = readFile(folderPath + "\\" + oldIDs[i] + "-preview.png");
-		alert(myLogDir + newIDs[i] + "-preview.png");
 		writeBinaryFile(pngData, myLogDir + newIDs[i] + "-preview.png");
 	}
 }
@@ -268,7 +258,6 @@ function getAllFilesInRelativePath(path, relativePath, files){
 	else
 		return files;
 	//recurse on directories
-	alert(entries);
 	while(entries.hasMoreElements()){
 	  var entry = entries.getNext();
 	  entry.QueryInterface(Components.interfaces.nsIFile);
