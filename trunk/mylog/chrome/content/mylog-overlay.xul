@@ -41,4 +41,14 @@
 	</popup>
 	-->
 	
+	<commandset id="mainCommandSet">
+		<command id="Tools:MyLogImportExport" oncommand="handleExportRequest();"/>
+	</commandset>
+
+	
+    <menupopup id="menu_ToolsPopup">
+		<menuitem id="menu_test-mylog" label="MyLog Import/Export"
+                          command="Tools:MyLogImportExport" insertbefore="javascriptConsole"/>
+    </menupopup>
+    
 </overlay>
