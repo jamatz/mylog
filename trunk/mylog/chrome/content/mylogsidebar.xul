@@ -120,7 +120,7 @@
 		    </row>
 		    <row>
 		    	<!--<html:a id="logEntry-details-url-link" href="">Url</html:a> -->
-		    	<label value="Url" />
+		    	<label id="logEntry-details-url-label" class="link" value="Url" />
 		    	<textbox id="logEntry-details-url" class="plain" readonly="true"></textbox>
 		    	<!--<html:a href="www.google.com">Bah</html:a> -->
 		    </row>

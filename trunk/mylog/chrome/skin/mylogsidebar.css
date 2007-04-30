@@ -37,8 +37,7 @@ textbox.plain {
 	background-color: white;
 }
 
-span.link {
-	text-decoration: underline;
+.link {
 	color: blue;
 	cursor: pointer;
 }
