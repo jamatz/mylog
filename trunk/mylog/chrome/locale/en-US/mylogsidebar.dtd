@@ -10,6 +10,8 @@
 <!ENTITY mylogsidebar.delete-entry "Delete Entry">
 <!ENTITY mylogsidebar.edit-entry "Edit Entry">
 <!ENTITY mylogsidebar.toolbarAdd "Log Page">
+<!ENTITY mylogsidebar.view-page "Open Page">
+<!ENTITY mylogsidebar.view-local "Open Local Copy">
 <!ENTITY mylogsidebar.toolbarDelete "Delete Entry">
 <!ENTITY mylogsidebar.toolbarShowDetails "Show Details">
 <!ENTITY mylogsidebar.toolbarHideDetails "Hide Details">

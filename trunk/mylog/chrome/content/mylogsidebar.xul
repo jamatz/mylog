@@ -23,6 +23,8 @@
   <script type="application/x-javascript" src="chrome://mylog/content/mylog.js"/>
  
   <popup id="sidebarEntriesContextMenu">
+    <menuitem id="sidebar_delete" oncommand="handleViewWebPage();" label="&mylogsidebar.view-page;" style="font-weight: bold;"/>
+    <menuitem id="sidebar_delete" oncommand="handleViewLocalCopy();" label="&mylogsidebar.view-local;"/>
     <menuitem id="sidebar_delete" oncommand="handleEditEntry();" label="&mylogsidebar.edit-entry;"/>
     <menuitem id="sidebar_delete" oncommand="handleDeleteEntry();" label="&mylogsidebar.delete-entry;"/>
   </popup>
@@ -135,7 +137,7 @@
 		    </row>
 		  </rows>
 		</grid>
-		<vbox id="comments-details-box" style="height:300px;overflow:auto;"></vbox>
+		<vbox id="comments-details-box" style="height:100px;overflow:auto;"></vbox>
   </vbox> 
 
 </box>
@@ -249,7 +251,7 @@
 	    	<spacer height="20" />
 		  	<label>Comments</label>
 		  	<vbox id="add-comment-container2">
-				<textbox id="add-comment-box" multiline="true"></textbox>
+				<textbox id="add-comment-box" multiline="true" rows="5"></textbox>
 				<button label="Add Comment" oncommand="handleAddComment();"/> 
 			</vbox>	
 		  </rows>
