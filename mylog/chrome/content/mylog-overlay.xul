@@ -17,30 +17,6 @@
 	    }
 	</script>
 	
-	<popup id="contentAreaContextMenu">
-		<!--	<menuitem id="mylog-contextmenu-create" label="MyLog->Log Content"
-		              oncommand="toggleAndLogEntry();" />          
-    	 <menuitem id="mylog-contextmenu-create" label="Export/Import MyLog Content"
-		              oncommand="handleExportRequest()" /> -->
-		              
-		<!-- <menuitem id="mylog-contextmenu-create" label="Search MyLog"
-		              oncommand="handleSearchLogRequest()" /> -->
-		
-		<!-- <menuitem id="mylog-content-search" label="Search By Content"
-	              oncommand="handleSearchContentRequest()" /> -->
-	</popup>
-	
-	<popup id="contentAreaContextMenu">
-		<menuitem id="mylog-unittest-index" label="MyLog Unit Tests"
-		             oncommand="showUnitTests()" />
-	</popup>
-	<!--
-	<popup id="contentAreaContextMenu">
-		<menuitem id="mylog-contextmenu-create" label="Export/Import MyLog Content"
-			              oncommand="handleExportRequest()" />
-	</popup>
-		-->
-	
 	<commandset id="mainCommandSet">
 		<command id="Tools:MyLogImportExport" oncommand="handleExportRequest();"/>
 	</commandset>

@@ -322,10 +322,11 @@ function handleResultClicked(aEvent) {
 		
 	    var titleTBox = document.getElementById('logEntry-details-title');
 	    var urlTBox = document.getElementById('logEntry-details-url');
-	  	var urlLabel = document.getElementById('logEntry-details-url-link');
+	    var urlLabel = document.getElementById('logEntry-details-url-label');
 		titleTBox.value = logEntry.getTitle();
 	
 		urlTBox.value = logEntry.getUrl();
+		urlLabel.setAttribute("onclick", "handleViewWebPage();");
 		
 		// Load tags
 		searchBoxClearTags();
