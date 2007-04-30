@@ -27,10 +27,6 @@
     <menuitem id="sidebar_delete" oncommand="handleDeleteEntry();" label="&mylogsidebar.delete-entry;"/>
   </popup>
 
-  <popup id="logEntryTagsContextMenu">
-  	<menuitem id="logEntry-tags-context-delete" oncommand="removeTagsFromEntry();" label="&mylog_logentrytags.delete;"/>
-  </popup>
-
 <page id="sbMyLogSidebar" title="&mylogsidebar.title;"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" style="overflow: auto;" flex="1">
   <script type="text/javascript" src="mylog.js"></script>
@@ -240,13 +236,7 @@
 	  			<!--<textbox id="logEntry-tags" multiline="true"></textbox>-->
 		    </row>
 	    	
-	    	<listbox 
-	    		id="logEntry-tags" 
-	    		rows="3" 
-	    		onkeypress="if (event.keyCode == 46) removeTagsFromEntry();" 
-	    		context="logEntryTagsContextMenu"
-	    		seltype="multiple">
-	    	</listbox >
+	    	<listbox id="logEntry-tags" rows="3" onkeypress="if (event.keyCode == 46) removeTagsFromEntry();" ></listbox >
 	    	<spacer height="20" />
 		  	<label>Comments</label>
 		  	<vbox id="add-comment-container2">
