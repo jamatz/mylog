@@ -1,0 +1,29 @@
+<!-- // *** ebowden2, jamatz: 02-14-2007: Created mylogsidebar.dtd -->
+<!ENTITY mylogsidebar.title "MyLog">
+<!ENTITY mylogsidebar.SearchBoxLabel "Search:">
+<!ENTITY openMyLogSidebar.commandkey "M">
+<!ENTITY openMyLogSidebar.modifierskey "accel shift">
+<!ENTITY mylogsidebar.also-include "Search by:">
+<!ENTITY mylogsidebar.title-checkbox "Title">
+<!ENTITY mylogsidebar.comments-checkbox "Comments">
+<!ENTITY mylogsidebar.tags-checkbox "Tags:">
+<!ENTITY mylogsidebar.delete-entry "Delete Entry">
+<!ENTITY mylogsidebar.edit-entry "Edit Entry">
+<!ENTITY mylogsidebar.toolbarAdd "Log Page">
+<!ENTITY mylogsidebar.view-page "Open Page">
+<!ENTITY mylogsidebar.view-local "Open Local Copy">
+<!ENTITY mylogsidebar.toolbarDelete "Delete Entry">
+<!ENTITY mylogsidebar.toolbarShowDetails "Show Details">
+<!ENTITY mylogsidebar.toolbarHideDetails "Hide Details">
+<!ENTITY mylogsidebar.toolbarSave "Save">
+<!ENTITY mylogsidebar.toolbarCancel "Cancel">
+<!ENTITY mylogsidebar.toolbarSearchContent "Search by Content">
+<!ENTITY mylogsidebar.toolbarImportExport "Import/Export">
+<!ENTITY mylogsidebar.detailsShowAddTag "Show/Hide Add Tag Menu">
+<!ENTITY mylogsidebar.detailsDeleteTag "Delete Selected Tag">
+<!ENTITY mylog_logentrytags.delete "Remove Tag">
+
+
+
+
+

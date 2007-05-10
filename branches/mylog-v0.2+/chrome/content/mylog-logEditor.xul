@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+
+<?xml-stylesheet href="chrome://global/skin/global.css" type="text/css"?>
+<?xml-stylesheet href="chrome://mylog/skin/mylog-logEditor.css" type="text/css"?>
+
+<!--Created by Brian Cho and Jesus DeLaTorre on December 4.-->
+
+<dialog id="mylog-logEditor" title="Log Content"
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        buttons="accept,cancel"
+		onload="filltextboxes();"
+        ondialogaccept="return doOK();"
+        ondialogcancel="return doCancel();">
+
+
+	<script src="mylog-datastorage.js" />
+	<script src="mylog.js" />
+	<script src="mylog-logEditor.js" />
+	<script src="mylog-utility.js" />
+
+<grid flex="1">
+
+  <columns>
+    <column/>
+    <column flex="1"/>
+  </columns>
+
+  <rows>
+	<row>
+		<label control="mylog-url" value="URL:"/>
+		<textbox id="mylog-url"/>
+		<textbox id="mylog-url-edit"/>
+		<button label="Edit URL" oncommand="setURL();"/>
+		<button label="Delete URL" oncommand="deleteURL();"/>		
+	</row>
+	<row>
+		<label control="mylog-title" value="Title:"/>
+		<textbox id="mylog-title" flex="1"/>
+		<textbox id="mylog-title-edit" flex="1"/>		
+		<button label="Edit Title" oncommand="setTitle();"/>
+		<button label="Delete Title" oncommand="deleteTitle();"/>		
+	</row>
+	<row>
+		<label control="mylog-tags" value="Tags:"/>
+		<textbox id="mylog-tags" flex="1"/>
+		<textbox id="mylog-tags-edit" flex="1"/>
+		<button label="Edit Tag" oncommand="setTagAt(0,'newTag');"/>		
+		<button label="Delete Tag" oncommand="removeTagAt(0);"/>		
+	</row>
+ 	<row>
+		<label control="mylog-comments" value="Comments:"/>
+		<textbox multiline="true" id="mylog-comments"/>
+		<textbox multiline="true" id="mylog-comments-edit"/>
+		<button label="Edit Comment-notdone" oncommand="setCommentAt(0, 'newComment');"/>		
+		<button label="Delete Comment" oncommand="removeCommentAt(0);"/>				
+	</row>
+	<row>
+		<label control="mylog-comments" value="Add a new comment:"/>
+		<textbox multiline="true" rows="3" id="mylog-add-comments"/>
+		<textbox multiline="true" rows="3" id="mylog-add-comments-edit"/>
+		<button label="Add Comment" oncommand="addComment();"/>
+	</row>
+  </rows>
+</grid>
+
+</dialog>

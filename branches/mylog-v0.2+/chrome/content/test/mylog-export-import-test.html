@@ -1,0 +1,121 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>ECMAUnit Tests</title>
+    <script language="JavaScript" type="text/javascript" src="chrome://mylog/content/mylog.js"></script>
+    <script language="JavaScript" type="text/javascript" src="chrome://mylog/content/mylog-datastorage.js"></script>
+    <script language="JavaScript" type="text/javascript" src="chrome://mylog/content/mylog-exportwindow.js"></script>
+    <script type="text/javascript" src="chrome://mylog/content/test/ecmaunit.js"> </script>
+    <script type="text/javascript">
+//<![CDATA[
+       
+        function TestExportImport() {
+            this.name = 'TestExportImport';
+            var profileDirectory;
+            
+            this.setUp = function() {
+            	profileDirectory = getProfileDirectory();
+	
+            };
+
+            this.testExportImport1 = function() { 
+            	var files = getAllFilesInDirectory(profileDirectory + "\\test");
+         		var debug = flattenArray(files);
+         		this.assertEquals(debug, "/test/test/test.txt\n/test/test/tester.txt\n/test/tester2.txt\n/t.txt\n");
+       			this.assertEquals(files.length, 4);
+            };
+
+            this.testExportImport2 = function() { 
+            	var dirs = getAllDirectoriesInDir(profileDirectory + "\\test");
+         		var debug = flattenArray(dirs);
+         		this.assertEquals(debug, "test\n");
+       			this.assertEquals(dirs.length, 1);
+             };
+
+            this.testExportImport3 = function() { 
+            	var files = getAllFilesInDirectory(profileDirectory + "\\test\\test");
+         		var debug = flattenArray(files);
+         		this.assertEquals(debug, "/test/test.txt\n/test/tester.txt\n/tester2.txt\n");
+       			this.assertEquals(files.length, 3);
+            };
+
+            this.testExportImport4 = function() { 
+            	var dirs = getAllDirectoriesInDir(profileDirectory + "\\test\\test");
+         		var debug = flattenArray(dirs);
+         		this.assertEquals(debug, "test\n");
+       			this.assertEquals(dirs.length, 1);
+             };             
+
+            this.testExportImport5 = function() { 
+            	var fileContents = readFile(profileDirectory + "\\test\\t.txt");
+         		this.assertEquals(fileContents, "CS429");
+       			this.assertEquals(fileContents.length, 5);
+             };             
+
+            this.testExportImport6 = function() { 
+            	var fileContents = readFile(profileDirectory + "\\test\\test\\tester2.txt");
+         		this.assertEquals(fileContents, "TDD-MYLOG");
+       			this.assertEquals(fileContents.length, 9);
+             };             
+
+            this.testExportImport7 = function() { 
+            	var oldString = "asdf-1\\t.txt";
+            	var files = [];
+            	files.push("\\t.txt");
+            	var updateString = updateFileReferences(oldString, 1, 4,files);
+         		this.assertEquals(updateString, "asdf-4\\t.txt");
+             };           
+
+            this.testExportImport8 = function() { 
+            	var oldString = "asdf-1\\t.txt";
+            	var files = [];
+            	files.push("\\t.txt");
+            	var updateString = updateFileReferences(oldString, 2, 4,files);
+         		this.assertEquals(updateString, "asdf-1\\t.txt");
+             };           
+
+            this.testExportImport9 = function() { 
+            	var oldString = "asdf-1\\t.txt";
+            	var files = [];
+            	files.push("\\t.txt");
+            	var updateString = updateFileReferences(oldString, 4, 1, files);
+         		this.assertEquals(updateString, "asdf-1\\t.txt");
+             };           
+
+            this.testExportImport10 = function() { 
+            	var oldString = "asdf-1\\t.txt";
+            	var files = [];
+            	files.push("\\ta.txt");
+            	var updateString = updateFileReferences(oldString, 1, 3, files);
+         		this.assertEquals(updateString, "asdf-1\\t.txt");
+             };           
+
+
+            this.tearDown = function() {
+            };
+        };
+        TestExportImport.prototype = new TestCase;
+
+		flattenArray = function(array){
+			var string = "";
+       		for(var i = 0; i < array.length; i++){
+       			string = string + array[i] + "\n";
+       		}
+       		return string;
+		}
+		
+        function runTests() {
+            placeholder = document.getElementById('placeholder');
+            var testsuite = new TestSuite(new HTMLReporter(placeholder));
+            testsuite.registerTest(TestExportImport);
+            testsuite.runSuite();
+        }
+//]]>
+</script>
+</head>
+
+<body onload="runTests()">
+<h3>EcmaUnit tests for MyLog Add Tag</h3>
+<div id="placeholder"> </div>
+</body>
+</html>

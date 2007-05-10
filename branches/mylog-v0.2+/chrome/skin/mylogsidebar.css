@@ -1,0 +1,75 @@
+/* // *** ebowden2, jamatz: 02-14-2007: Created mylogsidebar.css */
+
+#sbMyLogSidebar {
+	/* background-color:#bedead; */
+	background-color: white;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+#mylog-toolbox {
+	border: 0px;
+}
+
+#mylog-entry-toolbox {
+	border: 0px;
+}
+
+#mylog-tags-toolbox {
+	background-color: white;
+	border: 0px;
+}
+
+#comments-box {
+	background-color: white;
+	border: 0px;
+}
+
+#comments-details-box {
+	background-color: white;
+	border: 0px;
+}
+
+#mylog-tags-toolbar {
+	border: 0px;
+}
+
+textbox.plain {
+	background-color: white;
+}
+
+.link {
+	color: blue;
+	cursor: pointer;
+}
+
+toolbarbutton#toolbarSave {
+	list-style-image: url("chrome://mylog/skin/filesave.png");
+}
+
+toolbarbutton[disabled="true"]#toolbarSave {
+	list-style-image: url("chrome://mylog/skin/filesave_disabled.png");
+}
+
+toolbarbutton#toolbarDetails {
+	list-style-image: url("chrome://mylog/skin/2downarrow.png");
+}
+/* Maybe try again later.
+toolbarbutton[checked="true"]#toolbarDetails {
+	list-style-image: url("chrome://mylog/skin/2uparrow.png");
+}
+*/
+toolbarbutton#toolbarFind {
+	list-style-image: url("chrome://mylog/skin/find.png");
+}
+
+toolbarbutton#toolbarAdd {
+	list-style-image: url("chrome://mylog/skin/bookmark_add.png");
+}
+
+toolbarbutton#toolbarDelete {
+	list-style-image: url("chrome://mylog/skin/button_cancel.png");
+}
+
+toolbarbutton[disabled="true"]#toolbarDelete {
+	list-style-image: url("chrome://mylog/skin/button_cancel_disabled.png");
+}

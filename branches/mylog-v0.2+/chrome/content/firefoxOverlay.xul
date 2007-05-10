@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE overlay SYSTEM "chrome://mylog/locale/mylogsidebar.dtd">
+<overlay id="MyLogSidebarOverlay"
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  
+  <menupopup id="viewSidebarMenu">
+    <menuitem key="key_openMyLogSidebar" observes="viewMyLogSidebar"  />
+  </menupopup>
+  
+  <keyset id="mainKeyset">
+         <key id="key_openMyLogSidebar" command="viewMyLogSidebar"
+         key="&openMyLogSidebar.commandkey;" 
+         modifiers="&openMyLogSidebar.modifierskey;" /> 
+  </keyset>
+  
+  <broadcasterset id="mainBroadcasterSet"> 
+    <broadcaster id="viewMyLogSidebar" 
+                 label="&mylogsidebar.title;"
+                 autoCheck="false"
+                 type="checkbox"
+                 group="sidebar"
+                 sidebarurl="chrome://mylog/content/mylogsidebar.xul"
+                 sidebartitle="&mylogsidebar.title;"
+                 oncommand="toggleSidebar('viewMyLogSidebar');" />
+  </broadcasterset>
+</overlay>

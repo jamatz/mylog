@@ -1,0 +1,54 @@
+<!-- // *** ebowden2, jamatz: 02-26-2007: Add case insensitive searching test. -->
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>ECMAUnit Tests</title>
+    <script language="JavaScript" type="text/javascript" src="chrome://mylog/content/mylog.js"></script>
+    <script language="JavaScript" type="text/javascript" src="chrome://mylog/content/mylog-datastorage.js"></script>
+    <script language="JavaScript" type="text/javascript" src="chrome://mylog/content/mylogsidebar.js"></script>
+    <script type="text/javascript" src="chrome://mylog/content/test/ecmaunit.js"> </script>
+    <script language="JavaScript" type="text/javascript" src="chrome://mylog/content/mylog-utility.js"></script>
+    <script type="text/javascript">
+//<![CDATA[
+var testWindow;
+var dataStore;
+var dataHandler;
+
+        function TestCaseSensitivity() {
+            this.name = 'TestCaseSensitivity';
+            
+            this.setUp = function() {
+            	dataStore = new XmlDataStore();
+            	dataStore.setXmlFilepath("mylog-title-search-test.xml");
+				dataHandler = dataStore.open();
+            };
+            
+            this.testCaseSensitivity1 = function() {
+            // Tests the XPath translation function and case-insensitive sorting in mylog-datastorage.js
+				var foundEntries = dataHandler.findEntries("cnn", "title");
+				this.assertTrue(foundEntries != null);
+				this.assertEquals(foundEntries.length, 2);
+            };
+
+			this.tearDown = function() {
+            	dataStore.close(dataHandler);
+            };
+        };
+        TestCaseSensitivity.prototype = new TestCase;
+
+        function runTests() {
+            placeholder = document.getElementById('placeholder');
+            var testsuite = new TestSuite(new HTMLReporter(placeholder));
+            testsuite.registerTest(TestCaseSensitivity);
+            testsuite.runSuite();
+        }
+        
+//]]>
+</script>
+</head>
+
+<body onload="runTests()">
+<h3>EcmaUnit tests for MyLog Case Insensitive Searching</h3>
+<div id="placeholder"> </div>
+</body>
+</html>

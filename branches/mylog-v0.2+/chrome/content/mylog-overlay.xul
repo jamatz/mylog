@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!--
+// *** jdelator, thpark2:03-07-2007:Added Export/Import box
+-->
+<overlay id="mylog-overlay"
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  
+	<script type="text/javascript" src="mylog.js" />
+	<script type="text/javascript" src="mylog-datastorage.js" />
+	<script type="text/javascript" src="mylogsidebar.js" />
+	<script type="text/javascript" src="mylog-utility.js" />
+
+	<script type="text/javascript">
+	    function showUnitTests() {
+	    	// This function will open the web page in the current tab
+	     	openUILinkIn("chrome://mylog/content/test/mylog-UnitTest-index.html", "current");
+	    }
+	</script>
+	
+	<commandset id="mainCommandSet">
+		<command id="Tools:MyLogImportExport" oncommand="handleExportRequest();"/>
+	</commandset>
+
+	
+    <menupopup id="menu_ToolsPopup">
+		<menuitem id="menu_test-mylog" label="MyLog Import/Export"
+                          command="Tools:MyLogImportExport" insertbefore="javascriptConsole"/>
+    </menupopup>
+    
+</overlay>
