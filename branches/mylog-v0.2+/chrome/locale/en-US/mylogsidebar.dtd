@@ -10,6 +10,7 @@
 <!ENTITY mylogsidebar.delete-entry "Delete Entry">
 <!ENTITY mylogsidebar.edit-entry "Edit Entry">
 <!ENTITY mylogsidebar.toolbarAdd "Log Page">
+<!ENTITY mylogsidebar.toolbarAdd_tooltip "Add the current page to your collection..">
 <!ENTITY mylogsidebar.view-page "Open Page">
 <!ENTITY mylogsidebar.view-local "Open Local Copy">
 <!ENTITY mylogsidebar.toolbarDelete "Delete Entry">
@@ -17,8 +18,11 @@
 <!ENTITY mylogsidebar.toolbarHideDetails "Hide Details">
 <!ENTITY mylogsidebar.toolbarSave "Save">
 <!ENTITY mylogsidebar.toolbarCancel "Cancel">
-<!ENTITY mylogsidebar.toolbarSearchContent "Search by Content">
+<!ENTITY mylogsidebar.toolbarSearchContent "Search Content">
+<!ENTITY mylogsidebar.toolbarSearchContent_tooltip "Search your entries' html content (like Google)">
 <!ENTITY mylogsidebar.toolbarImportExport "Import/Export">
+<!ENTITY mylogsidebar.toolbarAdministration "Administration">
+<!ENTITY mylogsidebar.toolbarAdministration_tooltip "Administration: Manage Tags and Import/Export new entries...">
 <!ENTITY mylogsidebar.detailsShowAddTag "Show/Hide Add Tag Menu">
 <!ENTITY mylogsidebar.detailsDeleteTag "Delete Selected Tag">
 <!ENTITY mylog_logentrytags.delete "Remove Tag">

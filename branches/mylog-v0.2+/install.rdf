@@ -5,7 +5,7 @@
   <RDF:Description RDF:about="urn:mozilla:install-manifest"
                    em:id="mylog@uiuc.edu"
                    em:name="MyLog"
-                   em:version="0.1"
+                   em:version="0.2a"
                    em:creator="MyLog team, UIUC"
                    em:description="Log content on the web for future reference."
                    em:homepageURL="http://pixie.cs.uiuc.edu:8080/SEcourse/MyLog">
@@ -17,9 +17,9 @@
     <em:contributor>Jesus DeLaTorre</em:contributor>
     <em:contributor>Thomas Park</em:contributor>
     <em:contributor>Vinayak Viswanathan</em:contributor>
-    <em:targetApplication RDF:resource="rdf:#$uhK6N"/>
+    <em:targetApplication RDF:resource="rdf:#$1nCWk3"/>
   </RDF:Description>
-  <RDF:Description RDF:about="rdf:#$uhK6N"
+  <RDF:Description RDF:about="rdf:#$1nCWk3"
                    em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
                    em:minVersion="1.5"
                    em:maxVersion="2.0.0.*" />
