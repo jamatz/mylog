@@ -1,10 +1,38 @@
+// *** vviswana,        :05-05-2007:Created exportContentToZip
 // *** jdelator, thpark2:03-07-2007:Created the functions of the Export/Import window
-<script type="text/javascript" src="mylog-datastorage.js" />
+
+var dataStore;
+var dataHandler;
+var zipProg;
+
+var MYLOG_EXPORT_TEMP_DIR = "mylog_export_content";
+
+function showAllContent() {
+    try {
+        dataStore = window.arguments[0];
+        dataHandler = window.arguments[1];
+        var entryList = dataHandler.getAllEntries();
+        if(entryList.length > 0) {
+            displayResults(entryList);
+        }       
+        
+        // See if a zip program is installed
+        zipProg = getZipUtil();
+        if(zipProg == null) {
+            document.getElementById('export-format').selectedIndex = 1;
+        }
+        else {
+            document.getElementById('export-format').selectedIndex = 0;
+        }
+    } catch(e) {
+        logMsg("Exception: " + e);
+    }
+}
 
 function handleContentClicked() {
-	var menu = document.getElementById('content');
-	var item = document.getElementById('content').selectedItem;
-	menu.addItemToSelection(item);
+// 	var menu = document.getElementById('content');
+// 	var item = document.getElementById('content').selectedItem;
+// 	menu.addItemToSelection(item);
 }
 
 function displayResults(resultList) {
@@ -31,6 +59,32 @@ function deselectAll(){
 }
 
 function exportContent(){
+<<<<<<< .mine
+    
+    betterExportContent();
+    
+    /*var selectedItems = document.getElementById('content').selectedItems;
+    var items = [];
+    for(var i = 0; i < selectedItems.length; i++)
+        items.push(selectedItems[i].value);	
+    
+    if(selectedItems.length != 0){		
+        var folderPath = getFolderDialogueBox("Export Items to...");
+        createDir(folderPath, "MyLog_Exported_Content")
+        folderPath = folderPath + "\\MyLog_Exported_Content"; 
+        saveExportXML(folderPath, items); 
+        copyExportedContent(folderPath, items);	
+        
+        if(document.getElementById('export-format').selectedIndex == 0) {
+            exportToZip(folderPath);
+        }
+        
+        alert("Successfully copied " + selectedItems.length + " item(s).");
+    }
+    else {
+        alert("Please select items before attempting to export.");
+    }*/
+=======
 	var selectedItems = document.getElementById('content').selectedItems;
 	var items = [];
 	for(var i = 0; i < selectedItems.length; i++)
@@ -45,14 +99,190 @@ function exportContent(){
 	}
 	else
 		alert("Please select items before attempting to export.");
+>>>>>>> .r202
+}
+
+function betterExportContent() {
+    try {
+        var selectedItems = document.getElementById('content').selectedItems;
+        var items = [];
+        for(var i = 0; i < selectedItems.length; i++)
+            items.push(selectedItems[i].value); 
+        
+        if(selectedItems.length != 0){      
+            var folderPath = getFolderDialogueBox("Export Items to...");
+            var buildPath ="";
+            if(folderPath.match(".zip")!=null) {
+                var fileObject = pathToFileObject(folderPath);
+                buildPath = fileObject.parent.path;
+            }
+            else {
+                buildPath = folderPath;
+            }
+            buildPath = getFullFilePath(buildPath,new Array("MyLog_Exported_Content"));
+            
+            if(pathExists(buildPath) == true) {
+                var ans = confirm("Overwrite previously exported content at this location?");
+                if(ans){
+                    removePath(buildPath);
+                }
+                else{return 0;}
+            }
+            createDirectoryFromPath(buildPath);
+            //logMsg("folderPath: " + folderPath);
+           
+            var xmlFile = betterSaveExportXML(buildPath, items); 
+            var inputFiles = betterCopyExportedContent(buildPath, items); 
+            inputFiles = inputFiles.concat(xmlFile);
+            
+            if(folderPath.match(".zip")!=null){
+                exportToZip(folderPath,buildPath,inputFiles);
+            }
+            alert("Successfully copied " + selectedItems.length + " item(s).");
+        }
+        else {
+            alert("Please select items before attempting to export.");
+        }
+    }catch(e) {
+        logMsg("Exception in betterExportContent:" + e);
+    }
+}
+
+function exportToZip(folderPath,buildPath,inputFiles) {
+    if(zipProg != null) {
+        var zipFile = folderPath;
+        if(pathExists(zipFile)) {
+            removePath(zipFile);
+        }
+        
+        if(zipProg.createZip(buildPath,zipFile,inputFiles,true)) {
+            removePath(buildPath); 
+        }
+        else {
+            logMsg("Couldn't create " + zipFile);
+        }
+    }
+}
+
+function extractZipFile(zipFile) {
+    var xmlFile = null;
+ 
+    try {
+        var parentDir = pathToFileObject(zipFile).parent.path;
+        var tempDir = getFullFilePath(parentDir,new Array(MYLOG_EXPORT_TEMP_DIR));
+        createDirectoryFromPath(tempDir);
+        
+        var zipReader = Components.classes["@mozilla.org/libjar/zip-reader;1"]
+            .createInstance(Components.interfaces.nsIZipReader);        
+        zipReader.init(pathToFileObject(zipFile));
+        zipReader.open();
+        var iter = zipReader.findEntries("*");
+        var counter =0;
+        while(iter.hasMoreElements()) {
+            var zipEntry = iter.getNext();
+            if(zipEntry instanceof Components.interfaces.nsIZipEntry) {
+                var paths = zipEntry.name.split("/");
+                var destFileObject = pathToFileObject(tempDir);
+                for(var i=0;i<paths.length - 1;i++) {
+                    destFileObject.append(paths[i]);
+                    logMsg("creating directory:" + destFileObject.path);
+                    createDirectory(destFileObject);
+                }
+                
+                var destFilename = getFullFilePath(tempDir,paths);
+                if(destFilename.match("exported.xml")!=null) {
+                    xmlFile = destFilename;
+                }
+                logMsg("zip file:" + destFilename);
+                if(!pathExists(destFilename)){
+                    zipReader.extract(zipEntry.name,pathToFileObject(destFilename));
+                }
+            }
+        }
+        zipReader.close();
+    }
+    catch(e){
+        logMsg("Exception in extractZipFile:" + e);
+    }
+    
+    return xmlFile;
 }
 
 function importContent(){
+    betterImportContent();
+// 	var XMLPath = getXMLBox("Select the folder where export.xml is located");
+// 	var folderPath = XMLPath.substr(0,XMLPath.lastIndexOf("\\"));
+// 	var profileDir = getProfileDirectory();
+// 
+// 	var importDataStore = new XmlDataStore();
+// 	var importDataHandler = importDataStore.openLocal(XMLPath);
+// 	var oldIDs = [];
+// 	var newIDs = [];
+// 	var entries = importDataHandler.getAllEntries();
+// 	for(var i = 0; i < entries.length; i++){
+// 		oldIDs.push(entries[i].getId());		
+// 		var newID = dataHandler.addPredefinedEntry(entries[i],profileDir);
+// 		newIDs.push(newID);
+// 	}
+// 	//alert("Grabbed " + entries.length + " items.");
+// 	copyImportedContent(folderPath, oldIDs,newIDs);
+// 	//alert("Copied");
+// 	dataStore.close(dataHandler);
+// 	dataHandler = dataStore.open();
+// 	var entryList = dataHandler.getAllEntries();
+// 	if(entryList.length > 0) {
+// 		displayResults(entryList);
+// 	}
+// 	alert("Successfully copied "+ entries.length + " items.");
+}
 
-	var XMLPath = getXMLBox("Select the folder where export.xml is located");
-	var folderPath = XMLPath.substr(0,XMLPath.lastIndexOf("\\"));
-	var profileDir = getProfileDirectory();
+function betterImportContent() {
+    try {
+        var useZip = false;
+        var XMLPath = getXMLBox("Select export.xml in or .zip file");
+        if(XMLPath.match(".zip") != null) {
+            XMLPath = extractZipFile(XMLPath);
+            useZip = true;
+        }
+        
+        // Now extract all LogEntries and copy over to the regular datastore
+        var importStore = new XmlDataStore();
+        var importHandler = importStore.openLocal(XMLPath);
+        var importedEntries = importHandler.getAllEntries();
+        var tempDir =  pathToFileObject(XMLPath).parent.path;
+        
+        importStore.close(importHandler);
+        addImportedEntries(importedEntries,tempDir);
+    
+        logMsg("import xml: " + XMLPath);
+        // If a zip file was used make sure to remove the temporary directory
+        if((useZip) && (XMLPath != null)) {
+            if(pathExists(tempDir)){
+                logMsg("removing path: " + tempDir);
+                removePath(tempDir);
+            }
+        }
+    }catch(e){
+        logMsg("Exception in betterImportContent: " +e);
+    }
+}
 
+<<<<<<< .mine
+function addImportedEntries(entries,folderPath){
+//     dataStore = new XmlDataStore();
+//     dataHandler = dataStore.open();
+
+    for(var i=0;i<entries.length;i++){
+        var filepath = getFullFilePath(folderPath,new Array(entries[i].getId() + ".html"));
+        entries[i].setFilePath(filepath);
+//         // The filepath will point to the extension directory
+//         var filepath = copyPage(filepath, id);
+//         logEntry.setFilePath(filepath);
+        dataHandler.addPredefinedEntry(entries[i]);
+    }
+
+    dataStore.close(dataHandler);
+=======
 	var importDataStore = new XmlDataStore();
 	var importDataHandler = importDataStore.openLocal(XMLPath);
 	var oldIDs = [];
@@ -73,6 +303,7 @@ function importContent(){
 		displayResults(entryList);
 	}
 	alert("Successfully copied "+ entries.length + " items.");
+>>>>>>> .r202
 }
 
 function saveExportXML(folderPath, exportItems){
@@ -89,9 +320,35 @@ function saveExportXML(folderPath, exportItems){
 	exportStore.saveXML(exportHandler.getDomDoc(),folderPath, "exported.xml");
 }
 
+function betterSaveExportXML(folderPath, exportItems){
+    var xmlFile = "";    
+    try {
+        xmlFile = getFullFilePath(folderPath,new Array("exported.xml"));
+        //logMsg("xml file: " + xmlFile);
+        
+        exportStore = new XmlDataStore();
+        //exportStore.setXmlFilepath(filePath);
+        exportHandler = exportStore.open(); 
+//         for(var i = 0; i < exportItems.length; i++){
+//             var currentItem = dataHandler.getEntry(exportItems[i]);
+//             var exportTags = currentItem.getTags();
+//             exportHandler.addPredefinedEntry(currentItem);
+//             for(var j =0; j < exportTags.length; j++)
+//                 exportHandler.addTag(exportTags[j]);
+//         }
+        exportHandler.exportTo(xmlFile,exportItems);
+        exportStore.close(exportHandler);
+        xmlFile = "exported.xml";
+    }catch(e) {
+        logMsg("Exception in betterSaveExportXML:" + e);
+    }
+    
+    return xmlFile;
+}
+
 function copyExportedContent(folderPath, exportItems){
 	var profileDir = getProfileDirectory();	
-	var myLogDir = profileDir + "\\extensions\\mylog\\";
+    var myLogDir = profileDir + "\\extensions\\mylog\\";
 	for(var i = 0; i < exportItems.length; i++){
 		//alert("Copying items of ID " + exportItems[i]);
 		createDir(folderPath, i);
@@ -101,10 +358,40 @@ function copyExportedContent(folderPath, exportItems){
 		writeBinaryFile(data, folderPath + "\\" + i + ".html");
 		var directory = myLogDir + exportItems[i] + "\\";
 		recursiveCopyAllFiles(folderPath + "\\" + i, directory);		
+<<<<<<< .mine
+		var pngData = readFile(myLogDir + exportItems[i] + "-preview.png");		
+		writeBinaryFile(pngData, folderPath + "\\" + i + "-preview.png");
+=======
 		var pngData = readFile(myLogDir + exportItems[i] + "-preview.png");		
 		writeBinaryFile(pngData, folderPath + "\\" + i + "-preview.png");
 
+>>>>>>> .r202
 	}
+}
+
+function betterCopyExportedContent(folderPath, exportItems){
+    var profileDir = getProfileDirectory(); 
+    var myLogDir = getFullFilePath(profileDir,new Array("extensions","mylog"));
+    var destDir = folderPath;
+    var inputFiles = new Array();
+    var inputFile = "";
+    //logMsg("destDir:" + destDir);
+    for(var i = 0; i < exportItems.length; i++){
+        //logMsg("Item[" + i + "]: " + exportItems[i]);
+        inputFile = getFullFilePath(myLogDir,new Array(exportItems[i] + ".html"));
+        inputFiles.push(exportItems[i] + ".html");
+        copyFilePath(inputFile,destDir);
+        
+        inputFile = getFullFilePath(myLogDir,new Array(exportItems[i] + ""));
+        inputFiles.push(exportItems[i] + "");
+        copyFilePath(inputFile,destDir);
+        
+        inputFile = getFullFilePath(myLogDir,new Array(exportItems[i] + "-preview.png"));
+        inputFiles.push(exportItems[i] + "-preview.png");
+        copyFilePath(inputFile,destDir); 
+    }
+    
+    return inputFiles;
 }
 
 function copyImportedContent(folderPath, oldIDs, newIDs){
@@ -172,12 +459,7 @@ function readFile(filePath){
 	return bytes;
 }
 
-function getProfileDirectory(){
-	var dir = Components.classes["@mozilla.org/file/directory_service;1"]
-                 .getService(Components.interfaces.nsIProperties)
-                 .get("ProfD", Components.interfaces.nsIFile);
-    return dir.path;       
-}
+
 
 function createDir(initPath,dir){
 	var file = Components.classes["@mozilla.org/file/local;1"]
@@ -185,7 +467,7 @@ function createDir(initPath,dir){
 	file.initWithPath(initPath);
 	file.append(dir);
 	if( !file.exists() || !file.isDirectory() ) {   // if it doesn't exist, create
-	   file.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, 0664);
+	   file.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, 0700);
 	}
 	
 }
@@ -282,12 +564,27 @@ function getFolderDialogueBox(dialogText){
 	nsIFilePicker = Components.interfaces.nsIFilePicker;	
 	var fp = Components.classes["@mozilla.org/filepicker;1"]
 		           .createInstance(nsIFilePicker);
-	fp.init(window, dialogText, nsIFilePicker.modeGetFolder);
-	fp.appendFilters(nsIFilePicker.filterAll | nsIFilePicker.filterText);
+	
+    var useZip = false;
+    if(document.getElementById('export-format').selectedIndex == 0) {
+        useZip = true;
+    }   
+    
+    if(useZip) {
+        fp.init(window, dialogText, nsIFilePicker.modeSave);
+        fp.appendFilter("Zip File (*.zip)","*.zip");
+    }
+    else {
+        fp.init(window, dialogText, nsIFilePicker.modeGetFolder);
+        fp.appendFilters(nsIFilePicker.filterAll);
+    }
+    
 	var rv = fp.show();
-	if (rv == nsIFilePicker.returnOK){
+	if ((rv == nsIFilePicker.returnOK) || (rv==nsIFilePicker.returnReplace)){
 	  return fp.file.path;
 	}
+    
+    return "";
 }
 
 function getXMLBox(dialogText){
@@ -295,7 +592,9 @@ function getXMLBox(dialogText){
 	var fp = Components.classes["@mozilla.org/filepicker;1"]
 		           .createInstance(nsIFilePicker);
 	fp.init(window, dialogText, nsIFilePicker.modeOpen);
+    fp.appendFilter("All Supported","*.zip;*.xml");   
 	fp.appendFilters(nsIFilePicker.filterXML);
+    fp.appendFilter("Zip File (*.zip)","*.zip");   
 	var rv = fp.show();
 	if (rv == nsIFilePicker.returnOK){
 	  return fp.file.path;

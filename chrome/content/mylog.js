@@ -54,9 +54,24 @@ function handleSearchLogRequest() {
 }
 
 
-function handleExportRequest() {
-	var dataStore = new XmlDataStore();
-	var dataHandler = dataStore.open();
+function handleExportRequest(store,handler) {
+	var dataStore; 
+	var dataHandler;
+    
+    if(typeof(store) == "undefined") {
+        dataStore = new XmlDataStore();
+    }
+    else {
+        dataStore = store;
+    }
+    
+    if(typeof(handler) == "undefined") {
+        dataHandler = dataStore.open();
+    }
+    else {
+        dataHandler = handler;
+    }
+    
 	window.openDialog("chrome://mylog/content/mylog-exportwindow.xul","mylog-exportwindow",
 		"chrome", dataStore, dataHandler);
 }
@@ -143,7 +158,7 @@ function LogEntry() {
 	this.removeCommentAt = removeCommentAt;
 
 	this.setFromDomNode = setFromDomNode;
-
+    this.clone = clone;
 	//	this.save = save;
 	//	this.readFromFile = readFromFile;
 
@@ -290,6 +305,18 @@ function LogEntry() {
 		}
     }
 
+    function clone() {
+        var newObject = new LogEntry();
+        newObject.setId(_id);
+        newObject.setTitle(_title);
+        newObject.setUrl(_url);
+        newObject.setFilePath(_filePath);
+        newObject.setPreviewFilePath(_previewFilePath);
+        newObject._tags = _tags.concat();
+        newObject._comments = _comments.concat();
+        
+        return newObject;
+    }
 }
 
 // Created by Brian Cho and Soumi Sinha on December 1, 2006.

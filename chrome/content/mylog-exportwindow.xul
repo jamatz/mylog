@@ -17,20 +17,7 @@
     <script type="text/javascript" src="mylog-datastorage.js"></script>
 	<script type="text/javascript" src="mylog-tag.js"></script>
     <script type="text/javascript" src="XMLUtil.js"></script>
-
-	<script type="text/javascript">
-		var dataStore;
-		var dataHandler;
-	
-		function showAllContent() {
-			dataStore = window.arguments[0];
-			dataHandler = window.arguments[1];
-			var entryList = dataHandler.getAllEntries();
-			if(entryList.length > 0) {
-				displayResults(entryList);
-			}		
-		}
-  	</script>
+    <script type="text/javascript" src="mylog-utility.js"></script>
   	
   <vbox style="width: 500px;">
     <hbox id="mylog-hbox">
@@ -44,19 +31,27 @@
             label="Deselect All"
             oncommand="deselectAll();"
         />
-        <button 
-            id="find-button" 
-            label="Export"
-            oncommand="exportContent();"
-        />        
+       
         <button 
             id="find-button" 
             label="Import"
             oncommand="importContent();"
         />
+ 
+        <button 
+                id="find-button" 
+                label="Export"
+                oncommand="exportContent();"
+            />       
+        <radiogroup id ="export-format" orient="horizontal">
+            <radio id="format-zip" label="Zip File"/>
+            <radio id="format-xml" label="XML Data"/>
+        </radiogroup>
+ 
     </hbox>
+    <spacer height="10" />
     <hbox id="help">
-		<label control="help-text" value="Select multiple individual items by holding CTRL or select continous items by holding shift"/>
+		<label control="help-text" value="Select multiple items by holding CTRL or select continous items by holding shift"/>
     </hbox>
     <listbox id="content" seltype="multiple" onclick="handleContentClicked();">
     </listbox>

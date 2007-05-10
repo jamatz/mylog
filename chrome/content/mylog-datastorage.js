@@ -1,3 +1,6 @@
+// *** vviswana: 05-06-2007: Modified addPredefinedEntry so that it's no longer stupid.
+// *** vviswana: 05-02-2007: Added a counter member to DataHandler to keep track of the number of entries in memory. This is in hopes to
+// ***                       support a kind of "roll-back" feature for the database
 // *** bearly, thpark2: 04-15-2007: Modified close to add support for Unicode characters.
 // *** ebowden2, jamatz: 03-08-2007: Modified addEntry to add support for storing .png previews of entries.  Also added a "preview" tag to the XML file output for the path to the preview .png file.
 // *** vviswana, bearly: 03-07-2007: Added content searching into findEntries. Also added helper functions,_searchContent and saveResultsPage, to actually search through the saved  pages and also display the results, respectively. Also refactored _readXmlFile to use fileToString(). Added showResultsPage() to display search by content results.                                 
@@ -44,12 +47,11 @@ function XmlDataStore() {
 	this.openLocal = openLocal;
 	this.close = close;
 	this.saveXML = saveXML;
-	this.readXML = readXML;
-	
+	this.readXML = readXML;   
 	this.setXmlFilepath = setXmlFilepath;
 	
 	// Private members
-	var _xmlFilepath = "mylog_data.xml";
+	var _xmlFilepath = getFullFilePath(getProfileDirectory(),new Array("mylog_data.xml"));
 
 	// Public methods
 	function open() {
@@ -60,15 +62,22 @@ function XmlDataStore() {
 	}
 	
 	function openLocal(filePath){
-		var doc = readXML(filePath);      
-		var handler = new XmlDataHandler();
-		handler.setDomDoc(doc);
-		return handler;
+        _xmlFilepath = filePath;   
+        logMsg("filepath in open: " + _xmlFilepath);
+// 		var doc = readXML(filePath);      
+        var doc = _readXmlFile();      
+        var handler = new XmlDataHandler();
+        handler.setDomDoc(doc);
+        return handler;
 	}
 
 	function close(handler) {
 		var doc = handler.getDomDoc();
 		_saveXmlFile(doc);
+		
+		// The handler has been saved, so it is no longer dirty
+		handler.setDirty(0);
+		handler.removeTemporaryEntry();
 	}
 
 	function readXML(filePath) {
@@ -101,8 +110,6 @@ function XmlDataStore() {
 		return doc;
     }
 
-
-
 	// Created by Vinayak Viswanathan and Thomas Park on December 7.
     function _readXmlFileNew() {
         //_xmlFilepath = "chrome://mylog/content/mylog_data.xml";
@@ -128,10 +135,10 @@ function XmlDataStore() {
 	// Private methods
 	function _readXmlFile() {
 		var doc;
-		var file = Components.classes["@mozilla.org/file/directory_service;1"]
-							 .getService(Components.interfaces.nsIProperties)
-							 .get("ProfD", Components.interfaces.nsIFile);
-		file.append(_xmlFilepath);
+		var file =  Components.classes["@mozilla.org/file/local;1"]
+                     .createInstance(Components.interfaces.nsILocalFile);
+                     
+		file.initWithPath(_xmlFilepath);
 		// alert(file.path);
 		if (!file.exists()) {
 			// alert("File doesn't exist");
@@ -158,13 +165,12 @@ function XmlDataStore() {
 	}
 
 	function _saveXmlFile(doc) {
-
 		// Also save the tags.xml
-
-		var file = Components.classes["@mozilla.org/file/directory_service;1"]
-							 .getService(Components.interfaces.nsIProperties)
-							 .get("ProfD", Components.interfaces.nsIFile);
-		file.append(_xmlFilepath);
+		var file =  Components.classes["@mozilla.org/file/local;1"]
+                     .createInstance(Components.interfaces.nsILocalFile);
+                     
+        logMsg("Output file: " + _xmlFilepath);
+        file.initWithPath(_xmlFilepath);
 
 		var serializer = new XMLSerializer();
 		// The actual string that is written to file
@@ -213,26 +219,38 @@ function XmlDataStore() {
 		foStream.close();
 		
 	}
-	
 }
 
 // Created by Brian Cho and Soumi Sinha on December 1, 2006.
 function XmlDataHandler() {
 	var _doc;
+	var _entryCounter;
+	var _dirtyBit;
+	var _tempEntry = null;
 
 	this.getAllTags = getAllTags;
 	this.addTag = addTag;
 	this.addEntry = addEntry;
 	this.addPredefinedEntry = addPredefinedEntry;
+	this.addTemporaryEntry = addTemporaryEntry;
+	this.saveTemporaryEntry = saveTemporaryEntry;
+	this.removeTemporaryEntry = removeTemporaryEntry;
+	this.getTemporaryEntry = getTemporaryEntry;
+	
 	this.replaceEntry = replaceEntry;
 	this.removeEntry = removeEntry;
+	this.removeTag = removeTag;
 	this.getEntry = getEntry;
 	this.findEntries = findEntries;
 	this.getAllEntries = getAllEntries;
+	this.setDirty = setDirty;
 
 	this.getDomDoc = getDomDoc;
 	this.setDomDoc = setDomDoc;
-
+    this.getEntryCounter = getEntryCounter;
+    
+    this.exportTo = exportTo;
+    
     //Created December 6th by Josh Matz and Eric Bluhm
 	//getAllTags returns an array holding all the tags currently in _doc
 	function getAllTags() {
@@ -266,10 +284,16 @@ function XmlDataHandler() {
 		var tagElem = _doc.createElement("tag");
 		tagElem.setAttribute("name", tag);
 		_doc.getElementsByTagName("tags")[0].appendChild(tagElem);
+		
+		_dirtyBit = 1;
 		return true;
 	}
 	
 	function addEntry(logEntry, doc) {
+		if(_tempEntry != null) {
+			throw("MyLog: dataHandler.addEntry cannot be called if there is a temporary entry still saved");
+		}
+	
 		var idstr = _doc.getElementsByTagName("entries")[0].getAttribute("counter");
 		var id = idstr * 1;
 		logEntry.setId(id);
@@ -284,16 +308,84 @@ function XmlDataHandler() {
 		return id;
 	}
 	
-	function addPredefinedEntry(logEntry, filePath) {
+	function addPredefinedEntry(logEntry) {
+		if(_tempEntry != null) {
+			throw("MyLog: dataHandler.addPredefinedEntry cannot be called if there is a temporary entry still saved");
+		}
+		
 		var idstr = _doc.getElementsByTagName("entries")[0].getAttribute("counter");
 		var id = idstr * 1;
 		logEntry.setId(id);
+        
+        var filepath = copyPage(logEntry.getFilePath(),id);
+        logEntry.setFilePath(filepath);
+        
+        // Make sure to add any tags that don't exist in the database
+        var newTags = logEntry.getTags();
+        for(var i=0;i<newTags.length;i++){
+            addTag(newTags[i]);
+        }
+        
 		var counter = id + 1;
 		_doc.getElementsByTagName("entries")[0].setAttribute("counter", counter.toString());
-		logEntry.setFilePath(filePath  + "\\extensions\\mylog\\" + id + ".html");		 		
 		var entryElem = _createDomNode(logEntry);
 		_doc.getElementsByTagName("entries")[0].appendChild(entryElem); 
 		return id;
+	}
+
+	function addTemporaryEntry(logEntry, doc) {
+		try {
+			if(_tempEntry != null) {
+				throw("MyLog: dataHandler.addTemporaryEntry cannot be called if there is a temporary entry still saved");
+			}
+		
+			var idstr = _doc.getElementsByTagName("entries")[0].getAttribute("counter");
+			var id = idstr * 1;
+			logEntry.setId(id);
+           
+			if(typeof(doc) != "undefined"){
+				var file = savePage(doc, id);
+				logEntry.setFilePath(file.path);
+            }
+            _tempEntry = logEntry.clone();   
+			logMsg("tempEntry.id=" + _tempEntry.getId());
+		} catch(e) {
+			logMsg("MyLog exception:" + e);
+		}
+	}
+	
+	function saveTemporaryEntry() {
+		if(_tempEntry != null) {
+		
+// 			if(typeof(logEntry) != "undefined") {
+// 				if(logEntry.getId() != _tempEntry.getId()) {
+// 					throw("saveTemporaryEntry(): The LogEntry  objects do not match!");
+// 				}
+// 				_tempEntry = logEntry;
+// 			}
+			
+			var entryElem = _createDomNode(_tempEntry);
+			var counter = _tempEntry.getId() + 1;
+			_doc.getElementsByTagName("entries")[0].appendChild(entryElem);
+			_doc.getElementsByTagName("entries")[0].setAttribute("counter", counter.toString());
+		
+			delete _tempEntry;
+			_tempEntry = null;
+		}
+	}
+
+	function removeTemporaryEntry() {
+		if(_tempEntry != null) {
+			deleteLocalPage(_tempEntry.getId());
+			delete _tempEntry;
+			_tempEntry = null;
+		}
+	}
+
+	function getTemporaryEntry() {
+        logMsg("getting temp");   
+        logMsg("getTemporary: tempEntry.id=" + _tempEntry.getId());
+		return _tempEntry;
 	}
 
 	// Created by Brian Cho and Jesus DeLaTorre on December 4.
@@ -330,6 +422,24 @@ function XmlDataHandler() {
 
 	}
 
+	function removeTag(tag) {
+		try {
+			var tagsNode = _doc.getElementsByTagName("tags")[0];
+			
+			var xpathStr = "/mylog/tags/tag[@name = '"+ tag +"']";
+			var xpathRetriever = new XpathRetriever(_doc, xpathStr);
+			var oldNode = xpathRetriever.getNext();
+			if (oldNode) {
+				tagsNode.removeChild(oldNode);
+				return true;
+			} else 
+				return false;
+		} catch(e) {
+			logMsg("XmlDataHandler::removeTag(): " + e);
+			return false;
+		}
+	}
+
 	// argument id is an int (not a string!)
 	function getEntry(id) {
 		var idstr = id.toString();
@@ -344,6 +454,16 @@ function XmlDataHandler() {
 			return false;		
 	}
 
+	function setDirty(dirtyBit) {
+		_dirtyBit = dirtyBit;
+	}
+
+    function getEntryCounter(){
+        var counterstr = _doc.getElementsByTagName("entries")[0].getAttribute("counter");
+        var counter = idstr * 1;
+        return counter;
+    }
+    
 	// Modified by Vinayak Viswanathan and Thomas Park on December 7.
     function findEntries(keyword,searchType) {
     	try {
@@ -351,7 +471,7 @@ function XmlDataHandler() {
 			var xpathStr = "";
 	
 			if(searchType == "tag") {
-				xpathStr = "/mylog/entries/entry[entrytags/entrytag/@name = '"+keyword+"']";
+				xpathStr = "/mylog/entries/entry[count(entrytags/entrytag[contains(@name,'"+keyword+"')]) > 0]";
 	        } else if(searchType == "comment"){
 				xpathStr = "/mylog/entries/entry[count(comments/comment[contains(.,'" + keyword + "')]) > 0]";  
 	        } else if(searchType == "content") {
@@ -360,6 +480,8 @@ function XmlDataHandler() {
 				xpathStr = "/mylog/entries/entry[contains(translate("+searchType+", 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), translate('"+keyword+"', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'))]";
 	      	}
 	        
+            logMsg("XpathStr: " + xpathStr);
+            
 			var entryResults = new Array();
 			if(doSearch == true) {
 				var xpathRetriever = new XpathRetriever(_doc, xpathStr);
@@ -395,6 +517,45 @@ function XmlDataHandler() {
 		return entryResults;
 
 	}
+
+    // This function exports the entries given by entryIds to outfile
+    function exportTo(outFile,entryIds) {
+        var doc = document.implementation.createDocument("", "", null);
+        var rootElem = doc.createElement("mylog");
+        var entriesElem = doc.createElement("entries");
+        doc.appendChild(rootElem);
+        rootElem.appendChild(entriesElem);
+        
+        for(var i=0;i<entryIds.length;i++){
+            var entry = getEntry(entryIds[i]);
+            var entryElem = _createDomNode(entry);
+            doc.getElementsByTagName("entries")[0].appendChild(entryElem);
+        }
+    
+        var file =  Components.classes["@mozilla.org/file/local;1"]
+                     .createInstance(Components.interfaces.nsILocalFile);
+                     
+        logMsg("Export file: " + outFile);
+        file.initWithPath(outFile);
+
+        var serializer = new XMLSerializer();
+        var data = serializer.serializeToString(doc);
+        
+        var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"]
+                                 .createInstance(Components.interfaces.nsIFileOutputStream);
+
+        var charset = "UTF-8"; // Can be any character encoding name that Mozilla supports
+
+        var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+                           .createInstance(Components.interfaces.nsIConverterOutputStream);
+        // use 0x02 | 0x10 to open file for appending.
+        foStream.init(file, 0x02 | 0x08 | 0x20, 0664, 0); // write, create, truncate
+      
+        // This assumes that fos is the nsIOutputStream you want to write to
+        os.init(foStream, charset, 4096, "?".charCodeAt(0));
+        os.writeString(data);
+        os.close();
+    }
 
 	// Modified by Brian Cho and Jesus DeLaTorre on December 4.
 	function _createDomNode(logEntry) {
@@ -455,6 +616,10 @@ function XmlDataHandler() {
 
 	function setDomDoc(doc) {
 		_doc = doc;
+		
+		var counterStr = _doc.getElementsByTagName("entries")[0].getAttribute("counter");
+		var counter = counterStr * 1;
+		_entryCounter = counter;
 	}
 
 	function _searchContent(keyword) {
@@ -526,8 +691,7 @@ function XpathRetriever(dom, xpathString) {
 		}
 	}
 }
-function savePage(doc, id)
-{
+function savePage(doc, id) {
 	try
 	{
 		var file = Components.classes["@mozilla.org/file/directory_service;1"]
@@ -554,6 +718,39 @@ function savePage(doc, id)
 		logMsg('savePage Exception ' + e)
 		return "";
 	}
+}
+
+function copyPage(oldFilePath,id) {
+    try
+    {
+        var profilePath = getProfileDirectory();
+        var folderPath = getFullFilePath(profilePath,new Array("extensions","mylog"));
+        var filePath = getFullFilePath(folderPath,new Array(id + ".html"));
+        
+        logMsg("filepath: " + oldFilePath + ",id: " + id);
+        
+        // first copy over the html page to the new location
+        var oldFileObj = pathToFileObject(oldFilePath);
+        var folderObj = pathToFileObject(folderPath);
+        
+        oldFileObj.copyTo(folderObj,id + ".html");
+       
+        // now copy over the data directory
+        var dataFolderPath = oldFilePath.slice(0,oldFilePath.length - 5);
+        logMsg("data folder: " + dataFolderPath);
+        oldFileObj = pathToFileObject(dataFolderPath);
+        oldFileObj.copyTo(folderObj,id + "");
+        
+        // preview thumbnail
+        oldFileObj = pathToFileObject(dataFolderPath + "-" + "preview.png");
+        oldFileObj.copyTo(folderObj,id + "-preview.png");
+        
+        return filePath;
+    } catch (e) {
+        logMsg('copyPage Exception ' + e)
+        return "";
+    }
+
 }
 
 function deleteLocalPage(id) {
@@ -584,7 +781,7 @@ function deleteLocalPage(id) {
         
 		return true;
 	} catch (e) {
-		//alert('savePage Exception ' + e)
+		logMsg('MyLog: savePage Exception ' + e)
 		return false;
 	}
 }
@@ -664,3 +861,6 @@ function readPage(fileName){
 	fstream.close();
 	return data;
 }
+
+    
+    

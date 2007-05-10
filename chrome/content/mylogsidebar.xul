@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+<!-- // *** vviswana: 05-02-2007: Added onclose event handler to sidebar. -->
 <!-- // *** jamatz, ebluhm, bearly: 03-30-2007: Removed preview canvas. -->
 <!-- // *** ebowden2, vviswana: 03-15-2007: Added section for logEntry details and made loading of page respond to double not single click. Also added persistence into gui elements -->
 <!-- // *** ebowden2, jamatz: 02-13-2007: Created mylogsidebar.xul -->
@@ -8,16 +9,17 @@
 <?xml-stylesheet href="chrome://mylog/skin/accjax.css" type="text/css" ?>
 <!DOCTYPE page SYSTEM "chrome://mylog/locale/mylogsidebar.dtd">
 
-<window
+<window 
     windowtype="global:MyLogSidebar"
     onload="initializeGUI();"
     onclick="// createThumbnail();"
+    onunload="handleCloseSidebar();"
     id="sidebarWindow"
     xmlns:html="http://www.w3.org/1999/xhtml"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     xmlns:x2="http://www.w3.org/TR/xhtml2"
     xmlns:wairole="http://www.w3.org/2005/01/wai-rdf/GUIRoleTaxonomy#"
-    xmlns:waistate="http://www.w3.org/2005/01/wai-rdf/GUIStateTaxonomy#">
+    xmlns:waistate="http://www.w3.org/2005/01/wai-rdf/GUIStateTaxonomy#" >
   
   <script type="application/x-javascript" src="chrome://mylog/content/mylogsidebar.js"/>
   <script type="application/x-javascript" src="chrome://mylog/content/mylog.js"/>
@@ -33,7 +35,15 @@
     <menuitem id="logEntryTagsContextDelete" oncommand="removeTagsFromEntry();" label="&mylog_logentrytags.delete;"/>
   </popup>
 
-<page id="sbMyLogSidebar" title="&mylogsidebar.title;"
+  <popup id="adminTagsContextMenu">
+    <menuitem id="adminTagsDelete" label="Delete" oncommand="removeTagFromDatabase();"/>
+  </popup>
+
+  
+<!--  title="&mylogsidebar.title;" -->
+
+<page id="sbMyLogSidebar" 
+        
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" style="overflow: auto;" flex="1">
   <script type="text/javascript" src="mylog.js"></script>
   <script type="text/javascript" src="mylog-datastorage.js"></script>
@@ -43,19 +53,29 @@
   
 <!-- BEGIN SEARCH BOX -->
   <box orient="vertical" hidden="false" id="searchPage-box">
+  	<toolbox>
+  		<toolbar>
+  		       <toolbarbutton id="toolbarAdministration" 
+                   image="chrome://mylog/skin/bookmark_add.png"
+                   tooltiptext="&mylogsidebar.toolbarAdministration_tooltip;"
+                   oncommand ="showAdministrationPage();"
+                   label="&mylogsidebar.toolbarAdministration;"/>
+  		</toolbar>
+  	</toolbox>
   	<toolbox id="mylog-toolbox">
 	  <toolbar align="left" id="mylog-toolbar">
 	    <toolbarbutton id="toolbarFind" 
 	    			   image="chrome://mylog/skin/find.png"
-	    			   tooltiptext="&mylogsidebar.toolbarSearchContent;"
+	    			   tooltiptext="&mylogsidebar.toolbarSearchContent_tooltip;"
 	    			   oncommand="handleSearchByContentClick();"
 	                   label="&mylogsidebar.toolbarSearchContent;"/>
 	    <toolbarseparator />
 	    <toolbarbutton id="toolbarAdd" 
 	                   image="chrome://mylog/skin/bookmark_add.png"
-	                   tooltiptext="&mylogsidebar.toolbarAdd;"
+	                   tooltiptext="&mylogsidebar.toolbarAdd_tooltip;"
 	                   oncommand ="showLogEntryPage();"
 	                   label="&mylogsidebar.toolbarAdd;"/>
+	    <toolbarseparator />	                   
 	  </toolbar>
 	</toolbox>
   	<box id="searchDiv" orient="vertical">
@@ -82,6 +102,7 @@
            onkeypress="if (event.keyCode == 46) handleDeleteEntry();" 
            context="sidebarEntriesContextMenu"
            seltype="multiple"
+           rows="8"
            persist = "selectedIndex">
  </listbox>
  
@@ -268,6 +289,38 @@
 </box>
 
 <!-- END LOG BOX -->
+
+<!-- BEGIN Administration box -->
+    <box orient="vertical" hidden="true" id="adminPage-box">
+	<toolbox>
+  		<toolbar>
+  		       <toolbarbutton id="toolbarBack" 
+                   image="chrome://mylog/skin/bookmark_add.png"
+                   tooltiptext="&mylogsidebar.toolbarAdministration;"
+                   oncommand ="leaveAdministrationPage();"
+                   label="Back"
+                   />
+  		</toolbar>
+  	</toolbox>
+  	<spacer height="10" />
+    <label>Right-Click in the listboxes for possible actions.</label>
+  	<groupbox orient="vertical" flex="1">
+		<caption label="Tags" />
+		<listbox id="adminTagsList" rows="3" context="adminTagsContextMenu" onselect="adminShowEntriesForTag();"/>
+		<label id="adminEntryForTagLabel" value="Entries with Tag " />
+        <listbox 
+            id="adminEntryForTag" 
+            rows="5" 
+            flex="1" 
+            context="sidebarEntriesContextMenu"  
+            ondblclick="handleResultDblClicked(event);"
+            selType="multiple"
+        /> 
+	</groupbox>
+	<spacer height="10" />
+	<button flex="0" label="Import/Export" oncommand="sidebarExportRequest();"/>
+</box>
+<!-- END Administration box -->
 
 </page>
 </window>

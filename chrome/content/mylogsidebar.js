@@ -21,7 +21,7 @@ var previousQuery = "";
 var editingId;
 var resultIndex;
 
-var currComments = new Array();
+var curComments = new Array();
 var newComments = new Array();
 
 function initializeGUI() {
@@ -33,9 +33,30 @@ function initializeGUI() {
 	clearComments(document.getElementById("comments-details-box"));
 }
 
+function handleCloseSidebar() {
+	// remove any temporary data if need be
+	if(typeof(dataHandler)!="undefined") {
+        dataStore.close(dataHandler);
+    }
+}
+
 function toggleAndLogEntry() {
 	toggleSidebar('viewMyLogSidebar');
 	showLogEntryPage();
+}
+
+function showAdministrationPage() {
+	adminBoxPopulateTags();
+	document.getElementById("searchPage-box").hidden = true;
+	document.getElementById("adminPage-box").hidden = false;
+    document.getElementById("logPage-box").hidden = true;
+}
+
+function leaveAdministrationPage() {
+    clearAdminEntryForTagBox();
+    adminBoxClearTags();
+	document.getElementById("searchPage-box").hidden = false;
+	document.getElementById("adminPage-box").hidden = true;
 }
 
 function showLogEntryPage(id) {
@@ -46,6 +67,8 @@ function showLogEntryPage(id) {
 	
 		document.getElementById("searchPage-box").hidden = true;
 		document.getElementById("logPage-box").hidden = false;
+        document.getElementById("adminPage-box").hidden = true;
+              
 	
 		populateNewEntry(id);
 	}catch(e) {
@@ -69,6 +92,16 @@ function populateNewEntry (id) {
 			document.getElementById("logEntry-title").value = title;
 			var url = content.document.location;
 			document.getElementById("logEntry-url").value = url;
+			
+			var tempEntry = new LogEntry();
+			tempEntry.setTitle(title);
+			tempEntry.setUrl(url);
+			dataHandler.addTemporaryEntry(tempEntry,content.document);
+			
+			// create thumbnail
+			createThumbnail(content.document, tempEntry.getId());
+            logMsg("Added temp");         
+			
 		} else {
 			var logEntry = dataHandler.getEntry(id);
 			document.getElementById("logEntry-title").value = logEntry.getTitle();
@@ -103,12 +136,27 @@ function searchBoxPopulateTags(logEntry) {
 	}
 }
 
+function adminBoxPopulateTags() {
+	var allTags = dataHandler.getAllTags();
+	allTags = allTags.sort(compareTags);
+	
+	var adminTagsListBox = document.getElementById("adminTagsList");
+	for(var i=0;i<allTags.length;i++) {
+		adminTagsListBox.appendItem(allTags[i],allTags[i]);
+	}
+
+}
+
 function logBoxClearTags() {
 	clearTagsBox(document.getElementById('logEntry-tags'));
 }
 
 function searchBoxClearTags() {
 	clearTagsBox(document.getElementById('logEntry-details-tags'));
+}
+
+function adminBoxClearTags() {
+	clearTagsBox(document.getElementById("adminTagsList"));
 }
 
 function clearTagsBox(tagsBox) {
@@ -136,8 +184,6 @@ function searchBoxPopulateComments(theEntry) {
 		logMsg("Exception in searchBoxPopulateComments():" + e);
 	}
 }
-
-
 
 function clearComments(commentsBox) {
 	try {
@@ -175,6 +221,7 @@ function showSearchEntryPage(id) {
 	try {
 		document.getElementById("searchPage-box").hidden = false;
 		document.getElementById("logPage-box").hidden = true;
+        document.getElementById("adminPage-box").hidden=true;      
 		searchboxCallback(document.getElementById("SearchBox").value);
 	
 		searchBoxClearTags();
@@ -202,12 +249,11 @@ function showSearchEntryPage(id) {
 		}*/
 		
 		
-		
+		id = null;
 	} catch(e) {
 		logMsg("Exception in showSearchEntryPage():" + e);
 	}
 }
-
 
 function handleDeleteLogEntryTag() {
 	alert("");
@@ -289,6 +335,14 @@ function compareTitles(a, b) {
 	}
 }
 
+function compareTags(tag1,tag2) {
+	if (tag1.toLowerCase() >= tag2.toLowerCase()) {
+		return 1;
+	}
+	else {
+		return -1;
+	}
+}
 
 function clearListbox() {
 	while (document.getElementById('results-listbox').getRowCount() > 0) {
@@ -303,8 +357,16 @@ function removeListboxEntry() {
 }
 
 function removeListboxEntries() {
-	var resultsBox = document.getElementById('results-listbox');
-	var selection = new Array();
+	var resultsBox;
+    if(document.getElementById('searchPage-box').hidden==false) {
+        resultsBox= document.getElementById('results-listbox');
+	
+    }
+    else if(document.getElementById('adminPage-box').hidden == false) {
+        resultsBox= document.getElementById('adminEntryForTag');
+    }
+    
+    var selection = new Array();
 	selection = resultsBox.selectedItems;
 	while(selection.length > 0) {
 		var index = resultsBox.getIndexOfItem(selection[0]);
@@ -350,22 +412,34 @@ function handleResultDblClicked(aEvent) {
 	}
 }
 
+function getListBoxEntryId() {
+    var id;
+    if(document.getElementById('searchPage-box').hidden == false) {
+        id = document.getElementById('results-listbox').selectedItem.value;
+    } 
+    else {
+        id = document.getElementById('adminEntryForTag').selectedItem.value
+    }
+    
+    return id;
+}
+
 function handleEditEntry() {
-	var id = document.getElementById('results-listbox').selectedItem.value;
-	resultIndex = document.getElementById('results-listbox').selectedIndex;
+    var id = getListBoxEntryId();
+	//resultIndex = document.getElementById('results-listbox').selectedIndex;
 	
 	showLogEntryPage(id);
 }
 
 function handleViewWebPage() {
-	var id = document.getElementById('results-listbox').selectedItem.value;
+    var id = getListBoxEntryId();
 	var logEntry = dataHandler.getEntry(id);
 	openTopWin(logEntry.getUrl());
 }
 
 function handleViewLocalCopy() {
-	var id = document.getElementById('results-listbox').selectedItem.value;
-	var logEntry = dataHandler.getEntry(id);
+	var id = getListBoxEntryId();
+    var logEntry = dataHandler.getEntry(id);
 	openTopWin(logEntry.getFilePath());
 }
 
@@ -374,8 +448,15 @@ function handleDeleteEntry() {
 	var answer = confirm("Are you sure you want to delete this entry?");
 	if (answer){
 		try {
-			var selection = document.getElementById('results-listbox').selectedItems;
-			for (var i = 0;i<selection.length;i++) {
+			var selection;
+            if(document.getElementById('searchPage-box').hidden == false) {
+                selection = document.getElementById('results-listbox').selectedItems;
+            }	
+            else if(document.getElementById('adminPage-box').hidden == false) {
+                selection = document.getElementById('adminEntryForTag').selectedItems;
+            }
+            
+            for (var i = 0;i<selection.length;i++) {
 	      		success = dataHandler.removeEntry(selection[i].value);
 	      		if(success) {
 	      			deleteLocalPage(selection[i].value);
@@ -406,20 +487,26 @@ function handleSaveLogEntryDetails() {
 		var logEntry;
 	
 		if(typeof(id) == "undefined") {
-			logEntry = new LogEntry();
+            //alert("we better be in here");      
+            logMsg("trying to get temp");
+			logEntry = dataHandler.getTemporaryEntry();	
+            logMsg("should have got temp");         
 		}
 		else {
 			logEntry = dataHandler.getEntry(id);
 		}
-		
+        
+        logMsg("logEntry type: " + typeof(logEntry));  
 		var titleTBox = document.getElementById('logEntry-title');
 		var urlTBox = document.getElementById('logEntry-url');
 		var tagsTBox = document.getElementById('logEntry-tags');
 		var tags = new Array();
 		
+        logMsg("fine here");      
 		logEntry.setTitle(titleTBox.value);
-		logEntry.setUrl(urlTBox.value);
-	
+		logMsg("fine here!");
+        logEntry.setUrl(urlTBox.value);
+        logMsg("fine here");
 		// Right now we're removing all current tags first, then adding whatever is in
 		// the textbox, this may be inefficient so feel free to change it
 		logEntry.removeTags();
@@ -429,19 +516,20 @@ function handleSaveLogEntryDetails() {
 			tags.push(item.value);
 		}
 		tags = uniqueTags(tags);
+        logMsg("fine here");
 		for(var i=0;i<tags.length;i++) {
 			if (typeof(tags[i]) != "undefined") {
 				logEntry.addTag(tags[i]);
 			}
 		}
 		
+        logMsg("fine here");      
 		for(var i=0;i<newComments.length;i++) {
 			logEntry.addCommentObject(newComments[i]);
 		}
 		
 		if(typeof(id) == "undefined") {
-			dataHandler.addEntry(logEntry,content.document);
-			createThumbnail(content.document, logEntry.getId());
+			dataHandler.saveTemporaryEntry();
 		}
 		else {
 			dataHandler.replaceEntry(logEntry);
@@ -453,6 +541,7 @@ function handleSaveLogEntryDetails() {
 		// Return to search page if this was a new entry
 		// I THINK WE RETURN REGARDLESS
 		showSearchEntryPage(id);
+              
 	}
 	catch(e) {
 		logMsg("Exception occurred in handleSaveLogEntryDetails()" + e);
@@ -460,7 +549,10 @@ function handleSaveLogEntryDetails() {
 }
 
 function handleCancelLogPage() {
+	// remove temporary data if present
+	dataHandler.removeTemporaryEntry();
 	showSearchEntryPage(editingId);
+       
 }
 
 function handleDetails() {
@@ -494,7 +586,6 @@ function removeTagsFromEntry() {
 		tagsBox.removeItemAt(index);
 	}
 }
-
 
 function showOrHideAddTag() {
 	var addTagBox =  document.getElementById("logEntry-tags-add");
@@ -711,12 +802,14 @@ function splitSearchString(searchString) {
 function populateTagsPopupMenu() {
 	try {
 		var tagNameArr = dataHandler.getAllTags();
+		tagNameArr = tagNameArr.sort(compareTags);
 		var tagsPopupMenu = document.getElementById("tags-popup");
 		var logEntryTagsPopup = document.getElementById("logEntry-tags-popup");
 		
 		// Append Create New Tag item to the LogEntry tags popup in the details section
 		var menuItem2 = document.createElement("menuitem");
 		var menuItem;
+		
 		menuItem2.setAttribute( "label" , "Create New Tag");
 		menuItem2.setAttribute( "value" , "new tag");
 		menuItem2.setAttribute("oncommand", "processLogEntryTagSelection(this.value);");
@@ -727,6 +820,7 @@ function populateTagsPopupMenu() {
 			//alert("Loop entered! and tag name is: " + tagNameArr[i]);
 			menuItem = document.createElement("menuitem");
 			menuItem2 = document.createElement("menuitem");
+			
 			menuItem.setAttribute( "label" , tagNameArr[i]);
 			menuItem.setAttribute( "value" , tagNameArr[i]);
 			menuItem.setAttribute( "id" , "mylog-tag-" + tagNameArr[i]);
@@ -815,14 +909,74 @@ function createTag() {
 			return null;
 		}
 		ret = dataHandler.addTag(tag);
-		dataStore.close(dataHandler);
-		dataHandler = dataStore.open();
 	} catch(e) {
 		logMsg("Exception in createTag():" + e);	
 	}
 	
 	if (ret) {
 		return tag;
+	}
+}
+
+function adminShowEntriesForTag() {
+	try {
+		var label = document.getElementById("adminEntryForTagLabel"); 
+		var tagsBox = document.getElementById("adminTagsList");
+		var curTag = tagsBox.selectedItem.value;
+		var entryBox = document.getElementById('adminEntryForTag');
+		
+		label.value = "Entries with Tag " + curTag;
+		clearAdminEntryForTagBox();
+		
+		// perform search for entries
+		var entries = dataHandler.findEntries(curTag,"tag");
+		for(var i=0;i<entries.length;i++) {
+			entryBox.appendItem(entries[i].getTitle(),entries[i].getId());
+		}
+	} catch(e) {
+		logMsg("adminShowEntriesForTag(): " + e);
+	}
+}
+
+function clearAdminEntryForTagBox() {
+	try {
+		while (document.getElementById('adminEntryForTag').getRowCount() > 0) {
+			document.getElementById('adminEntryForTag').removeItemAt(0);
+		}
+	} catch(e) {
+		logMsg("clearAdminEntryForTagBox(): " + e);
+	}
+
+}
+
+function removeTagFromDatabase() {
+	try {
+		var tagsBox = document.getElementById("adminTagsList");
+		var curTag = tagsBox.selectedItem.value;
+		var entryBox = document.getElementById('adminEntryForTag');
+		
+		// If the entrybox isn't empty that means entries exist for this tag so do nothing
+		if(entryBox.getRowCount() > 0) {
+			alert("This tag is currently being used for other entries. Delete those first.");
+			return 0;
+		}
+		
+		// Otherwise prompt them
+		var answer = confirm("Are you sure you want to delete this tag from the database permanently?");
+		if (answer){
+			if(dataHandler.removeTag(curTag)) {
+				dataStore.close(dataHandler);
+				dataHandler = dataStore.open();
+				
+				// Reload stuff
+				adminBoxClearTags();
+				clearAdminEntryForTagBox();
+				adminBoxPopulateTags();
+				
+			}
+		}
+	}catch(e) {
+		logMsg("removeTagFromDatabase(): " + e);
 	}
 }
 
@@ -876,11 +1030,14 @@ function createThumbnail(doc, id) {
 }
 
 function handleSearchByContentClick() {
-	var query = prompt("Search by Content:", previousQuery);
+	/* var query = prompt("Search by Content:", previousQuery);
 	if ((query == null) || (query == ""))
 		return;
 	
 	previousQuery = query;
+	*/
+	
+	var query = document.getElementById("SearchBox").value;
 	handleSearchContentRequest(query);
 }
 
@@ -889,6 +1046,11 @@ function handleSearchContentRequest(query) {
 	var dataHandler = dataStore.open();
 	dataHandler.findEntries(query,"content");
 	showResultsPage();
+}
+
+function sidebarExportRequest() {
+    handleExportRequest(dataStore,dataHandler);
+
 }
 
 function loadThumbnail(id) {
@@ -936,3 +1098,5 @@ function trimString(str) {
 	
 	return str;
 }
+
+
