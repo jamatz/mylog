@@ -48,22 +48,18 @@ function toggleAndLogEntry() {
 
 function showAdministrationPage() {
 	adminBoxPopulateTags();
-    clearListbox();   
-    clearTagsPopupMenu();
 	document.getElementById("searchPage-box").hidden = true;
 	document.getElementById("adminPage-box").hidden = false;
     document.getElementById("logPage-box").hidden = true;
 }
 
 function leaveAdministrationPage() {
+    var label = document.getElementById("adminEntryForTagLabel"); 
+    label.value = "";
+    
     clearAdminEntryForTagBox();
     adminBoxClearTags();
-  
-	document.getElementById("searchPage-box").hidden = false;
-	document.getElementById("adminPage-box").hidden = true;
-    
-    searchboxCallback(document.getElementById("SearchBox").value);
-    populateTagsPopupMenu();
+    showSearchEntryPage();
 }
 
 function showLogEntryPage(id) {
@@ -227,10 +223,14 @@ function showSearchEntryPage(id) {
 	try {
 		document.getElementById("searchPage-box").hidden = false;
 		document.getElementById("logPage-box").hidden = true;
-        document.getElementById("adminPage-box").hidden=true;      
+        document.getElementById("adminPage-box").hidden=true; 
+        
+        // make data in the ui elements more consistent
+        clearTagsPopupMenu();
+        populateTagsPopupMenu();     
 		searchboxCallback(document.getElementById("SearchBox").value);
-	
 		searchBoxClearTags();
+        
 		document.getElementById("logEntry-search-details").hidden = "true";
 		var foundEntry = false;
 		var counter = 0;
@@ -949,7 +949,7 @@ function adminShowEntriesForTag() {
 			entryBox.appendItem(entries[i].getTitle(),entries[i].getId());
 		}
 	} catch(e) {
-		logMsg("adminShowEntriesForTag(): " + e);
+		logMsg("Exception in adminShowEntriesForTag(): " + e);
 	}
 }
 

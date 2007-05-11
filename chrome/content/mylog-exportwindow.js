@@ -109,8 +109,10 @@ function betterExportContent() {
     try {
         var selectedItems = document.getElementById('content').selectedItems;
         var items = [];
-        for(var i = 0; i < selectedItems.length; i++)
+        for(var i = 0; i < selectedItems.length; i++) {
             items.push(selectedItems[i].value); 
+            //logMsg("selecteditem:" + selectedItems[i].value + "");
+        }
         
         if(selectedItems.length != 0){      
             var folderPath = getFolderDialogueBox("Export Items to...");
@@ -142,7 +144,7 @@ function betterExportContent() {
             if(folderPath.match(".zip")!=null){
                 exportToZip(folderPath,buildPath,inputFiles);
             }
-            alert("Successfully copied " + selectedItems.length + " item(s).");
+            alert("Successfully copied " + items.length + " item(s).");
         }
         else {
             alert("Please select items before attempting to export.");

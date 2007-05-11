@@ -518,41 +518,45 @@ function XmlDataHandler() {
 
     // This function exports the entries given by entryIds to outfile
     function exportTo(outFile,entryIds) {
-        var doc = document.implementation.createDocument("", "", null);
-        var rootElem = doc.createElement("mylog");
-        var entriesElem = doc.createElement("entries");
-        doc.appendChild(rootElem);
-        rootElem.appendChild(entriesElem);
+        try {
+            var doc = document.implementation.createDocument("", "", null);
+            var rootElem = doc.createElement("mylog");
+            var entriesElem = doc.createElement("entries");
+            doc.appendChild(rootElem);
+            rootElem.appendChild(entriesElem);
+            
+            for(var i=0;i<entryIds.length;i++){
+                var entry = getEntry(entryIds[i]);
+                var entryElem = _createDomNode(entry);
+                doc.getElementsByTagName("entries")[0].appendChild(entryElem);
+            }
         
-        for(var i=0;i<entryIds.length;i++){
-            var entry = getEntry(entryIds[i]);
-            var entryElem = _createDomNode(entry);
-            doc.getElementsByTagName("entries")[0].appendChild(entryElem);
-        }
+            var file =  Components.classes["@mozilla.org/file/local;1"]
+                        .createInstance(Components.interfaces.nsILocalFile);
+                        
+            //logMsg("Export file: " + outFile);
+            file.initWithPath(outFile);
     
-        var file =  Components.classes["@mozilla.org/file/local;1"]
-                     .createInstance(Components.interfaces.nsILocalFile);
-                     
-        //logMsg("Export file: " + outFile);
-        file.initWithPath(outFile);
-
-        var serializer = new XMLSerializer();
-        var data = serializer.serializeToString(doc);
+            var serializer = new XMLSerializer();
+            var data = serializer.serializeToString(doc);
+            
+            var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"]
+                                    .createInstance(Components.interfaces.nsIFileOutputStream);
+    
+            var charset = "UTF-8"; // Can be any character encoding name that Mozilla supports
+    
+            var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+                            .createInstance(Components.interfaces.nsIConverterOutputStream);
+            // use 0x02 | 0x10 to open file for appending.
+            foStream.init(file, 0x02 | 0x08 | 0x20, 0664, 0); // write, create, truncate
         
-        var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"]
-                                 .createInstance(Components.interfaces.nsIFileOutputStream);
-
-        var charset = "UTF-8"; // Can be any character encoding name that Mozilla supports
-
-        var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
-                           .createInstance(Components.interfaces.nsIConverterOutputStream);
-        // use 0x02 | 0x10 to open file for appending.
-        foStream.init(file, 0x02 | 0x08 | 0x20, 0664, 0); // write, create, truncate
-      
-        // This assumes that fos is the nsIOutputStream you want to write to
-        os.init(foStream, charset, 4096, "?".charCodeAt(0));
-        os.writeString(data);
-        os.close();
+            // This assumes that fos is the nsIOutputStream you want to write to
+            os.init(foStream, charset, 4096, "?".charCodeAt(0));
+            os.writeString(data);
+            os.close();
+        }catch(e) {
+            logMsg("Exception in exportTo:" + e);
+        }
     }
 
 	// Modified by Brian Cho and Jesus DeLaTorre on December 4.
