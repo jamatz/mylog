@@ -63,7 +63,7 @@ function XmlDataStore() {
 	
 	function openLocal(filePath){
         _xmlFilepath = filePath;   
-        logMsg("filepath in open: " + _xmlFilepath);
+        //logMsg("filepath in open: " + _xmlFilepath);
 // 		var doc = readXML(filePath);      
         var doc = _readXmlFile();      
         var handler = new XmlDataHandler();
@@ -169,7 +169,7 @@ function XmlDataStore() {
 		var file =  Components.classes["@mozilla.org/file/local;1"]
                      .createInstance(Components.interfaces.nsILocalFile);
                      
-        logMsg("Output file: " + _xmlFilepath);
+        //logMsg("Output file: " + _xmlFilepath);
         file.initWithPath(_xmlFilepath);
 
 		var serializer = new XMLSerializer();
@@ -348,7 +348,7 @@ function XmlDataHandler() {
 				logEntry.setFilePath(file.path);
             }
             _tempEntry = logEntry.clone();   
-			logMsg("tempEntry.id=" + _tempEntry.getId());
+			//logMsg("tempEntry.id=" + _tempEntry.getId());
 		} catch(e) {
 			logMsg("MyLog exception:" + e);
 		}
@@ -383,8 +383,6 @@ function XmlDataHandler() {
 	}
 
 	function getTemporaryEntry() {
-        logMsg("getting temp");   
-        logMsg("getTemporary: tempEntry.id=" + _tempEntry.getId());
 		return _tempEntry;
 	}
 
@@ -480,7 +478,7 @@ function XmlDataHandler() {
 				xpathStr = "/mylog/entries/entry[contains(translate("+searchType+", 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), translate('"+keyword+"', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'))]";
 	      	}
 	        
-            logMsg("XpathStr: " + xpathStr);
+            //logMsg("XpathStr: " + xpathStr);
             
 			var entryResults = new Array();
 			if(doSearch == true) {
@@ -535,7 +533,7 @@ function XmlDataHandler() {
         var file =  Components.classes["@mozilla.org/file/local;1"]
                      .createInstance(Components.interfaces.nsILocalFile);
                      
-        logMsg("Export file: " + outFile);
+        //logMsg("Export file: " + outFile);
         file.initWithPath(outFile);
 
         var serializer = new XMLSerializer();
@@ -727,7 +725,7 @@ function copyPage(oldFilePath,id) {
         var folderPath = getFullFilePath(profilePath,new Array("extensions","mylog"));
         var filePath = getFullFilePath(folderPath,new Array(id + ".html"));
         
-        logMsg("filepath: " + oldFilePath + ",id: " + id);
+        //logMsg("filepath: " + oldFilePath + ",id: " + id);
         
         // first copy over the html page to the new location
         var oldFileObj = pathToFileObject(oldFilePath);
@@ -737,7 +735,7 @@ function copyPage(oldFilePath,id) {
        
         // now copy over the data directory
         var dataFolderPath = oldFilePath.slice(0,oldFilePath.length - 5);
-        logMsg("data folder: " + dataFolderPath);
+        //logMsg("data folder: " + dataFolderPath);
         oldFileObj = pathToFileObject(dataFolderPath);
         oldFileObj.copyTo(folderObj,id + "");
         

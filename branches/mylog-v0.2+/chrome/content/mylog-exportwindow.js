@@ -17,6 +17,7 @@ function showAllContent() {
         }       
         
         // See if a zip program is installed
+        checkZipSH();
         zipProg = getZipUtil();
         if(zipProg == null) {
             document.getElementById('export-format').selectedIndex = 1;
@@ -26,6 +27,25 @@ function showAllContent() {
         }
     } catch(e) {
         logMsg("Exception: " + e);
+    }
+}
+
+/*
+ * Make sure zip.sh is executable.
+ */
+function checkZipSH()
+{
+    if(navigator.platform != "Win32") {
+        var zipScript = getFileFromExtensionDir(MYLOG_ID, "zip.sh");
+        if(!zipScript.isExecutable()) {
+            // try user executable first
+            zipScript.permissions |= 0500;
+            if(!zipScript.isExecutable()) {
+            // this probably won't work anyway
+            // if we don't own the file
+            zipScript.permissions |= 0550;
+            }
+        }
     }
 }
 
@@ -59,8 +79,6 @@ function deselectAll(){
 }
 
 function exportContent(){
-<<<<<<< .mine
-    
     betterExportContent();
     
     /*var selectedItems = document.getElementById('content').selectedItems;
@@ -84,22 +102,7 @@ function exportContent(){
     else {
         alert("Please select items before attempting to export.");
     }*/
-=======
-	var selectedItems = document.getElementById('content').selectedItems;
-	var items = [];
-	for(var i = 0; i < selectedItems.length; i++)
-		items.push(selectedItems[i].value);	
-	if(selectedItems.length != 0){		
-		var folderPath = getFolderDialogueBox("Export Items to...");
-		createDir(folderPath, "MyLog_Exported_Content")
-		folderPath = folderPath + "\\MyLog_Exported_Content"; 
-		saveExportXML(folderPath, items); 
-		copyExportedContent(folderPath, items);	
-		alert("Successfully copied " + selectedItems.length + " item(s).");
-	}
-	else
-		alert("Please select items before attempting to export.");
->>>>>>> .r202
+
 }
 
 function betterExportContent() {
@@ -112,24 +115,25 @@ function betterExportContent() {
         if(selectedItems.length != 0){      
             var folderPath = getFolderDialogueBox("Export Items to...");
             var buildPath ="";
+            
+            if(folderPath == null){
+                return 0;
+            }
+            
             if(folderPath.match(".zip")!=null) {
+                if(zipProg == null) {
+                    alert("A supported zip program was not found on your system. Please export to xml data instead.");
+                    return 0;
+                }
                 var fileObject = pathToFileObject(folderPath);
                 buildPath = fileObject.parent.path;
+                buildPath = getFullFilePath(buildPath,new Array("MyLog_Exported_Content"));
             }
             else {
                 buildPath = folderPath;
             }
-            buildPath = getFullFilePath(buildPath,new Array("MyLog_Exported_Content"));
-            
-            if(pathExists(buildPath) == true) {
-                var ans = confirm("Overwrite previously exported content at this location?");
-                if(ans){
-                    removePath(buildPath);
-                }
-                else{return 0;}
-            }
+            //buildPath = getFullFilePath(buildPath,new Array("MyLog_Exported_Content"));
             createDirectoryFromPath(buildPath);
-            //logMsg("folderPath: " + folderPath);
            
             var xmlFile = betterSaveExportXML(buildPath, items); 
             var inputFiles = betterCopyExportedContent(buildPath, items); 
@@ -185,7 +189,7 @@ function extractZipFile(zipFile) {
                 var destFileObject = pathToFileObject(tempDir);
                 for(var i=0;i<paths.length - 1;i++) {
                     destFileObject.append(paths[i]);
-                    logMsg("creating directory:" + destFileObject.path);
+                    //logMsg("creating directory:" + destFileObject.path);
                     createDirectory(destFileObject);
                 }
                 
@@ -193,16 +197,21 @@ function extractZipFile(zipFile) {
                 if(destFilename.match("exported.xml")!=null) {
                     xmlFile = destFilename;
                 }
-                logMsg("zip file:" + destFilename);
+                //logMsg("zip file:" + destFilename);
                 if(!pathExists(destFilename)){
                     zipReader.extract(zipEntry.name,pathToFileObject(destFilename));
                 }
             }
         }
         zipReader.close();
+        
+        if(xmlFile == null) {
+            throw("Exception in extractZipFile: exported.xml not found in archive!");
+        }
     }
     catch(e){
         logMsg("Exception in extractZipFile:" + e);
+        throw(e);
     }
     
     return xmlFile;
@@ -237,37 +246,55 @@ function importContent(){
 }
 
 function betterImportContent() {
+    var tempDir;
+    var importStore;
+    var useZip = false;
+    var XMLPath;
+    var importHandler;
+    
     try {
-        var useZip = false;
-        var XMLPath = getXMLBox("Select export.xml in or .zip file");
+        useZip = false;
+        XMLPath = getXMLBox("Select export.xml or .zip file");
+        
+        // If the filename is null, then don't continue
+        if(XMLPath == null) { 
+            return 0;
+        }
+        
         if(XMLPath.match(".zip") != null) {
             XMLPath = extractZipFile(XMLPath);
             useZip = true;
         }
         
         // Now extract all LogEntries and copy over to the regular datastore
-        var importStore = new XmlDataStore();
-        var importHandler = importStore.openLocal(XMLPath);
-        var importedEntries = importHandler.getAllEntries();
-        var tempDir =  pathToFileObject(XMLPath).parent.path;
-        
+        tempDir =  pathToFileObject(XMLPath).parent.path;
+        importStore = new XmlDataStore();
+        importHandler = importStore.openLocal(XMLPath);
+        importedEntries = importHandler.getAllEntries();
+       
         importStore.close(importHandler);
         addImportedEntries(importedEntries,tempDir);
-    
-        logMsg("import xml: " + XMLPath);
+        //logMsg("import xml: " + XMLPath);
+        
+        var entryList = dataHandler.getAllEntries();
+        if(entryList.length > 0) {
+            displayResults(entryList);
+        }
+        alert("Imported " + importedEntries.length + " entries.");
+    }catch(e){ 
+        logMsg("Exception in betterImportContent: " +e);
+        alert("Problem occurred during importing. Operation aborted. Look at error console for any output..");
+    } finally {
         // If a zip file was used make sure to remove the temporary directory
         if((useZip) && (XMLPath != null)) {
             if(pathExists(tempDir)){
-                logMsg("removing path: " + tempDir);
+                //logMsg("removing path: " + tempDir);
                 removePath(tempDir);
             }
         }
-    }catch(e){
-        logMsg("Exception in betterImportContent: " +e);
     }
 }
 
-<<<<<<< .mine
 function addImportedEntries(entries,folderPath){
 //     dataStore = new XmlDataStore();
 //     dataHandler = dataStore.open();
@@ -282,28 +309,6 @@ function addImportedEntries(entries,folderPath){
     }
 
     dataStore.close(dataHandler);
-=======
-	var importDataStore = new XmlDataStore();
-	var importDataHandler = importDataStore.openLocal(XMLPath);
-	var oldIDs = [];
-	var newIDs = [];
-	var entries = importDataHandler.getAllEntries();
-	for(var i = 0; i < entries.length; i++){
-		oldIDs.push(entries[i].getId());		
-		var newID = dataHandler.addPredefinedEntry(entries[i],profileDir);
-		newIDs.push(newID);
-	}
-	//alert("Grabbed " + entries.length + " items.");
-	copyImportedContent(folderPath, oldIDs,newIDs);
-	//alert("Copied");
-	dataStore.close(dataHandler);
-	dataHandler = dataStore.open();
-	var entryList = dataHandler.getAllEntries();
-	if(entryList.length > 0) {
-		displayResults(entryList);
-	}
-	alert("Successfully copied "+ entries.length + " items.");
->>>>>>> .r202
 }
 
 function saveExportXML(folderPath, exportItems){
@@ -329,13 +334,6 @@ function betterSaveExportXML(folderPath, exportItems){
         exportStore = new XmlDataStore();
         //exportStore.setXmlFilepath(filePath);
         exportHandler = exportStore.open(); 
-//         for(var i = 0; i < exportItems.length; i++){
-//             var currentItem = dataHandler.getEntry(exportItems[i]);
-//             var exportTags = currentItem.getTags();
-//             exportHandler.addPredefinedEntry(currentItem);
-//             for(var j =0; j < exportTags.length; j++)
-//                 exportHandler.addTag(exportTags[j]);
-//         }
         exportHandler.exportTo(xmlFile,exportItems);
         exportStore.close(exportHandler);
         xmlFile = "exported.xml";
@@ -350,7 +348,6 @@ function copyExportedContent(folderPath, exportItems){
 	var profileDir = getProfileDirectory();	
     var myLogDir = profileDir + "\\extensions\\mylog\\";
 	for(var i = 0; i < exportItems.length; i++){
-		//alert("Copying items of ID " + exportItems[i]);
 		createDir(folderPath, i);
 		var data = readFile(myLogDir + exportItems[i] + ".html");		
 		var files = getAllFilesInDirectory(myLogDir + "\\" + exportItems[i] + "\\");
@@ -358,14 +355,9 @@ function copyExportedContent(folderPath, exportItems){
 		writeBinaryFile(data, folderPath + "\\" + i + ".html");
 		var directory = myLogDir + exportItems[i] + "\\";
 		recursiveCopyAllFiles(folderPath + "\\" + i, directory);		
-<<<<<<< .mine
-		var pngData = readFile(myLogDir + exportItems[i] + "-preview.png");		
-		writeBinaryFile(pngData, folderPath + "\\" + i + "-preview.png");
-=======
 		var pngData = readFile(myLogDir + exportItems[i] + "-preview.png");		
 		writeBinaryFile(pngData, folderPath + "\\" + i + "-preview.png");
 
->>>>>>> .r202
 	}
 }
 
@@ -584,11 +576,11 @@ function getFolderDialogueBox(dialogText){
 	  return fp.file.path;
 	}
     
-    return "";
+    return null;
 }
 
 function getXMLBox(dialogText){
-	nsIFilePicker = Components.interfaces.nsIFilePicker;	
+    var nsIFilePicker = Components.interfaces.nsIFilePicker;
 	var fp = Components.classes["@mozilla.org/filepicker;1"]
 		           .createInstance(nsIFilePicker);
 	fp.init(window, dialogText, nsIFilePicker.modeOpen);
@@ -599,4 +591,6 @@ function getXMLBox(dialogText){
 	if (rv == nsIFilePicker.returnOK){
 	  return fp.file.path;
 	}
+  
+    return null;
 }
