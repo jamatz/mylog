@@ -23,6 +23,7 @@
 <!ENTITY mylogsidebar.toolbarImportExport "Import/Export">
 <!ENTITY mylogsidebar.toolbarAdministration "Administration">
 <!ENTITY mylogsidebar.toolbarAdministration_tooltip "Administration: Manage Tags and Import/Export new entries...">
+<!ENTITY mylogsidebar.toolbarAdministrationBack_tooltip "Leave the administration page" >
 <!ENTITY mylogsidebar.detailsShowAddTag "Show/Hide Add Tag Menu">
 <!ENTITY mylogsidebar.detailsDeleteTag "Delete Selected Tag">
 <!ENTITY mylog_logentrytags.delete "Remove Tag">

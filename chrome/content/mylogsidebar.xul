@@ -56,7 +56,7 @@
   	<toolbox>
   		<toolbar>
   		       <toolbarbutton id="toolbarAdministration" 
-                   image="chrome://mylog/skin/bookmark_add.png"
+                   image="chrome://mylog/skin/configure.png"
                    tooltiptext="&mylogsidebar.toolbarAdministration_tooltip;"
                    oncommand ="showAdministrationPage();"
                    label="&mylogsidebar.toolbarAdministration;"/>
@@ -295,8 +295,8 @@
 	<toolbox>
   		<toolbar>
   		       <toolbarbutton id="toolbarBack" 
-                   image="chrome://mylog/skin/bookmark_add.png"
-                   tooltiptext="&mylogsidebar.toolbarAdministration;"
+                   image="chrome://mylog/skin/back.png"
+                   tooltiptext="&mylogsidebar.toolbarAdministrationBack_tooltip;"
                    oncommand ="leaveAdministrationPage();"
                    label="Back"
                    />
@@ -314,7 +314,7 @@
             flex="1" 
             context="sidebarEntriesContextMenu"  
             ondblclick="handleResultDblClicked(event);"
-            selType="multiple"
+            seltype="multiple"
         /> 
 	</groupbox>
 	<spacer height="10" />

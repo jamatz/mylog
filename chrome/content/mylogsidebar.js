@@ -1,3 +1,4 @@
+// *** vviswana       : 05-11-2007: Added new administration interface (adding of tags, button for import/export)
 // *** vviswana, bcho2: 04-17-2007: Modified the editing of tags and function removeTagFromEntry()
 // *** bearly, jamatz: 04-01-2007: Fixed search() and processTagSelection()
 // *** ebowden2, vviswana: 04-01-2007: Added uniqueTags and trimString as helper functions
@@ -47,6 +48,8 @@ function toggleAndLogEntry() {
 
 function showAdministrationPage() {
 	adminBoxPopulateTags();
+    clearListbox();   
+    clearTagsPopupMenu();
 	document.getElementById("searchPage-box").hidden = true;
 	document.getElementById("adminPage-box").hidden = false;
     document.getElementById("logPage-box").hidden = true;
@@ -55,8 +58,12 @@ function showAdministrationPage() {
 function leaveAdministrationPage() {
     clearAdminEntryForTagBox();
     adminBoxClearTags();
+  
 	document.getElementById("searchPage-box").hidden = false;
 	document.getElementById("adminPage-box").hidden = true;
+    
+    searchboxCallback(document.getElementById("SearchBox").value);
+    populateTagsPopupMenu();
 }
 
 function showLogEntryPage(id) {
@@ -69,7 +76,6 @@ function showLogEntryPage(id) {
 		document.getElementById("logPage-box").hidden = false;
         document.getElementById("adminPage-box").hidden = true;
               
-	
 		populateNewEntry(id);
 	}catch(e) {
 		logMsg("Exception in showLogEntryPage():" + e);
@@ -100,7 +106,7 @@ function populateNewEntry (id) {
 			
 			// create thumbnail
 			createThumbnail(content.document, tempEntry.getId());
-            logMsg("Added temp");         
+            //logMsg("Added temp");         
 			
 		} else {
 			var logEntry = dataHandler.getEntry(id);
@@ -255,11 +261,6 @@ function showSearchEntryPage(id) {
 	}
 }
 
-function handleDeleteLogEntryTag() {
-	alert("");
-
-}
-
 // Populates the listbox with the entries passed in via the array
 // entryList.  If no array is given, we just assume all entries
 // are wanted.  sortOrder is optional and currently defaults to
@@ -273,7 +274,6 @@ function populateListbox(entryList, sortOrder) {
 		entryList = dataHandler.getAllEntries();
 	if (typeof(sortOrder) == "undefined")
 		sortOrder = "title";
-	
 	
 	clearListbox();
 	if (sortOrder == "title") {
@@ -445,17 +445,26 @@ function handleViewLocalCopy() {
 
 function handleDeleteEntry() {
 	var success = false;
-	var answer = confirm("Are you sure you want to delete this entry?");
+    var confirmMsg = "";
+    var selection;
+    
+    if(document.getElementById('searchPage-box').hidden == false) {
+        selection = document.getElementById('results-listbox').selectedItems;
+    }   
+    else if(document.getElementById('adminPage-box').hidden == false) {
+        selection = document.getElementById('adminEntryForTag').selectedItems;
+    }
+    
+    if(selection.length > 1) {
+        confirmMsg = "Are you sure you want to delete these entries?";
+    }
+    else {
+        confirmMsg = "Are you sure you want to delete this entry?";
+    }
+    
+	var answer = confirm(confirmMsg);
 	if (answer){
 		try {
-			var selection;
-            if(document.getElementById('searchPage-box').hidden == false) {
-                selection = document.getElementById('results-listbox').selectedItems;
-            }	
-            else if(document.getElementById('adminPage-box').hidden == false) {
-                selection = document.getElementById('adminEntryForTag').selectedItems;
-            }
-            
             for (var i = 0;i<selection.length;i++) {
 	      		success = dataHandler.removeEntry(selection[i].value);
 	      		if(success) {
@@ -488,25 +497,19 @@ function handleSaveLogEntryDetails() {
 	
 		if(typeof(id) == "undefined") {
             //alert("we better be in here");      
-            logMsg("trying to get temp");
 			logEntry = dataHandler.getTemporaryEntry();	
-            logMsg("should have got temp");         
 		}
 		else {
 			logEntry = dataHandler.getEntry(id);
 		}
         
-        logMsg("logEntry type: " + typeof(logEntry));  
 		var titleTBox = document.getElementById('logEntry-title');
 		var urlTBox = document.getElementById('logEntry-url');
 		var tagsTBox = document.getElementById('logEntry-tags');
 		var tags = new Array();
 		
-        logMsg("fine here");      
 		logEntry.setTitle(titleTBox.value);
-		logMsg("fine here!");
         logEntry.setUrl(urlTBox.value);
-        logMsg("fine here");
 		// Right now we're removing all current tags first, then adding whatever is in
 		// the textbox, this may be inefficient so feel free to change it
 		logEntry.removeTags();
@@ -516,14 +519,13 @@ function handleSaveLogEntryDetails() {
 			tags.push(item.value);
 		}
 		tags = uniqueTags(tags);
-        logMsg("fine here");
+        
 		for(var i=0;i<tags.length;i++) {
 			if (typeof(tags[i]) != "undefined") {
 				logEntry.addTag(tags[i]);
 			}
 		}
 		
-        logMsg("fine here");      
 		for(var i=0;i<newComments.length;i++) {
 			logEntry.addCommentObject(newComments[i]);
 		}
@@ -797,6 +799,19 @@ function splitSearchString(searchString) {
 	}	
 
 	return splitTerms;
+}
+
+function clearTagsPopupMenu() {
+    var tagsPopupMenu = document.getElementById("tags-popup");
+    var logEntryTagsPopup = document.getElementById("logEntry-tags-popup");
+
+    while (tagsPopupMenu.childNodes.length > 0) {
+        tagsPopupMenu.removeChild(tagsPopupMenu.childNodes[0]);
+    }
+    
+    while (logEntryTagsPopup.childNodes.length > 0) {
+        logEntryTagsPopup.removeChild(logEntryTagsPopup.childNodes[0]);
+    }
 }
 
 function populateTagsPopupMenu() {
