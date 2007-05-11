@@ -115,7 +115,7 @@ function copyFilePath(fromPath,toPath,newName) {
         dirObject.initWithPath(fromPath);
         destDirObject.initWithPath(toPath);
         
-        //logMsg("copying " + dirObject.path + " to " + destDirObject.path);
+        logMsg("copying " + dirObject.path + " to " + destDirObject.path);
         dirObject.copyTo(destDirObject,newName);
     }catch(e) {
         logMsg("Exception caught in copyFilePath: " + e);
