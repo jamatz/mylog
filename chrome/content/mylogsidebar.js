@@ -964,6 +964,18 @@ function clearAdminEntryForTagBox() {
 
 }
 
+function addTagToDatabase() {
+    tag = createTag();
+    if (tag == null) {
+        return;
+    }
+    
+    // Reload stuff
+    adminBoxClearTags();
+    clearAdminEntryForTagBox();
+    adminBoxPopulateTags();
+}
+
 function removeTagFromDatabase() {
 	try {
 		var tagsBox = document.getElementById("adminTagsList");
